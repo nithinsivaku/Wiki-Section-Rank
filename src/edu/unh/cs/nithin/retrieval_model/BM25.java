@@ -85,7 +85,7 @@ public class BM25 {
 		PageSearch(outputPath, indexPath, pagesFile);
 		SectionSearch(outputPath, indexPath, pagesFile);
 		SectionSearchForLowestHeading(outputPath, indexPath, pagesFile);
-		// allPageSearch(outputPath, indexPath, pagesFile);
+		allPageSearch(outputPath, indexPath, pagesFile);
 
 	}
 
