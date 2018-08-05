@@ -95,7 +95,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 
 		// paragraphs-run-sections
-		IndexSearcher searcher = setupIndexSearcher(indexPath, "");
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));
@@ -145,8 +145,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 
 		// paragraphs-run-sections
-		IndexSearcher searcher = new IndexSearcher(
-				DirectoryReader.open(FSDirectory.open(new File(indexPath).toPath())));
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));
@@ -196,8 +195,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 
 		// paragraphs-run-sections
-		IndexSearcher searcher = new IndexSearcher(
-				DirectoryReader.open(FSDirectory.open(new File(indexPath).toPath())));
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));
@@ -252,8 +250,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 
 		// paragraphs-run-sections
-		IndexSearcher searcher = new IndexSearcher(
-				DirectoryReader.open(FSDirectory.open(new File(indexPath).toPath())));
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));
