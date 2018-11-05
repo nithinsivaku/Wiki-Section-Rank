@@ -59,9 +59,9 @@ public class BM25 {
 	static List<String> paragraphs;
 	static Map<String, List<String>> passageHeadings = new HashMap<String, List<String>>();
 
-	private Map<String, String> mapPagePassage;
-	private Map<String, String> mapSectionPassage;
-	private Map<String, String> mapLowestSectionPassage;
+//	private Map<String, String> mapPagePassage;
+//	private Map<String, String> mapSectionPassage;
+//	private Map<String, String> mapLowestSectionPassage;
 
 	/*
 	 * @param 1 = query File ( usually outlines.cbor)
@@ -84,8 +84,8 @@ public class BM25 {
 		// TODO Auto-generated method stub
 		PageSearch(outputPath, indexPath, pagesFile);
 		SectionSearch(outputPath, indexPath, pagesFile);
-		SectionSearchForLowestHeading(outputPath, indexPath, pagesFile);
-		allPageSearch(outputPath, indexPath, pagesFile);
+//		SectionSearchForLowestHeading(outputPath, indexPath, pagesFile);
+//		allPageSearch(outputPath, indexPath, pagesFile);
 
 	}
 
@@ -153,7 +153,7 @@ public class BM25 {
 		System.out.println("starting searching for pages ...");
 
 		int count = 0;
-		mapPagePassage = new HashMap<String, String>();
+		//mapPagePassage = new HashMap<String, String>();
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			final String queryId = page.getPageId();
 
@@ -173,7 +173,7 @@ public class BM25 {
 				final float searchScore = score.score;
 				final int searchRank = i + 1;
 
-				mapPagePassage.put(paragraphid, paragraph);
+			//	mapPagePassage.put(paragraphid, paragraph);
 				System.out.print(".");
 				// writer.write(queryStr + " - " + paragraph + "\n");
 				writer.write(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
@@ -203,7 +203,7 @@ public class BM25 {
 		System.out.println("starting searching for sections ...");
 
 		int count = 0;
-		mapSectionPassage = new HashMap<String, String>();
+		//mapSectionPassage = new HashMap<String, String>();
 
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
@@ -224,7 +224,7 @@ public class BM25 {
 					final String paragraph = doc.getField("text").stringValue();
 					final float searchScore = score.score;
 					final int searchRank = i + 1;
-					mapSectionPassage.put(paragraphid, paragraph);
+				//	mapSectionPassage.put(paragraphid, paragraph);
 					System.out.println(".");
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
@@ -259,7 +259,7 @@ public class BM25 {
 
 		int count = 0;
 
-		mapLowestSectionPassage = new HashMap<String, String>();
+	//	mapLowestSectionPassage = new HashMap<String, String>();
 
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
@@ -280,7 +280,7 @@ public class BM25 {
 					final String paragraph = doc.getField("text").stringValue();
 					final float searchScore = score.score;
 					final int searchRank = i + 1;
-					mapLowestSectionPassage.put(paragraphid, paragraph);
+				//	mapLowestSectionPassage.put(paragraphid, paragraph);
 					System.out.println(".");
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
@@ -415,18 +415,18 @@ public class BM25 {
 
 	}
 
-	public Map<String, String> getPageHeadingMap() {
-		// TODO Auto-generated method stub
-		return mapPagePassage;
-	}
-
-	public Map<String, String> getSectionHeadingMap() {
-		// TODO Auto-generated method stub
-		return mapSectionPassage;
-	}
-
-	public Map<String, String> getLowestSectionHeadingMap() {
-		// TODO Auto-generated method stub
-		return mapLowestSectionPassage;
-	}
+//	public Map<String, String> getPageHeadingMap() {
+//		// TODO Auto-generated method stub
+//		return mapPagePassage;
+//	}
+//
+//	public Map<String, String> getSectionHeadingMap() {
+//		// TODO Auto-generated method stub
+//		return mapSectionPassage;
+//	}
+//
+//	public Map<String, String> getLowestSectionHeadingMap() {
+//		// TODO Auto-generated method stub
+//		return mapLowestSectionPassage;
+//	}
 }
