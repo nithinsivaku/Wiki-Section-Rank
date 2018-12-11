@@ -1,6 +1,7 @@
 package edu.unh.cs.nithin.training;
 
 import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -92,7 +93,6 @@ public class TrainSet implements Serializable {
 				break;
 
 		}
-
 		System.out.println("Done adding para and class file");
 
 		createDatasetFile(outputPath);
@@ -107,7 +107,6 @@ public class TrainSet implements Serializable {
 	private void paragraphAdd(Data.Paragraph p) {
 		final String paraId = p.getParaId();
 		final String para = p.getTextOnly();
-
 		addParagrah(para, paraId);
 
 	}
