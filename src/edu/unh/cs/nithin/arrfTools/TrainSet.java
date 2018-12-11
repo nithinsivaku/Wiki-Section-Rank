@@ -1,4 +1,4 @@
-package edu.unh.cs.nithin.training;
+package edu.unh.cs.nithin.arrfTools;
 
 import java.io.BufferedReader;
 
@@ -95,7 +95,7 @@ public class TrainSet implements Serializable {
 		}
 		System.out.println("Done adding para and class file");
 
-		createDatasetFile(outputPath);
+		createDatasetFile(outputPath, num);
 		// buildPipe();
 	}
 
@@ -249,14 +249,15 @@ public class TrainSet implements Serializable {
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 	}
 
-	public void createDatasetFile(String path) throws IOException {
-		File f = new File(path + "/TrainingData5000.arff");
+	public void createDatasetFile(String path, int totalPara) throws IOException {
+		path = path + "/learn"+totalPara+".arff";
+		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(trainingData.toString());
 		bw.close();
-		System.out.println("check for arff file");
+		System.out.println("check for arff file in " +path);
 	}
 	
 	public Instances getTraningData()
