@@ -84,7 +84,7 @@ public class BM25 {
 	private void computeHeadingWeights(String outputPath, String indexPath, String pagesFile) throws IOException {
 		// TODO Auto-generated method stub
 		PageSearch(outputPath, indexPath, pagesFile);
-		SectionSearch(outputPath, indexPath, pagesFile);
+//		SectionSearch(outputPath, indexPath, pagesFile);
 //		SectionSearchForLowestHeading(outputPath, indexPath, pagesFile);
 //		allPageSearch(outputPath, indexPath, pagesFile);
 

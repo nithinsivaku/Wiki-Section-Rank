@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>Wiki-Section-Rank</groupId>
-  <artifactId>Wiki-Section-Rank</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  <build>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Wiki-Section-Rank</groupId>
+	<artifactId>Wiki-Section-Rank</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
@@ -43,7 +45,7 @@
 		</plugins>
 
 	</build>
-  <repositories>
+	<repositories>
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
@@ -75,7 +77,7 @@
 			<artifactId>trec-car-tools-java</artifactId>
 			<version>10</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cc.mallet</groupId>
 			<artifactId>mallet</artifactId>
@@ -86,11 +88,8 @@
 			<artifactId>weka-stable</artifactId>
 			<version>3.6.10</version>
 		</dependency>
-		
+
 
 	</dependencies>
-  
-  
-  
-  
+
 </project>
