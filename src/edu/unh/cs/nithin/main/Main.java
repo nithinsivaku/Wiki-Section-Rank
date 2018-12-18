@@ -2,7 +2,6 @@ package edu.unh.cs.nithin.main;
 
 import java.io.File;
 
-
 import java.io.FileInputStream;
 
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
+import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 
 import java.time.Clock;
@@ -26,19 +26,16 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 
 		System.setProperty("file.encoding", "UTF-8");
-		System.out.println(" Starting");
 
 		String mode = args[0];
-		System.out.println(" Starting" +mode);
-		
-		if(mode.equals("retrieval"))
-		{
+
+		if (mode.equals("retrieval")) {
 			String pagesFile = args[1];
 			String indexPath = args[2];
 			String outputPath = args[3];
-			
-			System.out.println(" Starting" +mode);
-			
+
+			System.out.println(" Starting" + mode);
+
 			String directoryName = outputPath;
 			File directory = new File(directoryName);
 			if (!directory.exists())
@@ -48,21 +45,36 @@ public class Main {
 
 			BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
 			System.out.println(" Retrieval over");
-		}
-		else if(mode.equals("train"))
-		{
+		} else if (mode.equals("train")) {
 			String paraFile = args[1];
 			String arrfOutputPath = args[2];
-			
+
 			int maxParaCount = 500;
-			
+
 			TrainSet ts = new TrainSet(paraFile, arrfOutputPath, maxParaCount);
-			
+
 			System.out.println(" Training Set Created ");
-			
-		}
-		else
-		{
+
+		} else if (mode.equals("custom-retrieval")) {
+			String pagesFile = args[1];
+			String indexPath = args[2];
+			String outputPath = args[3];
+
+			System.out.println(" Starting" + mode);
+
+			String directoryName = outputPath;
+			File directory = new File(directoryName);
+			if (!directory.exists())
+				directory.mkdirs();
+
+			outputPath = directory.getPath();
+
+			String totalNumberOfParas = args[4];
+			CustomParaGenerator cpg = new CustomParaGenerator(pagesFile, indexPath, outputPath,
+					Integer.parseInt(totalNumberOfParas));
+			System.out.println(" Custom - Retrieval over");
+
+		} else {
 			System.out.println("mode is not given ");
 		}
 

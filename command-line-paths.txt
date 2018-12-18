@@ -1,8 +1,13 @@
 1. retrieval 
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
 /Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/New-Runs
+/Users/Nithin/Desktop/Runs/New-Runs
 
 2. train
 /Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
 /Users/Nithin/Desktop/ARRF_SETS
+
+3. custom-retrieval
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/Users/Nithin/Desktop/ParagraphIndex/ 
+/Users/Nithin/Desktop/Runs/Custom-Runs
