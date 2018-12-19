@@ -158,6 +158,7 @@ public class BM25 {
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			final String queryId = page.getPageId();
 
+
 			String queryStr = buildSectionQueryStr(page, Collections.<Data.Section>emptyList());
 
 			TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
