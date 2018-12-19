@@ -11,6 +11,7 @@ import java.util.Map;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
+import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 
 import java.time.Clock;
@@ -74,7 +75,18 @@ public class Main {
 					Integer.parseInt(totalNumberOfParas));
 			System.out.println(" Custom - Retrieval over");
 
-		} else {
+		} else if (mode.equals("custom-train")) {
+			String paraFile = args[1];
+			String arrfOutputPath = args[2];
+			
+			String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
+			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, arr);
+
+			System.out.println(" Training Set Created ");
+
+		} 
+		
+		else {
 			System.out.println("mode is not given ");
 		}
 
