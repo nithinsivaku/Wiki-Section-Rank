@@ -77,10 +77,12 @@ public class Main {
 
 		} else if (mode.equals("custom-train")) {
 			String paraFile = args[1];
-			String arrfOutputPath = args[2];
+			String indexPAth = args[2];
+			String arrfOutputPath = args[3];
+
 			
 			String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
-			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, arr);
+			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, arr);
 
 			System.out.println(" Training Set Created ");
 

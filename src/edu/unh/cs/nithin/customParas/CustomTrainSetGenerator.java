@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.queryparser.classic.ParseException;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
@@ -37,6 +38,7 @@ import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import cc.mallet.pipe.iterator.ArrayIterator;
 import cc.mallet.pipe.iterator.StringArrayIterator;
 import cc.mallet.types.InstanceList;
+import edu.unh.cs.nithin.tools.QueryIndex;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.Data.Page;
 import edu.unh.cs.treccar_v2.Data.Paragraph;
@@ -61,15 +63,21 @@ public class CustomTrainSetGenerator implements Serializable {
 
 	
 	// Make Training Data for the classifier
-	public CustomTrainSetGenerator(String paraFile, String outputPath, String[] arr) throws IOException {
+	public CustomTrainSetGenerator(String paraFile, String outputPath, String indexPath, String[] arr) throws IOException, ParseException {
 		this();
 		final String paragraphsFile = paraFile;
 		System.out.println(paragraphsFile);
 		final FileInputStream fileInputStream2 = new FileInputStream(new File(paragraphsFile));
 		//final Iterator<Data.Page> paragraphIterator = (Iterator<Page>) DeserializeData.iterableAnnotations(fileInputStream2);
 		System.out.println("Adding class values to the trainset......\n");
+		QueryIndex qi = new QueryIndex();
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream2))  {
 
+			
+
+			
+			String out = qi.getParagraphForId(indexPath, "7143cc30afbbc84d36a08396038a9b5342dd1d2a");
+			System.out.println(out);
 			headingAdd(page);
 			System.out.print(".");
 
@@ -105,6 +113,7 @@ public class CustomTrainSetGenerator implements Serializable {
 		final String paraId = p.getPageId();
 		System.out.println(paraId + " ----- " +p.getPageName());
 		System.out.println(p.getSkeleton());
+
 		addHeading(paraId);
 	}
 

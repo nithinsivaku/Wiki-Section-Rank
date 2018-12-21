@@ -97,7 +97,7 @@ public class CustomParaGenerator {
 				ScoreDoc score = scoreDoc[i];
 				final Document doc = searcher.doc(score.doc); // to access
 																// stored
-																// content
+															// content
 				// print score and internal docid
 				final String paragraphid = doc.getField("paragraphid").stringValue();
 				final String paragraph = doc.getField("text").stringValue();
