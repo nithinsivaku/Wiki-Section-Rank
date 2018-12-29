@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.netlib.util.booleanW;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
@@ -37,9 +39,13 @@ import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import cc.mallet.pipe.iterator.ArrayIterator;
 import cc.mallet.pipe.iterator.StringArrayIterator;
 import cc.mallet.types.InstanceList;
+import edu.unh.cs.nithin.tools.QueryIndex;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.Data.Page;
+import edu.unh.cs.treccar_v2.Data.Page.SectionPathParagraphs;
+import edu.unh.cs.treccar_v2.Data.PageSkeleton;
 import edu.unh.cs.treccar_v2.Data.Paragraph;
+import edu.unh.cs.treccar_v2.Data.Section;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -59,53 +65,52 @@ public class CustomTrainSetGenerator implements Serializable {
 	private FastVector attributes;
 	ArrayList<String> listOfParagraphs = new ArrayList<String>();
 
-	
 	// Make Training Data for the classifier
-	public CustomTrainSetGenerator(String paraFile, String outputPath, String[] arr) throws IOException {
+	public CustomTrainSetGenerator(String trainSetFile, String outputPath, String indexPath, CharSequence[] cs)
+			throws IOException, ParseException {
 		this();
-		final String paragraphsFile = paraFile;
-		System.out.println(paragraphsFile);
-		final FileInputStream fileInputStream2 = new FileInputStream(new File(paragraphsFile));
-		//final Iterator<Data.Page> paragraphIterator = (Iterator<Page>) DeserializeData.iterableAnnotations(fileInputStream2);
+		final String trainSetFilePath = trainSetFile;
+		System.out.println(trainSetFilePath);
+		final FileInputStream fileInputStream2 = new FileInputStream(new File(trainSetFilePath));
+
 		System.out.println("Adding class values to the trainset......\n");
-		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream2))  {
+		QueryIndex qi = new QueryIndex();
 
-			headingAdd(page);
-			System.out.print(".");
-
-//			if (i == num)
-//				break;
-
+		List<Data.Page> matchingPageList = new ArrayList<>();
+		matchingPageList = matchingPage(trainSetFilePath, cs);
+		
+		System.out.println("Adding class values to the trainset......\n");
+		
+		for(Data.Page page : matchingPageList)
+		{
+			final String pageId = page.getPageId();
+			addHeading(pageId);
 		}
-
+		
 		System.out.println("Done adding heading");
 
 		setupAfterHeadingAdded();
-
+		
 		System.out.println("Now Adding para and class values to the trainset......\n");
+		
+		for(Data.Page page : matchingPageList)
+		{
+			
+			for( SectionPathParagraphs sectionpara : page.flatSectionPathsParagraphs())
+			{
+				final String para = sectionpara.getParagraph().getTextOnly();
+				final String pageId = page.getPageId();
 
-		final FileInputStream fileInputStream3 = new FileInputStream(new File(paragraphsFile));
-		final Iterator<Data.Paragraph> paragraphIterator2 = DeserializeData.iterParagraphs(fileInputStream3);
-		for (int i = 1; paragraphIterator2.hasNext(); i++) {
-
-			paragraphAdd(paragraphIterator2.next());
+				addParagrah(para, pageId);				
+			}
 			System.out.print(".");
-
-//			if (i == num)
-//				break;
-
 		}
+
 		System.out.println("Done adding para and class file");
 
 		createDatasetFile(outputPath);
-		// buildPipe();
-	}
-
-	private void headingAdd(Data.Page p) {
-		final String paraId = p.getPageId();
-		System.out.println(paraId + " ----- " +p.getPageName());
-		System.out.println(p.getSkeleton());
-		addHeading(paraId);
+		
+		
 	}
 
 	private void paragraphAdd(Data.Paragraph p) {
@@ -190,6 +195,41 @@ public class CustomTrainSetGenerator implements Serializable {
 		return joinedString;
 	}
 
+	/*
+	 * Find the instances of the keywords in the train set file if present add that
+	 * page to training list page
+	 */
+	public List<Data.Page> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
+		List<Data.Page> pageList = new ArrayList<Data.Page>();
+
+		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
+
+		Boolean addPage = false;
+
+		int i = 0;
+		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
+
+			if(i == 10000)
+				break;
+			for (CharSequence sequence : cs) {
+				System.out.println("Searching for " + sequence + " in " + page.getPageName());
+				if (page.getSkeleton().toString().contains(sequence)) {
+					addPage = true;
+				}
+			}
+
+			if (addPage) {
+				i++;
+				System.out.println("adding - " + page.getPageName());
+				pageList.add(page);
+			}
+
+		}
+
+		return pageList;
+
+	}
+
 	// Small bugs in this function..
 	public Pipe buildPipe() {
 
@@ -254,19 +294,18 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/learn"+"customPara"+".arff";
+		path = path + "/learn" + "customPara" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(trainingData.toString());
 		bw.close();
-		System.out.println("check for arff file in " +path);
+		System.out.println("check for arff file in " + path);
 	}
-	
-	public Instances getTraningData()
-	{
-		return trainingData;	
+
+	public Instances getTraningData() {
+		return trainingData;
 	}
 
 }

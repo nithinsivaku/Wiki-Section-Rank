@@ -15,4 +15,5 @@
 
 4. custom-train
 /Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
+/Users/Nithin/Desktop/ParagraphIndex/
 /Users/Nithin/Desktop/custom/ARRF_SETS
