@@ -81,8 +81,10 @@ public class Main {
 			String arrfOutputPath = args[3];
 
 			
-			String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
-			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, arr);
+			//String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
+			
+			CharSequence[] cs = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
+			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
 			System.out.println(" Training Set Created ");
 
