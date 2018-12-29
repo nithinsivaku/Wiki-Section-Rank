@@ -206,8 +206,11 @@ public class CustomTrainSetGenerator implements Serializable {
 
 		Boolean addPage = false;
 
+		int i = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
+			if(i == 10000)
+				break;
 			for (CharSequence sequence : cs) {
 				System.out.println("Searching for " + sequence + " in " + page.getPageName());
 				if (page.getSkeleton().toString().contains(sequence)) {
@@ -216,6 +219,7 @@ public class CustomTrainSetGenerator implements Serializable {
 			}
 
 			if (addPage) {
+				i++;
 				System.out.println("adding - " + page.getPageName());
 				pageList.add(page);
 			}
