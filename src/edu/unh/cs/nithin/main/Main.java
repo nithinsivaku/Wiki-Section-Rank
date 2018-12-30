@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
+import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.retrieval_model.BM25;
@@ -17,12 +18,6 @@ import edu.unh.cs.nithin.retrieval_model.BM25;
 import java.time.Clock;
 
 public class Main {
-
-	private static void usage() {
-		System.out.println("Command line parameters:Method_Signal outputDirectory");
-
-		System.exit(-1);
-	}
 
 	public static void main(String[] args) throws Exception {
 
@@ -80,16 +75,25 @@ public class Main {
 			String indexPAth = args[2];
 			String arrfOutputPath = args[3];
 
-			
-			//String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
-			
-			CharSequence[] cs = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
+			// String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
+
+			CharSequence[] cs = { "Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor" };
 			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
 			System.out.println(" Training Set Created ");
 
-		} 
-		
+		} else if (mode.equals("build-classifer-model")) {
+			String arffFile = args[1];
+			String modelPath = args[2];
+
+			System.out.println(" Building Naive Bayes Classifier Model");
+
+			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath);
+
+			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
+
+		}
+
 		else {
 			System.out.println("mode is not given ");
 		}
