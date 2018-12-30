@@ -17,3 +17,7 @@
 /Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
 /Users/Nithin/Desktop/ParagraphIndex/
 /Users/Nithin/Desktop/custom/ARRF_SETS
+
+5. build-classifer-model
+/Users/Nithin/Desktop/custom/ARRF_SETS/10000Pages.arff
+/Users/Nithin/Desktop/custom/model
