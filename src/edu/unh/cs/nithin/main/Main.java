@@ -11,6 +11,7 @@ import java.util.Map;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
+import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.retrieval_model.BM25;
@@ -85,11 +86,13 @@ public class Main {
 		} else if (mode.equals("build-classifer-model")) {
 			String arffFile = args[1];
 			String modelPath = args[2];
+			
+			System.out.println(" Building Random Forest Classifier Model");
+			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
+			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
 			System.out.println(" Building Naive Bayes Classifier Model");
-
 			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath);
-
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}

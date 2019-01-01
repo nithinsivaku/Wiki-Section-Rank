@@ -209,7 +209,7 @@ public class CustomTrainSetGenerator implements Serializable {
 		int i = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
-			if(i == 2000)
+			if(i == 20)
 				break;
 			for (CharSequence sequence : cs) {
 				System.out.println("Searching for " + sequence + " in " + page.getPageName());
@@ -294,7 +294,7 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/2000" + "Pages" + ".arff";
+		path = path + "/20" + "Pages" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
