@@ -209,8 +209,8 @@ public class CustomTrainSetGenerator implements Serializable {
 		int i = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
-			if(i == 20)
-				break;
+//			if(i == 20)
+//				break;
 			for (CharSequence sequence : cs) {
 				System.out.println("Searching for " + sequence + " in " + page.getPageName());
 				if (page.getSkeleton().toString().contains(sequence)) {
