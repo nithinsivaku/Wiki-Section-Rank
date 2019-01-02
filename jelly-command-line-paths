@@ -1,0 +1,22 @@
+1. retrieval 
+/home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/mnt/grapes/share/lucene-v21-13/
+/home/ns1077/work/New-Runs
+
+2. train 
+/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.cbor  
+/home/ns1077/work/ARRF_SETS
+
+3. custom-retrieval 
+/home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/mnt/grapes/share/lucene-v21-13/
+/home/ns1077/work/custom/runs 5
+
+4. custom-train 
+/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.cbor 
+/mnt/grapes/share/lucene-v21-13/
+/home/ns1077/work/custom/ARRF_SETS
+
+5. build-classifer-model 
+/home/ns1077/work/custom/ARRF_SETS/20Pages.arff 
+/home/ns1077/work/custom/model

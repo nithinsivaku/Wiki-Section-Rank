@@ -10,7 +10,7 @@
 3. custom-retrieval 
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
 /Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/custom/Custom-Runs
+/Users/Nithin/Desktop/custom/Custom-Runs 5
 
 
 4. custom-train 
