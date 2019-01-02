@@ -7,10 +7,7 @@
 /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.cbor  
 /home/ns1077/work/ARRF_SETS
 
-3. custom-retrieval 
-/home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
-/mnt/grapes/share/lucene-v21-13/
-/home/ns1077/work/custom/runs 5
+3. custom-retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor /home/sk1105/sumanta/trec-methods/paragraph-corpus-paragraph-index/ /home/ns1077/work/custom/runs 5
 
 4. custom-train 
 /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.cbor 
