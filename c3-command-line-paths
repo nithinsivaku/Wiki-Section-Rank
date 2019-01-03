@@ -1,0 +1,23 @@
+1. retrieval 
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/Users/Nithin/Desktop/ParagraphIndex/ 
+/Users/Nithin/Desktop/Runs/New-Runs
+
+2. train 
+/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
+/Users/Nithin/Desktop/ARRF_SETS
+
+3. custom-retrieval 
+/Users/nithinsivakumar/Desktop/trec/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/Users/nithinsivakumar/Desktop/trec/ParagraphIndex 
+/Users/nithinsivakumar/Desktop/trec/custom/runs 5
+
+
+4. custom-train 
+/Users/nithinsivakumar/Desktop/trec/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
+/Users/nithinsivakumar/Desktop/trec/ParagraphIndex 
+/Users/nithinsivakumar/Desktop/trec/custom/ARRF-SETS
+
+5. build-classifer-model 
+/Users/nithinsivakumar/Desktop/trec/custom/ARRF-SETS/20Pages.arff 
+/Users/nithinsivakumar/Desktop/trec/custom/model

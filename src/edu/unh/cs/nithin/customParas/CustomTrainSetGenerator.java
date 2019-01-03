@@ -100,6 +100,9 @@ public class CustomTrainSetGenerator implements Serializable {
 			{
 				final String para = sectionpara.getParagraph().getTextOnly();
 				final String pageId = page.getPageId();
+				
+				System.out.println(" Page ID =  " + pageId);
+				System.out.println(" Para    =  " + para);
 
 				addParagrah(para, pageId);				
 			}
@@ -116,6 +119,8 @@ public class CustomTrainSetGenerator implements Serializable {
 	private void paragraphAdd(Data.Paragraph p) {
 		final String paraId = p.getParaId();
 		final String para = p.getTextOnly();
+		
+
 		addParagrah(para, paraId);
 
 	}
@@ -209,8 +214,8 @@ public class CustomTrainSetGenerator implements Serializable {
 		int i = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
-//			if(i == 20)
-//				break;
+			if(i == 20)
+				break;
 			for (CharSequence sequence : cs) {
 				System.out.println("Searching for " + sequence + " in " + page.getPageName());
 				if (page.getSkeleton().toString().contains(sequence)) {
