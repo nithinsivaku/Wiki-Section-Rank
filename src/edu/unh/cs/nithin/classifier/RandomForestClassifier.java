@@ -1,19 +1,33 @@
 package edu.unh.cs.nithin.classifier;
 
+import java.util.Random;
+import weka.classifiers.Evaluation;
 import weka.classifiers.meta.FilteredClassifier;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.stemmers.LovinsStemmer;
+import weka.filters.Filter;
+import weka.filters.MultiFilter;
+import weka.filters.unsupervised.attribute.StringToNominal;
 import weka.filters.unsupervised.attribute.StringToWordVector;
+import weka.filters.unsupervised.instance.Resample;
 
-public class NaiveBayesClassifier {
+public class RandomForestClassifier {
 
-	public NaiveBayesClassifier(String arffFile, String modelPath) throws Exception {
-		DataSource trainSource = new DataSource(arffFile);
+	public RandomForestClassifier(String arrfFile, String modelPath) throws Exception {
+		System.out.println("Training RF classifier with the trainset");
+
+		DataSource trainSource = new DataSource(arrfFile);
 		Instances trainingSet = trainSource.getDataSet();
+
+		System.out.println("loaded dataSet");
 		if (trainingSet.classIndex() == -1)
 			trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
-		weka.classifiers.bayes.NaiveBayes nb = new weka.classifiers.bayes.NaiveBayes();
+
+		RandomForest rf = new RandomForest();
+		System.out.println("build Started");
+		// the filter
 		StringToWordVector filter = new StringToWordVector();
 		filter.setInputFormat(trainingSet);
 		filter.setIDFTransform(true);
@@ -27,20 +41,11 @@ public class NaiveBayesClassifier {
 		FilteredClassifier fc = new FilteredClassifier();
 		// specify filter
 		fc.setFilter(filter);
-		// specify base classifier
-		// specify base classifier
-		fc.setClassifier(nb);
-		System.out.println("building Naive Bayes Classifier...");
+		fc.setClassifier(rf);
+		// Build the meta-classifier
 		fc.buildClassifier(trainingSet);
 
-		// nb.buildClassifier(trainingSet);
-
-		System.out.println(nb.getClass().toString());
-
-		weka.core.SerializationHelper.write(modelPath + "/NB_Page.model", fc);
-
-		// System.out.println("model saved in " + );
-
+		weka.core.SerializationHelper.write(modelPath + "/RF_Page.model", fc);
 	}
 
 }

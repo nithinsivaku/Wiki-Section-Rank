@@ -68,7 +68,7 @@ public class CustomParaGenerator {
 		FileWriter writer = new FileWriter(runfile);
 
 		// paragraphs-run-sections
-		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));

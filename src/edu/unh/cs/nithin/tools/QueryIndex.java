@@ -38,7 +38,7 @@ public class QueryIndex {
 		// TODO Auto-generated method stub
 		String paragraph = null;
 		Analyzer analyzer = new StandardAnalyzer();
-		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene.vectors");
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
 
