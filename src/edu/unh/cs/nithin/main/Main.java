@@ -87,9 +87,9 @@ public class Main {
 			String arffFile = args[1];
 			String modelPath = args[2];
 			
-			System.out.println(" Building Random Forest Classifier Model");
-			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
-			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
+//			System.out.println(" Building Random Forest Classifier Model");
+//			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
+//			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
 			System.out.println(" Building Naive Bayes Classifier Model");
 			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath);
