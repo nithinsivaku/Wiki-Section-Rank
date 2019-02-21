@@ -104,6 +104,7 @@ public class CustomParaGenerator {
 				final float searchScore = score.score;
 				final int searchRank = i + 1;
 
+				System.out.println(paragraphid);
 				writer.write(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 				count++;
 			}

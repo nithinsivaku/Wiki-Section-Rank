@@ -1,5 +1,5 @@
 1. retrieval 
-/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor
 /Users/Nithin/Desktop/ParagraphIndex/ 
 /Users/Nithin/Desktop/Runs/New-Runs
 
@@ -19,6 +19,9 @@
 /Users/Nithin/Desktop/custom/ARRF_SETS
 
 5. build-classifer-model 
-/Users/Nithin/Desktop/custom/ARRF_SETS/20Pages.arff 
+/Users/Nithin/Desktop/custom/ARRF_SETS/2000Pages.arff 
 /Users/Nithin/Desktop/custom/model
 
+
+test
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor

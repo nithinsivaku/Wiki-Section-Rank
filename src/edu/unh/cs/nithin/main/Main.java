@@ -78,7 +78,7 @@ public class Main {
 
 			// String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
 
-			CharSequence[] cs = { "Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor" };
+			CharSequence[] cs = { "Antibiotics", "Antimicrobial resistance", "Antioxidant", "Desertification", "Deforestation" };
 			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
 			System.out.println(" Training Set Created ");
@@ -87,16 +87,15 @@ public class Main {
 			String arffFile = args[1];
 			String modelPath = args[2];
 			
-//			System.out.println(" Building Random Forest Classifier Model");
-//			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
-//			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
+			System.out.println(" Building Random Forest Classifier Model");
+			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
+			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
 			System.out.println(" Building Naive Bayes Classifier Model");
 			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath);
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}
-
 		else {
 			System.out.println("mode is not given ");
 		}
