@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -78,38 +79,35 @@ public class CustomTrainSetGenerator implements Serializable {
 
 		List<Data.Page> matchingPageList = new ArrayList<>();
 		matchingPageList = matchingPage(trainSetFilePath, cs);
-		
+
 		System.out.println("Adding class values to the trainset......\n");
-		
-		for(Data.Page page : matchingPageList)
-		{
+
+		for (Data.Page page : matchingPageList) {
 			final String pageId = page.getPageId();
 			addHeading(pageId);
 		}
-		
+
 		System.out.println("Done adding heading");
 
 		setupAfterHeadingAdded();
-		
-		System.out.println("Now Adding para and class values to the trainset......\n");
-		
-//		List<Data.Page> seenPages = new ArrayList<>();
-		
-		for(Data.Page page : matchingPageList)
-		{
 
-			for( SectionPathParagraphs sectionpara : page.flatSectionPathsParagraphs())
-			{
+		System.out.println("Now Adding para and class values to the trainset......\n");
+
+		// List<Data.Page> seenPages = new ArrayList<>();
+
+		for (Data.Page page : matchingPageList) {
+
+			for (SectionPathParagraphs sectionpara : page.flatSectionPathsParagraphs()) {
 				final String para = sectionpara.getParagraph().getTextOnly();
 				final String pageId = page.getPageId();
-				
+
 				System.out.println(" Page ID =  " + pageId);
 				System.out.println(" Para    =  " + para);
-				
+
 				// Do this
-				//sectionpara.getParagraph().getTextOnly().contains(s)
+				// sectionpara.getParagraph().getTextOnly().contains(s)
 				// key value pair..
-				addParagrah(para, pageId);				
+				addParagrah(para, pageId);
 			}
 			System.out.print(".");
 		}
@@ -117,14 +115,13 @@ public class CustomTrainSetGenerator implements Serializable {
 		System.out.println("Done adding para and class file");
 
 		createDatasetFile(outputPath);
-		
-		
+
 	}
 
 	private void paragraphAdd(Data.Paragraph p) {
 		final String paraId = p.getParaId();
 		final String para = p.getTextOnly();
-		
+
 		addParagrah(para, paraId);
 
 	}
@@ -209,9 +206,7 @@ public class CustomTrainSetGenerator implements Serializable {
 	 * page to training list page
 	 */
 	public List<Data.Page> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
-		
-		Map<String, String> para_ParaHeading_Map = new HashMap<String, String>();
-		
+
 		List<Data.Page> pageList = new ArrayList<Data.Page>();
 
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
@@ -219,23 +214,19 @@ public class CustomTrainSetGenerator implements Serializable {
 		Boolean addPage = false;
 
 		int i = 0;
-		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) 
-		{
-			for( SectionPathParagraphs sectionpara : page.flatSectionPathsParagraphs())
-			{	
-				
-				for( Section secpath : sectionpara.getSectionPath())
-				{
-					System.out.println(page.getPageId()+ "/"+ secpath.getHeadingId());
-					System.out.println(sectionpara.getParagraph().getTextOnly());
-				}
-				
-//				//System.out.println(((Section) sectionpara.getSectionPath()).getHeading()); 
-//				System.out.println("sectionpara.getParagraph");
-//				System.out.println(sectionpara.getParagraph().getTextOnly());
-//				System.out.println("________________________");
+		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
+			System.out.println(page.getPageId());
 
+			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
+
+				for (Section sectionPath : sectionPathParagraph.getSectionPath()) {
+
+					System.out.println(sectionPath.getHeadingId());
+				}
+				System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
 			}
+
+			System.exit(-1);
 		}
 		return pageList;
 
