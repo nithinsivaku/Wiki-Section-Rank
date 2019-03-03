@@ -214,14 +214,30 @@ public class CustomTrainSetGenerator implements Serializable {
 		Boolean addPage = false;
 
 		int i = 0;
+		
+		// Print the wikipedia page in its order
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 			System.out.println(page.getPageId());
 
 			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
 
-				for (Section sectionPath : sectionPathParagraph.getSectionPath()) {
-
-					System.out.println(sectionPath.getHeadingId());
+				Iterator<Section> sectionPathIter = sectionPathParagraph.getSectionPath().iterator();
+				
+				while(sectionPathIter.hasNext())
+				{
+					Section section = sectionPathIter.next();
+					String sectionHeading = page.getPageId() + "/" + section.getHeadingId();
+					
+					if( sectionPathIter.hasNext() )
+					{
+						Section nextSection = sectionPathIter.next();
+						System.out.println(sectionHeading + "/" + nextSection.getHeadingId());
+					}
+					else
+					{
+						System.out.println(sectionHeading);
+					}
+					
 				}
 				System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
 			}
