@@ -208,41 +208,50 @@ public class CustomTrainSetGenerator implements Serializable {
 	public List<Data.Page> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
 
 		List<Data.Page> pageList = new ArrayList<Data.Page>();
-
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
-
-		Boolean addPage = false;
-
-		int i = 0;
+		String Heading = "";
+		Map<String, String> matchingParaHeading = new HashMap<>();
 		
-		// Print the wikipedia page in its order
+		// loop through wikipedia page in its order
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
-			System.out.println(page.getPageId());
+			String pageHeading = page.getPageId();
+			Heading = pageHeading; // Heading will be page heading at the start of the page
 
 			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
 
 				Iterator<Section> sectionPathIter = sectionPathParagraph.getSectionPath().iterator();
-				
-				while(sectionPathIter.hasNext())
-				{
+
+				// check for subheading
+				while (sectionPathIter.hasNext()) {
 					Section section = sectionPathIter.next();
-					String sectionHeading = page.getPageId() + "/" + section.getHeadingId();
-					
-					if( sectionPathIter.hasNext() )
-					{
+					String sectionHeading = pageHeading + "/" + section.getHeadingId();
+
+					if (sectionPathIter.hasNext()) {
 						Section nextSection = sectionPathIter.next();
-						System.out.println(sectionHeading + "/" + nextSection.getHeadingId());
+						Heading = sectionHeading + "/" + nextSection.getHeadingId();
+					} else {
+						Heading = sectionHeading;
 					}
-					else
-					{
-						System.out.println(sectionHeading);
-					}
-					
+
 				}
-				System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
+				System.out.println(Heading);
+				//System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
+				
+				String para = sectionPathParagraph.getParagraph().getTextOnly();
+				for( CharSequence charSeq : cs)
+				{
+					if( para.contains(charSeq) )
+					{
+						matchingParaHeading.put(Heading, para);
+						System.out.println("adding to map");
+						System.exit(-1);
+						
+					}
+				}
+				
 			}
 
-			System.exit(-1);
+//			System.exit(-1);
 		}
 		return pageList;
 
