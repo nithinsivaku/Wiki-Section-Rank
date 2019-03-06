@@ -78,7 +78,7 @@ public class Main {
 
 			// String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
 
-			CharSequence[] cs = { "Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor" };
+			CharSequence[] cs = { "Antibiotics", "Antimicrobial resistance", "Antioxidant", "Desertification", "Deforestation" };
 			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
 			System.out.println(" Training Set Created ");
@@ -96,7 +96,6 @@ public class Main {
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}
-
 		else {
 			System.out.println("mode is not given ");
 		}
