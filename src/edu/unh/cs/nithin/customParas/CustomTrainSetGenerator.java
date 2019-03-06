@@ -75,16 +75,13 @@ public class CustomTrainSetGenerator implements Serializable {
 		final FileInputStream fileInputStream2 = new FileInputStream(new File(trainSetFilePath));
 
 		System.out.println("Adding class values to the trainset......\n");
-		QueryIndex qi = new QueryIndex();
 
-		List<Data.Page> matchingPageList = new ArrayList<>();
-		matchingPageList = matchingPage(trainSetFilePath, cs);
+		Map<String, String> matchingPagesMap = matchingPage(trainSetFilePath, cs);
 
 		System.out.println("Adding class values to the trainset......\n");
 
-		for (Data.Page page : matchingPageList) {
-			final String pageId = page.getPageId();
-			addHeading(pageId);
+		for (String heading : matchingPagesMap.keySet()) {
+			addHeading(heading);
 		}
 
 		System.out.println("Done adding heading");
@@ -93,23 +90,8 @@ public class CustomTrainSetGenerator implements Serializable {
 
 		System.out.println("Now Adding para and class values to the trainset......\n");
 
-		// List<Data.Page> seenPages = new ArrayList<>();
-
-		for (Data.Page page : matchingPageList) {
-
-			for (SectionPathParagraphs sectionpara : page.flatSectionPathsParagraphs()) {
-				final String para = sectionpara.getParagraph().getTextOnly();
-				final String pageId = page.getPageId();
-
-				System.out.println(" Page ID =  " + pageId);
-				System.out.println(" Para    =  " + para);
-
-				// Do this
-				// sectionpara.getParagraph().getTextOnly().contains(s)
-				// key value pair..
-				addParagrah(para, pageId);
-			}
-			System.out.print(".");
+		for (Entry<String, String> entry : matchingPagesMap.entrySet()) {
+			addParagrah(entry.getValue(), entry.getKey());
 		}
 
 		System.out.println("Done adding para and class file");
@@ -205,15 +187,17 @@ public class CustomTrainSetGenerator implements Serializable {
 	 * Find the instances of the keywords in the train set file if present add that
 	 * page to training list page
 	 */
-	public List<Data.Page> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
+	public Map<String, String> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
 
 		List<Data.Page> pageList = new ArrayList<Data.Page>();
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
 		String Heading = "";
 		Map<String, String> matchingParaHeading = new HashMap<>();
-		
+
+		int pageCount = 0;
 		// loop through wikipedia page in its order
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
+			pageCount++;
 			String pageHeading = page.getPageId();
 			Heading = pageHeading; // Heading will be page heading at the start of the page
 
@@ -224,7 +208,8 @@ public class CustomTrainSetGenerator implements Serializable {
 				// check for subheading
 				while (sectionPathIter.hasNext()) {
 					Section section = sectionPathIter.next();
-					String sectionHeading = pageHeading + "/" + section.getHeadingId();
+					
+					String sectionHeading = pageHeading + "/" + section.getHeadingId();  // fix the slash
 
 					if (sectionPathIter.hasNext()) {
 						Section nextSection = sectionPathIter.next();
@@ -234,26 +219,28 @@ public class CustomTrainSetGenerator implements Serializable {
 					}
 
 				}
-				System.out.println(Heading);
-				//System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
-				
+				System.out.println(pageCount + "  "  +Heading);
+				// System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
+
 				String para = sectionPathParagraph.getParagraph().getTextOnly();
-				for( CharSequence charSeq : cs)
-				{
-					if( para.contains(charSeq) )
-					{
+				for (CharSequence charSeq : cs) {
+					if (para.contains(charSeq)) {
 						matchingParaHeading.put(Heading, para);
 						System.out.println("adding to map");
-						System.exit(-1);
-						
 					}
 				}
-				
+
 			}
 
-//			System.exit(-1);
+			
+			if(pageCount == 100000)
+			{
+				System.out.println("breaking here");
+				break;
+			}
+			
 		}
-		return pageList;
+		return matchingParaHeading;
 
 	}
 
@@ -265,7 +252,7 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/2000" + "Pages" + ".arff";
+		path = path + "/100000" + "Pages" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
