@@ -1,6 +1,7 @@
 package edu.unh.cs.nithin.classifier;
 
 import java.util.Random;
+
 import weka.classifiers.Evaluation;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
@@ -31,7 +32,7 @@ public class RandomForestClassifier {
 		StringToWordVector filter = new StringToWordVector();
 		filter.setInputFormat(trainingSet);
 		filter.setIDFTransform(true);
-		filter.setUseStoplist(true);
+//		filter.setUseStoplist(true);
 		System.out.println("Filter applied - StringtoWord");
 		LovinsStemmer stemmer = new LovinsStemmer();
 		filter.setStemmer(stemmer);
