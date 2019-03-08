@@ -237,11 +237,13 @@ public class CustomTrainSetGenerator implements Serializable {
 
 			
 
+
 //			if(pageCount == 500)
 //			{
 //				System.out.println("breaking here");
 //				break;
 //			}
+
 
 			
 		}
@@ -257,7 +259,7 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/All" + "Pages" + ".arff";
+		path = path + "/50000" + "Pages" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
