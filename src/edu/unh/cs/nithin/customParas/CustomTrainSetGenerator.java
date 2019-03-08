@@ -50,6 +50,7 @@ import edu.unh.cs.treccar_v2.Data.Section;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -62,8 +63,10 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
 public class CustomTrainSetGenerator implements Serializable {
 
 	private Instances trainingData;
-	private FastVector classValues;
-	private FastVector attributes;
+	private ArrayList<String> classValues;
+	private ArrayList<Attribute> attributes;
+	//private FastVector classValues;
+//	private FastVector attributes;
 	ArrayList<String> listOfParagraphs = new ArrayList<String>();
 
 	// Make Training Data for the classifier
@@ -111,21 +114,21 @@ public class CustomTrainSetGenerator implements Serializable {
 	public CustomTrainSetGenerator() {
 
 		// Create vector of attributes.
-		this.attributes = new FastVector(2);
+		this.attributes = new ArrayList<Attribute>();
 		// Add attribute for holding texts.
-		this.attributes.addElement(new Attribute("text", (FastVector) null));
+		this.attributes.add(new Attribute("text", true));
 		// Add class attribute.
-		this.classValues = new FastVector();
+		this.classValues = new ArrayList<String>();
 
 	}
 
 	public void addHeading(String heading) {
 		// if required, double the capacity.
-		int capacity = classValues.capacity();
+		int capacity = classValues.size();
 		if (classValues.size() > (capacity - 5)) {
-			classValues.setCapacity(capacity * 2);
+			classValues.ensureCapacity(capacity * 2);
 		}
-		classValues.addElement(heading);
+		classValues.add(heading);
 	}
 
 	public void addParagrah(String paragraph, String classValue) throws IllegalStateException {
@@ -142,7 +145,7 @@ public class CustomTrainSetGenerator implements Serializable {
 
 	private Instance makeInstance(String paragraph, Instances data) {
 		// Create instance of length two.
-		Instance instance = new Instance(2);
+		Instance instance = new DenseInstance(2);
 
 		// Set value for message attribute
 		Attribute messageAtt = data.attribute("text");
@@ -233,11 +236,11 @@ public class CustomTrainSetGenerator implements Serializable {
 			}
 
 			
-			if(pageCount == 100000)
-			{
-				System.out.println("breaking here");
-				break;
-			}
+//			if(pageCount == 500)
+//			{
+//				System.out.println("breaking here");
+//				break;
+//			}
 			
 		}
 		return matchingParaHeading;
@@ -245,14 +248,14 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void setupAfterHeadingAdded() {
-		attributes.addElement(new Attribute("@@class@@.", classValues));
+		attributes.add(new Attribute("@@class@@.", classValues));
 		// Create dataset with initial capacity of 100, and set index of class.
 		trainingData = new Instances("trainv2.0Set", attributes, 100);
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/100000" + "Pages" + ".arff";
+		path = path + "/All" + "Pages" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);

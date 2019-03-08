@@ -17,7 +17,7 @@ public class NaiveBayesClassifier {
 		StringToWordVector filter = new StringToWordVector();
 		filter.setInputFormat(trainingSet);
 		filter.setIDFTransform(true);
-		filter.setUseStoplist(true);
+//		filter.setUseStoplist(true);
 		System.out.println("Filter applied - StringtoWord");
 		LovinsStemmer stemmer = new LovinsStemmer();
 		filter.setStemmer(stemmer);
