@@ -16,7 +16,7 @@ import weka.filters.unsupervised.instance.Resample;
 
 public class RandomForestClassifier {
 
-	public RandomForestClassifier(String arrfFile, String modelPath) throws Exception {
+	public RandomForestClassifier(String arrfFile, String modelPath, String arffFileName) throws Exception {
 		System.out.println("Training RF classifier with the trainset");
 
 		DataSource trainSource = new DataSource(arrfFile);
@@ -46,7 +46,7 @@ public class RandomForestClassifier {
 		// Build the meta-classifier
 		fc.buildClassifier(trainingSet);
 
-		weka.core.SerializationHelper.write(modelPath + "/RF_Page.model", fc);
+		weka.core.SerializationHelper.write(modelPath + "/" +arffFileName + "RF_Page.model", fc);
 	}
 
 }

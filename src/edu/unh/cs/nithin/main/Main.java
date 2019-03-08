@@ -87,12 +87,17 @@ public class Main {
 			String arffFile = args[1];
 			String modelPath = args[2];
 			
+			File f = new File(arffFile);
+			String arffFileName = f.getName().toString().replaceFirst("[.][^.]+$", "");
+			
+			
+			
 			System.out.println(" Building Random Forest Classifier Model");
-			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath);
+			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
 			System.out.println(" Building Naive Bayes Classifier Model");
-			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath);
+			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}

@@ -8,7 +8,7 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
 
 public class NaiveBayesClassifier {
 
-	public NaiveBayesClassifier(String arffFile, String modelPath) throws Exception {
+	public NaiveBayesClassifier(String arffFile, String modelPath, String arffFileName) throws Exception {
 		DataSource trainSource = new DataSource(arffFile);
 		Instances trainingSet = trainSource.getDataSet();
 		if (trainingSet.classIndex() == -1)
@@ -37,7 +37,7 @@ public class NaiveBayesClassifier {
 
 		System.out.println(nb.getClass().toString());
 
-		weka.core.SerializationHelper.write(modelPath + "/NB_Page.model", fc);
+		weka.core.SerializationHelper.write(modelPath + "/" +arffFileName + "NB_Page.model", fc);
 
 		// System.out.println("model saved in " + );
 
