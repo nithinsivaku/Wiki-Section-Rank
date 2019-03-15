@@ -1,7 +1,12 @@
 1. retrieval 
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor
 /Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/Runs/New-Runs
+/Users/Nithin/Desktop/Custom-Runs/New-Runs
+
+retrieval
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+/Users/Nithin/Desktop/ParagraphIndex/ 
+/Users/Nithin/Desktop/Custom-Runs/New-Runs
 
 2. train 
 /Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
@@ -13,6 +18,10 @@
 /Users/Nithin/Desktop/custom/Custom-Runs 5
 
 
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+/Users/Nithin/Desktop/ParagraphIndex/ 
+/Users/Nithin/Desktop/custom/Custom-Runs 5
+
 4. custom-train 
 /Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
 /Users/Nithin/Desktop/ParagraphIndex/ 
@@ -21,6 +30,13 @@
 5. build-classifer-model 
 /Users/Nithin/Desktop/custom/ARRF_SETS/2000Pages.arff 
 /Users/Nithin/Desktop/custom/model
+
+
+6. classify-runfile 
+/Users/Nithin/Desktop/custom/Custom-Runs/custom_runfile_section 
+/Users/Nithin/Desktop/custom/model/50000PagesRF_Page.model 
+/Users/Nithin/Desktop/custom/model/NB_Page.model 
+/Users/Nithin/Desktop/custom/ReRank
 
 
 test

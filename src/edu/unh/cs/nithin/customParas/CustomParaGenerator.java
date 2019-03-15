@@ -36,6 +36,7 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import edu.unh.cs.nithin.retrieval_model.BM25.MyQueryBuilder;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.Data.PageSkeleton;
 import edu.unh.cs.treccar_v2.Data.Section;
@@ -57,6 +58,67 @@ public class CustomParaGenerator {
 			throws IOException {
 		System.setProperty("file.encoding", "UTF-8");
 		PageSearch(outputPath, indexPath, pagesFile, totalNumberOfParas);
+		SectionSearch(outputPath, indexPath, pagesFile,totalNumberOfParas);
+	}
+	
+	private void SectionSearch(String outputPath, String indexPath, String pagesFile, int totalNumberOfParas) throws IOException {
+		File runfile = new File(outputPath + "/custom_runfile_section");
+		runfile.createNewFile();
+		FileWriter writer = new FileWriter(runfile);
+
+		// paragraphs-run-sections
+		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene");
+		searcher.setSimilarity(new BM25Similarity());
+		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
+		final FileInputStream fileInputStream3 = new FileInputStream(new File(pagesFile));
+
+		System.out.println("starting searching for sections ...");
+
+		int count = 0;
+		int pageCount = 0;
+		//mapSectionPassage = new HashMap<String, String>();
+
+		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
+			
+			if (pageCount == totalNumberOfParas)
+				break;
+			
+			pageCount++;
+			for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
+
+				final String queryId = Data.sectionPathId(page.getPageId(), sectionPath);
+				String queryStr = buildSectionQueryStr(page, sectionPath);
+				System.out.println(queryStr);
+				TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
+				ScoreDoc[] scoreDoc = tops.scoreDocs;
+
+				for (int i = 0; i < scoreDoc.length; i++) {
+					ScoreDoc score = scoreDoc[i];
+					final Document doc = searcher.doc(score.doc); // to access
+																	// stored
+																	// content
+					// print score and internal docid
+					final String paragraphid = doc.getField("paragraphid").stringValue();
+					final String paragraph = doc.getField("text").stringValue();
+					final float searchScore = score.score;
+					final int searchRank = i + 1;
+				//	mapSectionPassage.put(paragraphid, paragraph);
+					System.out.println(".");
+					writer.write(
+							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
+					count++;
+
+				}
+
+			}
+		}
+
+		writer.flush();
+		writer.close();
+
+		System.out.println("Write " + count + " results\nQuery Done!");
+		stripDuplicatesFromFile(runfile.toString());
+
 	}
 
 	private void PageSearch(String outputPath, String indexPath, String pagesFile, int totalNumberOfParas)

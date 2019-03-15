@@ -14,6 +14,7 @@ import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
+import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 
 import java.time.Clock;
@@ -100,6 +101,15 @@ public class Main {
 			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
+		}
+		
+		else if(mode.equals("classify-runfile")) {
+			String runFile = args[1];
+			String randomforestClassifierModel = args[2];
+			String naiveBayesModel = args[3];
+			String outputPath = args[4];
+			
+			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, outputPath);
 		}
 		else {
 			System.out.println("mode is not given ");
