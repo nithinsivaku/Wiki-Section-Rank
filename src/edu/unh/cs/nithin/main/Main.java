@@ -107,9 +107,11 @@ public class Main {
 			String runFile = args[1];
 			String randomforestClassifierModel = args[2];
 			String naiveBayesModel = args[3];
-			String outputPath = args[4];
+			String trainDataArff = args[4];
+			String indexPath = args[5];
+			String outputPath = args[6];
 			
-			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, outputPath);
+			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, trainDataArff, indexPath, outputPath);
 		}
 		else {
 			System.out.println("mode is not given ");
