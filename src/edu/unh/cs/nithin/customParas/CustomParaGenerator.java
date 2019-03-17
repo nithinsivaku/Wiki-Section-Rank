@@ -104,8 +104,11 @@ public class CustomParaGenerator {
 					final int searchRank = i + 1;
 				//	mapSectionPassage.put(paragraphid, paragraph);
 					System.out.println(".");
+					
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
+					
+					System.out.println(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 					count++;
 
 				}
