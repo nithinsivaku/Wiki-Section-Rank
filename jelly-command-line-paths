@@ -1,6 +1,8 @@
 retrieval
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/New-Runs
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/New-Runs
 
+test
+/home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
 train
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/ARRF_SETS
 
