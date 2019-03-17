@@ -36,6 +36,8 @@ retrieval
 /Users/Nithin/Desktop/custom/Custom-Runs/custom_runfile_section 
 /Users/Nithin/Desktop/custom/model/50000PagesRF_Page.model 
 /Users/Nithin/Desktop/custom/model/NB_Page.model 
+/Users/Nithin/Desktop/custom/ARRF_SETS/50000Pages.arff 
+/Users/Nithin/Desktop/ParagraphIndex/ 
 /Users/Nithin/Desktop/custom/ReRank
 
 

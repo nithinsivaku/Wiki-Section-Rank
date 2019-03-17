@@ -1,26 +1,32 @@
-1. retrieval 
-/home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
-/mnt/grapes/share/lucene-v21-13/
-/home/ns1077/work/New-Runs
+retrieval
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/New-Runs
 
-2. train 
-/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor 
-/home/ns1077/work/ARRF_SETS
+test
+/home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+train
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/ARRF_SETS
 
-3. custom-retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/runs 5
+custom-retrieval
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor  /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/runs 5
 
-4. custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/ARRF_SETS
+custom-train
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/ARRF_SETS
 
-5. build-classifer-model 
-/home/ns1077/work/custom/ARRF_SETS/20Pages.arff 
-/home/ns1077/work/custom/model
+build-classifer-model 
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/custom/ARRF_SETS/20Pages.arff /home/ns1077/work/custom/model
 
 
-1. train run
-
+train run
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/ARRF_SETS
 
 
-2. classifier - run
-
+classifier - run
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/custom/ARRF_SETS/10000Pages.arff /home/ns1077/work/custom/model
+
+
+Classify Runfile
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar classify-runfile /home/ns1077/work/custom/runs/custom_runfile_section /home/ns1077/work/custom/model/AllPagesRF_Page.model /home/ns1077/work/custom/model/AllPagesNB_Page.model /home/ns1077/work/custom/ARRF_SETS/AllPages.arff /mnt/grapes/share/lucene-v21-13/ /home/ns1077/work/custom/runs/reRank
+
+
+start command
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
