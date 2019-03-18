@@ -43,3 +43,12 @@ retrieval
 
 test
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+
+
+./trec_eval
+From server
+./trec_eval -c /Users/Nithin/Desktop/Y1-tree-qrels/benchmarkY1-test/test.pages.cbor.tree.qrels /Users/Nithin/Desktop/jellyRecieve/runs/custom_runfile_section
+
+
+From local
+./trec_eval -c /Users/Nithin/Desktop/Y1-tree-qrels/benchmarkY1-test/test.pages.cbor.tree.qrels /Users/Nithin/Desktop/custom/Custom-Runs/custom_runfile_section
