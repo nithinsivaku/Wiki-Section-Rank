@@ -104,8 +104,10 @@ public class CustomParaGenerator {
 					final int searchRank = i + 1;
 				//	mapSectionPassage.put(paragraphid, paragraph);
 					System.out.println(".");
+					
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
+
 					System.out.println(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 					count++;
 
@@ -150,17 +152,20 @@ public class CustomParaGenerator {
 
 			String queryStr = buildSectionQueryStr(page, Collections.<Data.Section>emptyList());
 
-			System.out.println(pageCount + " " + queryStr + " " + "/n");
+			System.out.println(pageCount + " " + queryStr + " ");
 			pageCount++;
 
 			TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
 			ScoreDoc[] scoreDoc = tops.scoreDocs;
 
+			System.out.println("didnot go inside");
+			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			for (int i = 0; i < scoreDoc.length; i++) {
 				ScoreDoc score = scoreDoc[i];
 				final Document doc = searcher.doc(score.doc); // to access
 																// stored
-															// content
+									
+				System.out.println("comming inside");// content
 				// print score and internal docid
 				final String paragraphid = doc.getField("paragraphid").stringValue();
 				final String paragraph = doc.getField("text").stringValue();
@@ -169,6 +174,7 @@ public class CustomParaGenerator {
 
 				System.out.println(paragraphid);
 				writer.write(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
+				System.out.println(queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 				count++;
 			}
 
