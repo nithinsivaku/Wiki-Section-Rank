@@ -160,6 +160,8 @@ public class CustomParaGenerator {
 
 			System.out.println("didnot go inside");
 			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+			System.out.println(scoreDoc.length);
+			System.exit(-1);
 			for (int i = 0; i < scoreDoc.length; i++) {
 				ScoreDoc score = scoreDoc[i];
 				final Document doc = searcher.doc(score.doc); // to access
