@@ -42,11 +42,10 @@ public class Indexer {
 //			usage();
 
 		String mode = "paragraphs";
-		String indexPath = "/Users/nithinsivakumar/Desktop/trec/unprocessedIndex";
+		String indexPath = "/home/ns1077/work/paragraphIndex/";
 
 		if (mode.equals("paragraphs")) {
-			final String paragraphsFile = "/Users/nithinsivakumar/Desktop/trec"
-					+ "/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor";
+			final String paragraphsFile = "/home/ns1077/work/paragraphCorpus/dedup.articles-paragraphs.cbor";
 			final FileInputStream fileInputStream2 = new FileInputStream(new File(paragraphsFile));
 
 			System.out.println("Creating paragraph index in " + indexPath);
@@ -56,10 +55,6 @@ public class Indexer {
 			for (int i = 1; paragraphIterator.hasNext(); i++) {
 				final Document doc = paragraphToLuceneDoc(paragraphIterator.next());
 				indexWriter.addDocument(doc);
-				if (i % 10000 == 0) {
-					System.out.print('.');
-					indexWriter.commit();
-				}
 			}
 
 			System.out.println("\n Done indexing.");
@@ -79,10 +74,6 @@ public class Indexer {
 				final Document doc = pageToLuceneDoc(pageIterator.next());
 
 				indexWriter.addDocument(doc);
-				if (i % 10000 == 0) {
-					System.out.print('.');
-					indexWriter.commit();
-				}
 			}
 
 			System.out.println("\n Done indexing.");
