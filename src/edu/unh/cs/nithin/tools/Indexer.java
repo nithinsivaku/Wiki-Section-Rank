@@ -35,7 +35,7 @@ public class Indexer {
 		System.exit(-1);
 	}
 
-	public static void main(String[] args) throws IOException {
+	public Indexer() throws IOException{
 		System.setProperty("file.encoding", "UTF-8");
 
 //		if (args.length < 3)

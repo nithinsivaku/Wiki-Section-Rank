@@ -16,6 +16,7 @@ import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
+import edu.unh.cs.nithin.tools.Indexer;
 
 import java.time.Clock;
 
@@ -112,6 +113,10 @@ public class Main {
 			String outputPath = args[6];
 			
 			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, trainDataArff, indexPath, outputPath);
+		}
+		else if(mode.equals("Index"))
+		{
+			Indexer indexer = new Indexer();
 		}
 		else {
 			System.out.println("mode is not given ");
