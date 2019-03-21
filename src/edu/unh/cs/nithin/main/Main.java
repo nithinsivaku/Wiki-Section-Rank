@@ -3,6 +3,7 @@ package edu.unh.cs.nithin.main;
 import java.io.File;
 
 
+
 import java.io.FileInputStream;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
 
+import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
@@ -48,9 +50,9 @@ public class Main {
 			String paraFile = args[1];
 			String arrfOutputPath = args[2];
 
-			int maxParaCount = 500;
 
-			//TrainSet ts = new TrainSet(paraFile, arrfOutputPath, maxParaCount);
+
+			TrainSet ts = new TrainSet(paraFile, arrfOutputPath);
 
 			System.out.println(" Training Set Created ");
 

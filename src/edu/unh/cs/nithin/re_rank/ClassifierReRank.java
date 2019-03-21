@@ -43,8 +43,8 @@ import weka.core.converters.ConverterUtils.DataSource;
 
 public class ClassifierReRank {
 
-	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath, String outputPath) throws Exception
-	{
+	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath,
+			String outputPath) throws Exception {
 		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath);
 		classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff, indexPath, outputPath);
 	}
@@ -52,39 +52,39 @@ public class ClassifierReRank {
 	/*
 	 * 
 	 */
-	private void classifyRunFileUsingNaiveBayesClassifier(String runFile, String nbModel, String trainDataArff, String indexPath, String outputPath) throws Exception {
+	private void classifyRunFileUsingNaiveBayesClassifier(String runFile, String nbModel, String trainDataArff,
+			String indexPath, String outputPath) throws Exception {
 
 		System.out.println(" loading NaiveBayes Classifier");
 		System.out.println("Model Loading.......................");
 		Classifier cls_NB = (Classifier) weka.core.SerializationHelper.read(nbModel);
 		System.out.println("NaiveBayes Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
-		
+
 		// Load the trainid data format
 		DataSource source = new DataSource(trainDataArff);
 		Instances trainingData = source.getDataSet();
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
-		
+
 		File outRunfile = new File(outputPath + "NBClassified");
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
-		
-		
+
 		File file = new File(runFile);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String st;
-		int i=0;
+		int i = 0;
 		while (((st = br.readLine()) != null)) {
-			
+
 			String[] tokens = st.split(" ");
-//			System.out.println(tokens[0] + " " + tokens[2]);
+			// System.out.println(tokens[0] + " " + tokens[2]);
 			String temp = tokens[0];
 			String paraId = tokens[2];
 			String temp1;
 
 			String paragraph = getParagraphForId(indexPath, paraId);
-//			System.out.println(paragraph);
-			
+			// System.out.println(paragraph);
+
 			Instances testset = trainingData.stringFreeStructure();
 			Instance insta = makeInstance(paragraph, testset);
 
@@ -97,54 +97,54 @@ public class ClassifierReRank {
 
 			System.out.print(".");
 
-			
 			System.out.println(tokens[0]);
 			System.out.println(paragraph);
 			System.out.println(trainingData.classAttribute().value((int) predicted));
-			
+
+			System.out.println((int) predicted);
+			System.out.println(prediction[(int) predicted]);
 			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
+			if (prediction[(int) predicted] > 0.6) {
+				System.out.println("above 0.5");
+				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
+					writer.write(
+							tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + tokens[4] + " Classifier-Laura\n");
+				}
+			}
 			
 			
-			
-//			if (prediction[(int) predicted] > 0.5) {
-//				relevance = 1;
-//				writer.write(tokens[0] + " Q0 " + trainingData.classAttribute().value((int) predicted) + " " + tokens[3]
-//						+ " " + relevance + " Classifier-Laura\n");
-//			}
-//
+
 //			else {
 //				relevance = Double.parseDouble(tokens[4]);
-//				writer.write(
-//						tokens[0] + " Q0 " + tokens[2] + " " + tokens[3] + " " + relevance + " Classifier-Laura\n");
+//				writer.write(tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + relevance + " Classifier-Laura\n");
 //			}
-//			
+
 			i++;
+			break;
 		}
-		
+
 		writer.flush();
 		writer.close();
 
-		System.out.println("Writen  classified results\nQuery Done!");
-		
-		
-	}
+		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName() );
 
+	}
 
 	/*
 	 * 
 	 */
-	private void classifyRunFileUsingRandomForestClassifier(String runFile, String rfModel, String trainDataArff, String indexPath, String outputPath) throws Exception {
+	private void classifyRunFileUsingRandomForestClassifier(String runFile, String rfModel, String trainDataArff,
+			String indexPath, String outputPath) throws Exception {
 
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
 		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(rfModel);
 		System.out.println("Random Forest Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
-		
-		
+
 	}
-	
-	
+
 	private Instance makeInstance(String text, Instances data) {
 		// Create instance of length two.
 		Instance instance = new DenseInstance(2);
@@ -155,7 +155,7 @@ public class ClassifierReRank {
 		instance.setDataset(data);
 		return instance;
 	}
-	
+
 	private String getParagraphForId(String indexPath, String paraId) throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		String paragraph = null;
@@ -179,77 +179,76 @@ public class ClassifierReRank {
 
 		return paraText;
 	}
-	
-	
+
 	// Author: Laura dietz
-		public static class MyQueryBuilder {
+	public static class MyQueryBuilder {
 
-			private final StandardAnalyzer analyzer;
-			private List<String> tokens;
+		private final StandardAnalyzer analyzer;
+		private List<String> tokens;
 
-			public MyQueryBuilder(StandardAnalyzer standardAnalyzer) {
-				analyzer = standardAnalyzer;
-				tokens = new ArrayList<>(128);
-			}
-
-			public BooleanQuery toQuery(String queryStr) throws IOException {
-
-				TokenStream tokenStream = analyzer.tokenStream("paragraphid", new StringReader(queryStr));
-				tokenStream.reset();
-				tokens.clear();
-				while (tokenStream.incrementToken()) {
-					final String token = tokenStream.getAttribute(CharTermAttribute.class).toString();
-					tokens.add(token);
-				}
-				tokenStream.end();
-				tokenStream.close();
-				BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
-				for (String token : tokens) {
-					booleanQuery.add(new TermQuery(new Term("paragraphid", token)), BooleanClause.Occur.SHOULD);
-				}
-				return booleanQuery.build();
-			}
+		public MyQueryBuilder(StandardAnalyzer standardAnalyzer) {
+			analyzer = standardAnalyzer;
+			tokens = new ArrayList<>(128);
 		}
 
-		// Author: Laura dietz
-		private static IndexSearcher setupIndexSearcher(String indexPath, String typeIndex) throws IOException {
-			Path path = FileSystems.getDefault().getPath(indexPath, typeIndex);
-			Directory indexDir = FSDirectory.open(path);
-			IndexReader reader = DirectoryReader.open(indexDir);
-			return new IndexSearcher(reader);
+		public BooleanQuery toQuery(String queryStr) throws IOException {
+
+			TokenStream tokenStream = analyzer.tokenStream("paragraphid", new StringReader(queryStr));
+			tokenStream.reset();
+			tokens.clear();
+			while (tokenStream.incrementToken()) {
+				final String token = tokenStream.getAttribute(CharTermAttribute.class).toString();
+				tokens.add(token);
+			}
+			tokenStream.end();
+			tokenStream.close();
+			BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
+			for (String token : tokens) {
+				booleanQuery.add(new TermQuery(new Term("paragraphid", token)), BooleanClause.Occur.SHOULD);
+			}
+			return booleanQuery.build();
+		}
+	}
+
+	// Author: Laura dietz
+	private static IndexSearcher setupIndexSearcher(String indexPath, String typeIndex) throws IOException {
+		Path path = FileSystems.getDefault().getPath(indexPath, typeIndex);
+		Directory indexDir = FSDirectory.open(path);
+		IndexReader reader = DirectoryReader.open(indexDir);
+		return new IndexSearcher(reader);
+	}
+
+	// Author: Laura dietz
+	private static String buildSectionQueryStr(Data.Page page, List<Data.Section> sectionPath) {
+		StringBuilder queryStr = new StringBuilder();
+		queryStr.append(page.getPageName());
+		for (Data.Section section : sectionPath) {
+			queryStr.append(" ").append(section.getHeading());
 		}
 
-		// Author: Laura dietz
-		private static String buildSectionQueryStr(Data.Page page, List<Data.Section> sectionPath) {
-			StringBuilder queryStr = new StringBuilder();
-			queryStr.append(page.getPageName());
-			for (Data.Section section : sectionPath) {
-				queryStr.append(" ").append(section.getHeading());
+		// System.out.println("queryStr = " + queryStr);
+		return queryStr.toString();
+	}
+
+	// Author: Laura dietz, modified by Nithin for lowest heading in each
+	// section
+	private static String buildSectionQueryStr(List<Data.Section> sectionPath) {
+		String queryStr = " ";
+		List<PageSkeleton> child;
+
+		for (Data.Section section : sectionPath) {
+
+			child = section.getChildren();
+			if (!(child.isEmpty())) {
+				Section s = (Section) child.get(child.size() - 1);
+				queryStr = s.getHeading();
+
+			} else {
+				queryStr = section.getHeading();
 			}
 
-			// System.out.println("queryStr = " + queryStr);
-			return queryStr.toString();
 		}
+		return queryStr;
+	}
 
-		// Author: Laura dietz, modified by Nithin for lowest heading in each
-		// section
-		private static String buildSectionQueryStr(List<Data.Section> sectionPath) {
-			String queryStr = " ";
-			List<PageSkeleton> child;
-
-			for (Data.Section section : sectionPath) {
-
-				child = section.getChildren();
-				if (!(child.isEmpty())) {
-					Section s = (Section) child.get(child.size() - 1);
-					queryStr = s.getHeading();
-
-				} else {
-					queryStr = section.getHeading();
-				}
-
-			}
-			return queryStr;
-		}
-	
 }
