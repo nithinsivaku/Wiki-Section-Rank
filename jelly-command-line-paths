@@ -4,7 +4,7 @@ java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependenc
 test
 /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
 train
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/ARRF_SETS
+train java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/All
 
 custom-retrieval
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor  /home/ns1077/work/paragraphIndex /home/ns1077/work/custom/runs 5
