@@ -104,14 +104,16 @@ public class ClassifierReRank {
 			System.out.println((int) predicted);
 			System.out.println(prediction[(int) predicted]);
 			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+			writer.write(
+					trainingData.classAttribute().value((int) predicted) + " Q0 " + paraId + " " + 0 + " " + tokens[4] + " Classifier-Laura\n");
 
-			if (prediction[(int) predicted] > 0.6) {
-				System.out.println("above 0.5");
-				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
-					writer.write(
-							tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + tokens[4] + " Classifier-Laura\n");
-				}
-			}
+//			if (prediction[(int) predicted] > 0.6) {
+//				System.out.println("above 0.5");
+//				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
+//					writer.write(
+//							tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + tokens[4] + " Classifier-Laura\n");
+//				}
+//			}
 			
 			
 
@@ -121,7 +123,6 @@ public class ClassifierReRank {
 //			}
 
 			i++;
-			break;
 		}
 
 		writer.flush();
