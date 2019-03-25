@@ -46,7 +46,7 @@ public class ClassifierReRank {
 	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath,
 			String outputPath) throws Exception {
 		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath);
-		classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff, indexPath, outputPath);
+		//classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff, indexPath, outputPath);
 	}
 
 	/*
@@ -104,24 +104,26 @@ public class ClassifierReRank {
 			System.out.println((int) predicted);
 			System.out.println(prediction[(int) predicted]);
 			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-			writer.write(
-					trainingData.classAttribute().value((int) predicted) + " Q0 " + paraId + " " + 0 + " " + tokens[4] + " Classifier-Laura\n");
-
-//			if (prediction[(int) predicted] > 0.6) {
-//				System.out.println("above 0.5");
-//				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
-//					writer.write(
-//							tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + tokens[4] + " Classifier-Laura\n");
-//				}
-//			}
-			
-			
-
-//			else {
-//				relevance = Double.parseDouble(tokens[4]);
-//				writer.write(tokens[0] + " Q0 " + paraId + " " + tokens[3] + " " + relevance + " Classifier-Laura\n");
-//			}
-
+			String queryId = tokens[0];
+			int rank;
+			if (prediction[(int) predicted] > 0.5) {
+				System.out.println("above 0.5");
+				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
+					queryId = tokens[0];
+					rank = Integer.parseInt(tokens[3]);
+				}
+				else
+				{
+					queryId = trainingData.classAttribute().value((int) predicted);
+					rank = 1;
+				}
+			}
+			else
+			{
+				queryId = tokens[0];
+				rank = Integer.parseInt(tokens[3]);
+			}
+			writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
 			i++;
 		}
 
@@ -143,6 +145,75 @@ public class ClassifierReRank {
 		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(rfModel);
 		System.out.println("Random Forest Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
+		
+		// Load the trainid data format
+				DataSource source = new DataSource(trainDataArff);
+				Instances trainingData = source.getDataSet();
+				trainingData.setClassIndex(trainingData.numAttributes() - 1);
+
+				File outRunfile = new File(outputPath + "RFClassified");
+				outRunfile.createNewFile();
+				FileWriter writer = new FileWriter(outRunfile);
+
+				File file = new File(runFile);
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String st;
+				int i = 0;
+				while (((st = br.readLine()) != null)) {
+
+					String[] tokens = st.split(" ");
+					// System.out.println(tokens[0] + " " + tokens[2]);
+					String temp = tokens[0];
+					String paraId = tokens[2];
+					String temp1;
+
+					String paragraph = getParagraphForId(indexPath, paraId);
+					// System.out.println(paragraph);
+
+					Instances testset = trainingData.stringFreeStructure();
+					Instance insta = makeInstance(paragraph, testset);
+
+					double predicted = cls_RF.classifyInstance(insta);
+
+					double[] prediction = cls_RF.distributionForInstance(insta);
+					// double res = classifier.classifyInstance(insta);
+
+					double relevance;
+
+					System.out.print(".");
+
+					System.out.println(tokens[0]);
+					System.out.println(paragraph);
+					System.out.println(trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
+					String queryId = tokens[0];
+					int rank;
+					if (prediction[(int) predicted] > 0.5) {
+						System.out.println("above 0.5");
+						if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
+							queryId = tokens[0];
+							rank = Integer.parseInt(tokens[3]);
+						}
+						else
+						{
+							queryId = trainingData.classAttribute().value((int) predicted);
+							rank = 1;
+						}
+					}
+					else
+					{
+						queryId = tokens[0];
+						rank = Integer.parseInt(tokens[3]);
+					}
+					writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
+					System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
+					i++;
+					break;
+				}
+
+				writer.flush();
+				writer.close();
+
+				System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName() );
 
 	}
 
