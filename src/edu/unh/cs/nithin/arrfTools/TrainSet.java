@@ -236,7 +236,7 @@ public class TrainSet implements Serializable {
 			
 
 
-			if(pageCount == 500)
+			if(pageCount == 100)
 			{
 				System.out.println("breaking here");
 				break;
