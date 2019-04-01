@@ -1,6 +1,7 @@
 package edu.unh.cs.nithin.re_rank;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -44,8 +45,8 @@ import weka.core.converters.ConverterUtils.DataSource;
 public class ClassifierReRank {
 
 	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath,
-			String outputPath) throws Exception {
-		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath);
+			String outputPath, float predictionConfidence) throws Exception {
+		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath, predictionConfidence);
 		//classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff, indexPath, outputPath);
 	}
 
@@ -106,11 +107,13 @@ public class ClassifierReRank {
 			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			String queryId = tokens[0];
 			int rank;
+			Boolean brk = false;
 			if (prediction[(int) predicted] > 0.5) {
 				System.out.println("above 0.5");
 				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
 					queryId = tokens[0];
 					rank = Integer.parseInt(tokens[3]);
+					brk = true;
 				}
 				else
 				{
@@ -138,7 +141,7 @@ public class ClassifierReRank {
 	 * 
 	 */
 	private void classifyRunFileUsingRandomForestClassifier(String runFile, String rfModel, String trainDataArff,
-			String indexPath, String outputPath) throws Exception {
+			String indexPath, String outputPath, float predictionConfidence) throws Exception {
 
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
@@ -162,17 +165,13 @@ public class ClassifierReRank {
 				while (((st = br.readLine()) != null)) {
 
 					String[] tokens = st.split(" ");
-					// System.out.println(tokens[0] + " " + tokens[2]);
-					String temp = tokens[0];
 					String paraId = tokens[2];
-					String temp1;
-
 					String paragraph = getParagraphForId(indexPath, paraId);
-					// System.out.println(paragraph);
 
 					Instances testset = trainingData.stringFreeStructure();
 					Instance insta = makeInstance(paragraph, testset);
 
+					double[] sample = cls_RF.distributionForInstance(insta);
 					double predicted = cls_RF.classifyInstance(insta);
 
 					double[] prediction = cls_RF.distributionForInstance(insta);
@@ -187,11 +186,13 @@ public class ClassifierReRank {
 					System.out.println(trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
 					String queryId = tokens[0];
 					int rank;
-					if (prediction[(int) predicted] > 0.5) {
-						System.out.println("above 0.5");
+					Boolean brk = false;
+					if (prediction[(int) predicted] > predictionConfidence) {
+						System.out.println("above " + predictionConfidence);
 						if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
 							queryId = tokens[0];
 							rank = Integer.parseInt(tokens[3]);
+							brk = true;
 						}
 						else
 						{
@@ -207,7 +208,10 @@ public class ClassifierReRank {
 					writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
 					System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
 					i++;
-					break;
+					if(brk)
+					{
+						System.exit(-1);
+					}
 				}
 
 				writer.flush();
