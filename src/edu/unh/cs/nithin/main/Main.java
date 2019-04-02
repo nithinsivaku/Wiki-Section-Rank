@@ -113,8 +113,10 @@ public class Main {
 			String trainDataArff = args[4];
 			String indexPath = args[5];
 			String outputPath = args[6];
+			String predConfidence = args[7];
 			
-			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, trainDataArff, indexPath, outputPath);
+			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, 
+					trainDataArff, indexPath, outputPath, Float.parseFloat(predConfidence));
 		}
 		else if(mode.equals("Index"))
 		{
