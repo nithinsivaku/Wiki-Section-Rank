@@ -236,7 +236,7 @@ public class TrainSet implements Serializable {
 			
 
 
-			if(pageCount == 100)
+			if(pageCount == 1546204)
 			{
 				System.out.println("breaking here");
 				break;
@@ -257,7 +257,7 @@ public class TrainSet implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "All" + "PagesInUnprocessedAllButBenchmark" + ".arff";
+		path = path + "thirtyPercent" + "PagesInUnprocessedAllButBenchmark" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
