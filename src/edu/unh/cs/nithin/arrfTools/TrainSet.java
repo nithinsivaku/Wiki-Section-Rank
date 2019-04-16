@@ -73,12 +73,22 @@ public class TrainSet implements Serializable {
 	// Make Training Data for the classifier
 	public TrainSet(String trainSetFile, String outputPath)
 			throws IOException, ParseException {
+		
+		
+		
 		this();
+		
+		
 		final String trainSetFilePath = trainSetFile;
 		System.out.println(trainSetFilePath);
 		final FileInputStream fileInputStream2 = new FileInputStream(new File(trainSetFilePath));
+		
+		CategoryTrainset ct = new CategoryTrainset(trainSetFilePath, outputPath);
 
 		System.out.println("Adding class values to the trainset......\n");
+		
+		
+		
 
 		Map<String, String> paraHeadingMap = getParaHeading(trainSetFilePath);
 
