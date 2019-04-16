@@ -19,6 +19,11 @@ public class RandomForestClassifier {
 	public RandomForestClassifier(String arrfFile, String modelPath, String arffFileName) throws Exception {
 		System.out.println("Training RF classifier with the trainset");
 
+		int a[] = new int[10];
+
+		
+		
+		
 		DataSource trainSource = new DataSource(arrfFile);
 		Instances trainingSet = trainSource.getDataSet();
 
