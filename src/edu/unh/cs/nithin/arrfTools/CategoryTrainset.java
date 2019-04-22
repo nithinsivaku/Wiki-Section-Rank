@@ -18,9 +18,8 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
 public class CategoryTrainset {
 
-	public CategoryTrainset(String trainSetFile, String outputPath) throws FileNotFoundException {
-		Map<String, ArrayList<Page>> m = getCategoryPageMap(trainSetFile);
-
+	public CategoryTrainset() throws FileNotFoundException {
+		
 	}
 
 	/*
@@ -37,8 +36,11 @@ public class CategoryTrainset {
 
 		ArrayList<Data.Page> pageList;
 
+		int pageCount = 0;
+		
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
+			pageCount++;
 			ArrayList<String> catList = page.getPageMetadata().getCategoryIds();
 
 			for (String categoryId : catList) {
@@ -50,13 +52,66 @@ public class CategoryTrainset {
 					categoryPagesMap.put(categoryId, newPageList);
 				} else {
 					pageList.add(page);
+					categoryPagesMap.put(categoryId, pageList);
 				}
 
 			}
-
+			System.out.println(pageCount);
+			if(pageCount == 50)
+			{
+				break;
+			}
 		}
 		return categoryPagesMap;
 
+	}
+	
+	/*
+	 * Loop through all pages.
+	 * For each page add the heading name and paragraph to Hashmap.
+	 */
+	public Map<String, String> getHeadingParaMap(ArrayList<Page> pageNames)
+	{
+		String Heading = "";
+		Map<String, String> mapParaHeading = new HashMap<>();
+		for(Page page : pageNames)
+		{
+			String pageHeading = page.getPageId();
+			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
+
+				Iterator<Section> sectionPathIter = sectionPathParagraph.getSectionPath().iterator();
+
+				// check for subheading
+				while (sectionPathIter.hasNext()) {
+					Section section = sectionPathIter.next();
+
+					String sectionHeading = pageHeading + "/" + section.getHeadingId(); // fix the slash
+
+					if (sectionPathIter.hasNext()) {
+						Section nextSection = sectionPathIter.next();
+						Heading = sectionHeading + "/" + nextSection.getHeadingId();
+					} else {
+						Heading = sectionHeading;
+					}
+
+				}
+
+				String para = sectionPathParagraph.getParagraph().getTextOnly();
+				if(mapParaHeading.get(Heading) == null)
+				{
+					mapParaHeading.put(Heading, para);
+				}
+				else
+				{
+					para += mapParaHeading.get(Heading);
+					mapParaHeading.put(Heading, para);
+				}
+				
+
+			}
+		}
+		return mapParaHeading;
+		
 	}
 
 }

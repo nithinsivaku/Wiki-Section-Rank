@@ -1,6 +1,5 @@
 package edu.unh.cs.nithin.arrfTools;
 
-
 import java.io.BufferedReader;
 
 import java.io.BufferedWriter;
@@ -66,60 +65,14 @@ public class TrainSet implements Serializable {
 	private Instances trainingData;
 	private ArrayList<String> classValues;
 	private ArrayList<Attribute> attributes;
-	//private FastVector classValues;
-//	private FastVector attributes;
+
 	ArrayList<String> listOfParagraphs = new ArrayList<String>();
 
 	// Make Training Data for the classifier
-	public TrainSet(String trainSetFile, String outputPath)
-			throws IOException, ParseException {
-		
-		
-		
+	public TrainSet(String trainSetFile, String outputPath) throws IOException, ParseException {
+
 		this();
-		
-		
-		final String trainSetFilePath = trainSetFile;
-		System.out.println(trainSetFilePath);
-		final FileInputStream fileInputStream2 = new FileInputStream(new File(trainSetFilePath));
-		
-		CategoryTrainset ct = new CategoryTrainset(trainSetFilePath, outputPath);
-
-		System.out.println("Adding class values to the trainset......\n");
-		
-		
-		
-
-		Map<String, String> paraHeadingMap = getParaHeading(trainSetFilePath);
-
-		System.out.println("Adding class values to the trainset......\n");
-
-		for (String heading : paraHeadingMap.keySet()) {
-			addHeading(heading);
-		}
-
-		System.out.println("Done adding heading");
-
-		setupAfterHeadingAdded();
-
-		System.out.println("Now Adding para and class values to the trainset......\n");
-
-		for (Entry<String, String> entry : paraHeadingMap.entrySet()) {
-			addParagrah(entry.getValue(), entry.getKey());
-		}
-
-		System.out.println("Done adding para and class file");
-
-		createDatasetFile(outputPath);
-
-	}
-
-	private void paragraphAdd(Data.Paragraph p) {
-		final String paraId = p.getParaId();
-		final String para = p.getTextOnly();
-
-		addParagrah(para, paraId);
-
+		createCategoryTrainSet(trainSetFile, outputPath);
 	}
 
 	public TrainSet() {
@@ -131,6 +84,37 @@ public class TrainSet implements Serializable {
 		// Add class attribute.
 		this.classValues = new ArrayList<String>();
 
+	}
+
+	public void createCategoryTrainSet(String trainSetFile, String outputPath) throws IOException {
+		
+		CategoryTrainset ct = new CategoryTrainset();
+		Map<String, ArrayList<Page>> categoryPageMap = ct.getCategoryPageMap(trainSetFile);
+
+		for (Entry<String, ArrayList<Page>> entry : categoryPageMap.entrySet()) {
+			String category = entry.getKey();
+
+			System.out.println("Adding pages names under category " + category + " ");
+			ArrayList<Page> pageNames = entry.getValue();
+			Map<String, String> headingParaMap = ct.getHeadingParaMap(pageNames);
+			for(String heading :headingParaMap.keySet())
+			{
+				System.out.println(heading);
+				addHeading(heading);
+			}
+			System.out.println("Done adding heading");
+
+			System.out.println("Adding class values to the trainset......\n");
+			for(String heading :headingParaMap.keySet())
+			{
+				System.out.println( heading + headingParaMap.get(heading));
+				//addParagrah(headingParaMap.get(heading), heading);
+			}
+			System.out.println("Done Adding class values \n");
+
+			createDatasetFile(outputPath + category);
+
+		}
 	}
 
 	public void addHeading(String heading) {
@@ -222,8 +206,8 @@ public class TrainSet implements Serializable {
 				// check for subheading
 				while (sectionPathIter.hasNext()) {
 					Section section = sectionPathIter.next();
-					
-					String sectionHeading = pageHeading + "/" + section.getHeadingId();  // fix the slash
+
+					String sectionHeading = pageHeading + "/" + section.getHeadingId(); // fix the slash
 
 					if (sectionPathIter.hasNext()) {
 						Section nextSection = sectionPathIter.next();
@@ -233,27 +217,20 @@ public class TrainSet implements Serializable {
 					}
 
 				}
-				System.out.println(pageCount + "  "  +Heading);
-				
+				System.out.println(pageCount + "  " + Heading);
+
 				String para = sectionPathParagraph.getParagraph().getTextOnly();
 				System.out.println(para);
 				mapParaHeading.put(Heading, para);
 				System.out.println("adding to map");
-				
 
 			}
 
-			
-
-
-			if(pageCount == 1546204)
-			{
+			if (pageCount == 1546204) {
 				System.out.println("breaking here");
 				break;
 			}
 
-
-			
 		}
 		return mapParaHeading;
 
@@ -267,7 +244,7 @@ public class TrainSet implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "thirtyPercent" + "PagesInUnprocessedAllButBenchmark" + ".arff";
+		path = path + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -282,4 +259,3 @@ public class TrainSet implements Serializable {
 	}
 
 }
-
