@@ -80,6 +80,7 @@ public class CustomParaGenerator {
 
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			
+			//page.getPageMetadata().getCategoryIds()
 			if (pageCount == totalNumberOfParas)
 				break;
 			
