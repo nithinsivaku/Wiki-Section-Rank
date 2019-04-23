@@ -44,6 +44,8 @@ public class CategoryTrainset {
 			ArrayList<String> catList = page.getPageMetadata().getCategoryNames();
 
 			for (String category : catList) {
+				
+				category = category.replaceAll("[\\s\\:]","_");
 				pageList = categoryPagesMap.get(category);
 
 				if (pageList == null) {
@@ -104,7 +106,7 @@ public class CategoryTrainset {
 				}
 				else
 				{
-					para += mapParaHeading.get(Heading);
+					para = mapParaHeading.get(Heading) + " " + para;
 					mapParaHeading.put(Heading, para);
 				}
 				
