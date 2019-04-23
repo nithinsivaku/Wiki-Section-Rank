@@ -71,11 +71,10 @@ public class TrainSet implements Serializable {
 	// Make Training Data for the classifier
 	public TrainSet(String trainSetFile, String outputPath) throws IOException, ParseException {
 
-		this();
 		createCategoryTrainSet(trainSetFile, outputPath);
 	}
 
-	public TrainSet() {
+	public void initTrainSet() {
 
 		// Create vector of attributes.
 		this.attributes = new ArrayList<Attribute>();
@@ -92,8 +91,10 @@ public class TrainSet implements Serializable {
 		Map<String, ArrayList<Page>> categoryPageMap = ct.getCategoryPageMap(trainSetFile);
 
 		for (Entry<String, ArrayList<Page>> entry : categoryPageMap.entrySet()) {
+			
+			initTrainSet(); // create attributes for every new category
+			
 			String category = entry.getKey();
-
 			System.out.println("Adding pages names under category " + category + " ");
 			ArrayList<Page> pageNames = entry.getValue();
 			Map<String, String> headingParaMap = ct.getHeadingParaMap(pageNames);
@@ -104,11 +105,13 @@ public class TrainSet implements Serializable {
 			}
 			System.out.println("Done adding heading");
 
+			setupAfterHeadingAdded();
+			
 			System.out.println("Adding class values to the trainset......\n");
 			for(String heading :headingParaMap.keySet())
 			{
 				System.out.println( heading + headingParaMap.get(heading));
-				//addParagrah(headingParaMap.get(heading), heading);
+				addParagrah(headingParaMap.get(heading), heading);
 			}
 			System.out.println("Done Adding class values \n");
 
@@ -252,10 +255,39 @@ public class TrainSet implements Serializable {
 		bw.write(trainingData.toString());
 		bw.close();
 		System.out.println("check for arff file in " + path);
+		FlushTrainingVariables();
+		
 	}
 
-	public Instances getTraningData() {
-		return trainingData;
+	public void FlushTrainingVariables()
+	{
+		// Create vector of attributes.
+		this.attributes = null;
+		// Add attribute for holding texts.
+		this.attributes = null;
+		// Add class attribute.
+		this.classValues = null;
 	}
+	
+//	public ArrayList<Attribute> getNewAttribute()
+//	{
+//		
+//		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+//		attributes.add(new Attribute("text", true));
+//		
+//		return attributes;
+//	}
+//	
+//	public ArrayList<String> getNewClassValues()
+//	{
+//		ArrayList<String> classValues = new ArrayList<String>();
+//		
+//		return classValues;
+//	}
+//	
+//	public Instances getNewTraningData() {
+//		Instances trainingData = null;
+//		return trainingData;
+//	}
 
 }

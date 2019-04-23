@@ -41,18 +41,18 @@ public class CategoryTrainset {
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
 			pageCount++;
-			ArrayList<String> catList = page.getPageMetadata().getCategoryIds();
+			ArrayList<String> catList = page.getPageMetadata().getCategoryNames();
 
-			for (String categoryId : catList) {
-				pageList = categoryPagesMap.get(categoryId);
+			for (String category : catList) {
+				pageList = categoryPagesMap.get(category);
 
 				if (pageList == null) {
 					ArrayList<Data.Page> newPageList = new ArrayList<Data.Page>();
 					newPageList.add(page);
-					categoryPagesMap.put(categoryId, newPageList);
+					categoryPagesMap.put(category, newPageList);
 				} else {
 					pageList.add(page);
-					categoryPagesMap.put(categoryId, pageList);
+					categoryPagesMap.put(category, pageList);
 				}
 
 			}
@@ -77,6 +77,7 @@ public class CategoryTrainset {
 		for(Page page : pageNames)
 		{
 			String pageHeading = page.getPageId();
+			Heading = pageHeading; // Heading will be page heading at the start of the page
 			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
 
 				Iterator<Section> sectionPathIter = sectionPathParagraph.getSectionPath().iterator();
