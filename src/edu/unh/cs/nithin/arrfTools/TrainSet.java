@@ -2,6 +2,7 @@ package edu.unh.cs.nithin.arrfTools;
 
 import java.io.BufferedReader;
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,7 +52,6 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.StringToWordVector;
@@ -66,30 +66,31 @@ public class TrainSet implements Serializable {
 	private ArrayList<String> classValues;
 	private ArrayList<Attribute> attributes;
 
-	ArrayList<String> listOfParagraphs = new ArrayList<String>();
-
 	// Make Training Data for the classifier
 	public TrainSet(String trainSetFile, String outputPath) throws IOException, ParseException {
 
 		createCategoryTrainSet(trainSetFile, outputPath);
 	}
 
+	/*
+	 * Create vector of attributes.
+	 * Add attribute for holding texts.
+	 * Add class attribute.
+	 */
 	public void initTrainSet() {
-
-		// Create vector of attributes.
-		this.attributes = new ArrayList<Attribute>();
-		// Add attribute for holding texts.
+		this.attributes = new ArrayList<Attribute>();	
 		this.attributes.add(new Attribute("text", true));
-		// Add class attribute.
 		this.classValues = new ArrayList<String>();
 
 	}
 
 	public void createCategoryTrainSet(String trainSetFile, String outputPath) throws IOException {
 		
+		int categoryTotal= 0;
 		CategoryTrainset ct = new CategoryTrainset();
 		Map<String, ArrayList<Page>> categoryPageMap = ct.getCategoryPageMap(trainSetFile);
 
+		
 		for (Entry<String, ArrayList<Page>> entry : categoryPageMap.entrySet()) {
 			
 			initTrainSet(); // create attributes for every new category
@@ -116,6 +117,8 @@ public class TrainSet implements Serializable {
 			System.out.println("Done Adding class values \n");
 
 			createDatasetFile(outputPath + category);
+			
+			categoryTotal++;
 
 		}
 	}
@@ -155,89 +158,6 @@ public class TrainSet implements Serializable {
 		return instance;
 	}
 
-	// Text contain lot of Stop words.
-	// This method is depreciated
-	// Using this for time being.
-	public String removeStopWords(String input) throws IOException {
-		String sCurrentLine;
-		Set<String> stopwords = new HashSet<String>();
-		ArrayList<String> wordList = new ArrayList<String>();
-		FileReader fr = new FileReader("/Users/Nithin/Desktop/stopwords.txt");
-		BufferedReader br = new BufferedReader(fr);
-		while ((sCurrentLine = br.readLine()) != null) {
-			stopwords.add(sCurrentLine);
-			System.out.println(sCurrentLine);
-
-		}
-
-		String[] output = input.split(" ");
-		for (String word : output) {
-			String wordCompare = word.toUpperCase();
-			if (!stopwords.contains(wordCompare)) {
-				wordList.add(word);
-			}
-		}
-
-		String joinedString = StringUtils.join(wordList, " ");
-		System.out.println(joinedString);
-
-		return joinedString;
-	}
-
-	/*
-	 * Find the instances of the keywords in the train set file if present add that
-	 * page to training list page
-	 */
-	public Map<String, String> getParaHeading(String trainSetFilePath) throws FileNotFoundException {
-
-		List<Data.Page> pageList = new ArrayList<Data.Page>();
-		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
-		String Heading = "";
-		Map<String, String> mapParaHeading = new HashMap<>();
-
-		int pageCount = 0;
-		// loop through wikipedia page in its order
-		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
-			pageCount++;
-			String pageHeading = page.getPageId();
-			Heading = pageHeading; // Heading will be page heading at the start of the page
-
-			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
-
-				Iterator<Section> sectionPathIter = sectionPathParagraph.getSectionPath().iterator();
-
-				// check for subheading
-				while (sectionPathIter.hasNext()) {
-					Section section = sectionPathIter.next();
-
-					String sectionHeading = pageHeading + "/" + section.getHeadingId(); // fix the slash
-
-					if (sectionPathIter.hasNext()) {
-						Section nextSection = sectionPathIter.next();
-						Heading = sectionHeading + "/" + nextSection.getHeadingId();
-					} else {
-						Heading = sectionHeading;
-					}
-
-				}
-				System.out.println(pageCount + "  " + Heading);
-
-				String para = sectionPathParagraph.getParagraph().getTextOnly();
-				System.out.println(para);
-				mapParaHeading.put(Heading, para);
-				System.out.println("adding to map");
-
-			}
-
-			if (pageCount == 1546204) {
-				System.out.println("breaking here");
-				break;
-			}
-
-		}
-		return mapParaHeading;
-
-	}
 
 	public void setupAfterHeadingAdded() {
 		attributes.add(new Attribute("@@class@@.", classValues));
@@ -255,39 +175,8 @@ public class TrainSet implements Serializable {
 		bw.write(trainingData.toString());
 		bw.close();
 		System.out.println("check for arff file in " + path);
-		FlushTrainingVariables();
 		
 	}
 
-	public void FlushTrainingVariables()
-	{
-		// Create vector of attributes.
-		this.attributes = null;
-		// Add attribute for holding texts.
-		this.attributes = null;
-		// Add class attribute.
-		this.classValues = null;
-	}
-	
-//	public ArrayList<Attribute> getNewAttribute()
-//	{
-//		
-//		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-//		attributes.add(new Attribute("text", true));
-//		
-//		return attributes;
-//	}
-//	
-//	public ArrayList<String> getNewClassValues()
-//	{
-//		ArrayList<String> classValues = new ArrayList<String>();
-//		
-//		return classValues;
-//	}
-//	
-//	public Instances getNewTraningData() {
-//		Instances trainingData = null;
-//		return trainingData;
-//	}
 
 }
