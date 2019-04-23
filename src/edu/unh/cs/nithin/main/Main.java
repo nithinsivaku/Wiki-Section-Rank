@@ -2,8 +2,6 @@ package edu.unh.cs.nithin.main;
 
 import java.io.File;
 
-
-
 import java.io.FileInputStream;
 
 import java.io.IOException;
@@ -11,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
 
+import edu.unh.cs.nithin.arrfTools.CategoryTrainset;
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
@@ -50,8 +49,6 @@ public class Main {
 			String paraFile = args[1];
 			String arrfOutputPath = args[2];
 
-
-
 			TrainSet ts = new TrainSet(paraFile, arrfOutputPath);
 
 			System.out.println(" Training Set Created ");
@@ -82,7 +79,8 @@ public class Main {
 
 			// String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
 
-			CharSequence[] cs = { "Antibiotics", "Antimicrobial resistance", "Antioxidant", "Desertification", "Deforestation" };
+			CharSequence[] cs = { "Antibiotics", "Antimicrobial resistance", "Antioxidant", "Desertification",
+					"Deforestation" };
 			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
 			System.out.println(" Training Set Created ");
@@ -90,12 +88,10 @@ public class Main {
 		} else if (mode.equals("build-classifer-model")) {
 			String arffFile = args[1];
 			String modelPath = args[2];
-			
+
 			File f = new File(arffFile);
 			String arffFileName = f.getName().toString().replaceFirst("[.][^.]+$", "");
-			
-			
-			
+
 			System.out.println(" Building Random Forest Classifier Model");
 			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
@@ -105,8 +101,8 @@ public class Main {
 			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}
-		
-		else if(mode.equals("classify-runfile")) {
+
+		else if (mode.equals("classify-runfile")) {
 			String runFile = args[1];
 			String randomforestClassifierModel = args[2];
 			String naiveBayesModel = args[3];
@@ -114,15 +110,12 @@ public class Main {
 			String indexPath = args[5];
 			String outputPath = args[6];
 			String predConfidence = args[7];
-			
-			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel, 
+
+			ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel,
 					trainDataArff, indexPath, outputPath, Float.parseFloat(predConfidence));
-		}
-		else if(mode.equals("Index"))
-		{
+		} else if (mode.equals("Index")) {
 			Indexer indexer = new Indexer();
-		}
-		else {
+		} else {
 			System.out.println("mode is not given ");
 		}
 
