@@ -38,7 +38,7 @@ public class CategoryTrainset {
 
 		int pageCount = 0;
 		
-		int categoryTotal = 0;
+		
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
 			pageCount++;
@@ -60,7 +60,7 @@ public class CategoryTrainset {
 
 			}
 			System.out.println(pageCount);
-			if(pageCount == 50)
+			if(pageCount == 100000)
 			{
 				break;
 			}
