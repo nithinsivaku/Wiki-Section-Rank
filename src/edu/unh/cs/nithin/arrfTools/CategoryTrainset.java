@@ -60,7 +60,7 @@ public class CategoryTrainset {
 
 			}
 			System.out.println(pageCount);
-			if(pageCount == 100000)
+			if(pageCount == 1000)
 			{
 				break;
 			}
