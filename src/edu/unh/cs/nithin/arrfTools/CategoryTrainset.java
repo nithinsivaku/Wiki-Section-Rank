@@ -38,7 +38,6 @@ public class CategoryTrainset {
 
 		int pageCount = 0;
 		
-		
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
 			pageCount++;
