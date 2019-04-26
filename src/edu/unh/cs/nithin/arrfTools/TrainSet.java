@@ -86,10 +86,13 @@ public class TrainSet implements Serializable {
 
 	public void createCategoryTrainSet(String trainSetFile, String outputPath) throws IOException {
 		
-		int categoryTotal= 0;
+		int categoryCount= 0;
+		
 		CategoryTrainset ct = new CategoryTrainset();
 		Map<String, ArrayList<Page>> categoryPageMap = ct.getCategoryPageMap(trainSetFile);
-
+		
+		int categoryTotal = categoryPageMap.size();
+		
 		
 		for (Entry<String, ArrayList<Page>> entry : categoryPageMap.entrySet()) {
 			
@@ -116,9 +119,10 @@ public class TrainSet implements Serializable {
 			}
 			System.out.println("Done Adding class values \n");
 
+			System.out.println("category total: " + categoryTotal + " categoryCount: " + categoryCount );
 			createDatasetFile(outputPath + category);
 			
-			categoryTotal++;
+			categoryCount++;
 
 		}
 	}
