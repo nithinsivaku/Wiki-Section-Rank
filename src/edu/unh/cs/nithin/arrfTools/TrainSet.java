@@ -120,6 +120,10 @@ public class TrainSet implements Serializable {
 			System.out.println("Done Adding class values \n");
 
 			System.out.println("category total: " + categoryTotal + " categoryCount: " + categoryCount );
+			if(categoryCount == 6115)
+			{
+				System.out.println("category count 6115");
+			}
 			createDatasetFile(outputPath + category);
 			
 			categoryCount++;

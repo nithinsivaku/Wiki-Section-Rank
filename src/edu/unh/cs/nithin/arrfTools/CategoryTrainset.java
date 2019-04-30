@@ -37,6 +37,7 @@ public class CategoryTrainset {
 		ArrayList<Data.Page> pageList;
 
 		int pageCount = 0;
+		int categoryCount = 0;
 		
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
@@ -45,8 +46,11 @@ public class CategoryTrainset {
 
 			for (String category : catList) {
 				
-				category = category.replaceAll("[\\s\\:]","_");
+				
+				
+				category = category.replaceAll("[\\s\\:/]","_");
 				pageList = categoryPagesMap.get(category);
+				categoryCount = categoryPagesMap.size();
 
 				if (pageList == null) {
 					ArrayList<Data.Page> newPageList = new ArrayList<Data.Page>();
@@ -55,11 +59,11 @@ public class CategoryTrainset {
 				} else {
 					pageList.add(page);
 					categoryPagesMap.put(category, pageList);
-				}
+				}		
 
 			}
 			System.out.println(pageCount);
-			if(pageCount == 100000)
+			if(pageCount == 100000 || categoryCount > 10000)
 			{
 				break;
 			}
