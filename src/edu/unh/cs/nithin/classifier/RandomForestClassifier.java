@@ -15,6 +15,11 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.filters.unsupervised.instance.Resample;
 
 public class RandomForestClassifier {
+	
+	public RandomForestClassifier()
+	{
+		
+	}
 
 	public RandomForestClassifier(String arrfFile, String modelPath, String arffFileName) throws Exception {
 		System.out.println("Training RF classifier with the trainset");

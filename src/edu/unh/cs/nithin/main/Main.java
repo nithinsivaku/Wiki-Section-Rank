@@ -1,17 +1,8 @@
 package edu.unh.cs.nithin.main;
 
 import java.io.File;
-
-import java.io.FileInputStream;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.List;
-import java.util.Map;
-
-import edu.unh.cs.nithin.arrfTools.CategoryTrainset;
 import edu.unh.cs.nithin.arrfTools.TrainSet;
-import edu.unh.cs.nithin.classifier.NaiveBayesClassifier;
+import edu.unh.cs.nithin.classifier.CategoryClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.customParas.CustomParaGenerator;
 import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
@@ -19,7 +10,6 @@ import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 import edu.unh.cs.nithin.tools.Indexer;
 
-import java.time.Clock;
 
 public class Main {
 
@@ -96,10 +86,17 @@ public class Main {
 			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
-			System.out.println(" Building Naive Bayes Classifier Model");
-			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath, arffFileName);
-			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
+//			System.out.println(" Building Naive Bayes Classifier Model");
+//			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath, arffFileName);
+//			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
+		}
+		
+		else if(mode.equals("build-category-classifier"))
+		{
+			String arrfFolderPath = args[1];
+			String modelFolderPath = args[2];
+			CategoryClassifier cc = new CategoryClassifier(arrfFolderPath, modelFolderPath);
 		}
 
 		else if (mode.equals("classify-runfile")) {
