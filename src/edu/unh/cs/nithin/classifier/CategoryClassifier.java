@@ -1,5 +1,6 @@
 package edu.unh.cs.nithin.classifier;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,16 +13,26 @@ import java.nio.file.Paths;
  */
 public class CategoryClassifier {
 	
-	public CategoryClassifier(String arrfFolderPath, String modelFolderPath) throws IOException {
+	public CategoryClassifier(String arrfFolderPath, String modelFolderPath) throws Exception {
 		
 		buildModel(arrfFolderPath, modelFolderPath);
 	}
 
-	private void buildModel(String arrffolderPath, String modelFolderPath) throws IOException {
+	private void buildModel(String arrffolderPath, String modelFolderPath) throws Exception {
 		// TODO Auto-generated method stub
-		Files.walk(Paths.get(arrffolderPath))
-	     .filter(Files::isRegularFile)
-	     .forEach(System.out::println);
 		
+		RandomForestClassifier rfc = new RandomForestClassifier();
+		
+		File[] files = new File(arrffolderPath).listFiles();
+		
+		for(File file : files)
+		{
+			if(file.isFile())
+			{
+				rfc.buildRandomForestModel(file.getAbsolutePath(), modelFolderPath, file.getName());
+			}
+		}
+		
+		System.out.println("Model files created for arrf files under "+arrffolderPath);
 	}
 }
