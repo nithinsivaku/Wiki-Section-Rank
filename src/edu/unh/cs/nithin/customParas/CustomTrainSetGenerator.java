@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,23 +66,20 @@ public class CustomTrainSetGenerator implements Serializable {
 	private Instances trainingData;
 	private ArrayList<String> classValues;
 	private ArrayList<Attribute> attributes;
-	//private FastVector classValues;
-//	private FastVector attributes;
+	// private FastVector classValues;
+	// private FastVector attributes;
 	ArrayList<String> listOfParagraphs = new ArrayList<String>();
 
 	// Make Training Data for the classifier
 	public CustomTrainSetGenerator(String trainSetFile, String outputPath, String indexPath, CharSequence[] cs)
 			throws IOException, ParseException {
+
 		this();
 		final String trainSetFilePath = trainSetFile;
 		System.out.println(trainSetFilePath);
 		final FileInputStream fileInputStream2 = new FileInputStream(new File(trainSetFilePath));
 
 		System.out.println("Adding class values to the trainset......\n");
-		
-		
-		
-		
 
 		Map<String, String> matchingPagesMap = matchingPage(trainSetFilePath, cs);
 
@@ -195,17 +193,34 @@ public class CustomTrainSetGenerator implements Serializable {
 	 * page to training list page
 	 */
 	public Map<String, String> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
-
+		
+		String[] pagesToCheck = new String[5];
+		for(int i=0; i< cs.length; i++)
+		{
+			pagesToCheck[i] = cs[i].toString();
+		}
+		
+		boolean pageNamePresent = false;
 		List<Data.Page> pageList = new ArrayList<Data.Page>();
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
 		String Heading = "";
 		Map<String, String> matchingParaHeading = new HashMap<>();
+		Map<String, String> paraHeading;
 
 		int pageCount = 0;
 		// loop through wikipedia page in its order
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
+			
+			
+			paraHeading = new HashMap<>();
 			pageCount++;
 			String pageHeading = page.getPageId();
+			
+			if(Arrays.asList(pagesToCheck).contains(pageHeading))
+			{
+				pageNamePresent = true;
+			}
+			
 			Heading = pageHeading; // Heading will be page heading at the start of the page
 
 			for (SectionPathParagraphs sectionPathParagraph : page.flatSectionPathsParagraphs()) {
@@ -215,41 +230,52 @@ public class CustomTrainSetGenerator implements Serializable {
 				// check for subheading
 				while (sectionPathIter.hasNext()) {
 					Section section = sectionPathIter.next();
-					
-					String sectionHeading = pageHeading + "/" + section.getHeadingId();  // fix the slash
+
+					String sectionHeading = section.getHeadingId();
 
 					if (sectionPathIter.hasNext()) {
 						Section nextSection = sectionPathIter.next();
-						Heading = sectionHeading + "/" + nextSection.getHeadingId();
+						Heading = nextSection.getHeadingId();
 					} else {
 						Heading = sectionHeading;
 					}
 
 				}
-				System.out.println(pageCount + "  "  +Heading);
+				System.out.println(pageCount + "  " + Heading);
 				// System.out.println(sectionPathParagraph.getParagraph().getTextOnly());
 
 				String para = sectionPathParagraph.getParagraph().getTextOnly();
-				for (CharSequence charSeq : cs) {
-					if (para.contains(charSeq)) {
-						matchingParaHeading.put(Heading, para);
-						System.out.println("adding to map");
-					}
+
+				if (paraHeading.containsKey(Heading)) {
+					String oldPara = paraHeading.get(Heading);
+					paraHeading.put(Heading, oldPara);
+				} else {
+					paraHeading.put(Heading, para);
 				}
 
 			}
 
+			for (Entry<String, String> entry : paraHeading.entrySet()) {
+				String heading = entry.getKey();
+				String paragraph = entry.getValue();
+
+				if (!matchingParaHeading.containsKey(heading)) {
+					for (CharSequence charSeq : cs) {
+						if (paragraph.contains(charSeq) || pageNamePresent) {
+							System.out.println("adding to map");
+							matchingParaHeading.put(heading, paragraph);
+						}
+					}
+				}
+
+			}
 			
 
-
-			if(pageCount == 300)
-			{
+			if (pageCount == 2000) {
 				System.out.println("breaking here");
 				break;
 			}
 
-
-			
 		}
 		return matchingParaHeading;
 
