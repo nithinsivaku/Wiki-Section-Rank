@@ -284,7 +284,7 @@ public class CustomTrainSetGenerator implements Serializable {
 	}
 
 	public void createDatasetFile(String path) throws IOException {
-		path = path + "/50000" + "Pages" + ".arff";
+		path = path + "/All" + "Pages" + ".arff";
 		File f = new File(path);
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
