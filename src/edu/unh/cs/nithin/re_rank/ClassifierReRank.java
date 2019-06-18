@@ -46,8 +46,10 @@ public class ClassifierReRank {
 
 	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath,
 			String outputPath, float predictionConfidence) throws Exception {
-		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath, predictionConfidence);
-		//classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff, indexPath, outputPath);
+		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath,
+				predictionConfidence);
+		// classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff,
+		// indexPath, outputPath);
 	}
 
 	/*
@@ -114,15 +116,11 @@ public class ClassifierReRank {
 					queryId = tokens[0];
 					rank = Integer.parseInt(tokens[3]);
 					brk = true;
-				}
-				else
-				{
+				} else {
 					queryId = trainingData.classAttribute().value((int) predicted);
 					rank = 1;
 				}
-			}
-			else
-			{
+			} else {
 				queryId = tokens[0];
 				rank = Integer.parseInt(tokens[3]);
 			}
@@ -133,7 +131,7 @@ public class ClassifierReRank {
 		writer.flush();
 		writer.close();
 
-		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName() );
+		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
 
 	}
 
@@ -148,76 +146,70 @@ public class ClassifierReRank {
 		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(rfModel);
 		System.out.println("Random Forest Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
-		
+
 		// Load the trainid data format
-				DataSource source = new DataSource(trainDataArff);
-				Instances trainingData = source.getDataSet();
-				trainingData.setClassIndex(trainingData.numAttributes() - 1);
+		DataSource source = new DataSource(trainDataArff);
+		Instances trainingData = source.getDataSet();
+		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 
-				File outRunfile = new File(outputPath + "RFClassified");
-				outRunfile.createNewFile();
-				FileWriter writer = new FileWriter(outRunfile);
+		File outRunfile = new File(outputPath + "RFClassified");
+		outRunfile.createNewFile();
+		FileWriter writer = new FileWriter(outRunfile);
 
-				File file = new File(runFile);
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				String st;
-				int i = 0;
-				while (((st = br.readLine()) != null)) {
+		File file = new File(runFile);
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String st;
+		int i = 0;
+		while (((st = br.readLine()) != null)) {
 
-					String[] tokens = st.split(" ");
-					String paraId = tokens[2];
-					String paragraph = getParagraphForId(indexPath, paraId);
+			String[] tokens = st.split(" ");
+			String paraId = tokens[2];
+			String paragraph = getParagraphForId(indexPath, paraId);
 
-					Instances testset = trainingData.stringFreeStructure();
-					Instance insta = makeInstance(paragraph, testset);
+			Instances testset = trainingData.stringFreeStructure();
+			Instance insta = makeInstance(paragraph, testset);
 
-					double[] sample = cls_RF.distributionForInstance(insta);
-					double predicted = cls_RF.classifyInstance(insta);
+			double[] sample = cls_RF.distributionForInstance(insta);
+			double predicted = cls_RF.classifyInstance(insta);
 
-					double[] prediction = cls_RF.distributionForInstance(insta);
-					// double res = classifier.classifyInstance(insta);
+			double[] prediction = cls_RF.distributionForInstance(insta);
+			// double res = classifier.classifyInstance(insta);
 
-					double relevance;
+			double relevance;
 
-					System.out.print(".");
+			int lastIndex = tokens[0].lastIndexOf('/');
+			String querylastContent = tokens[0].substring(lastIndex + 1);
+			String queryfirstContent = tokens[0].substring(0, lastIndex + 1);
 
-					System.out.println(tokens[0]);
-					System.out.println(paragraph);
-					System.out.println(trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
-					String queryId = tokens[0];
-					int rank;
-					Boolean brk = false;
-					if (prediction[(int) predicted] > predictionConfidence) {
-						System.out.println("above " + predictionConfidence);
-						if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
-							queryId = tokens[0];
-							rank = Integer.parseInt(tokens[3]);
-							brk = true;
-						}
-						else
-						{
-							queryId = trainingData.classAttribute().value((int) predicted);
-							rank = 1;
-						}
-					}
-					else
-					{
-						queryId = tokens[0];
-						rank = Integer.parseInt(tokens[3]);
-					}
-					writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-					System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-					i++;
-					if(brk)
-					{
-						System.exit(-1);
-					}
+			System.out.println(tokens[0]);
+			System.out.println(paragraph);
+			System.out.println(
+					trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
+			String queryId = tokens[0];
+			int rank = 0;
+			if (prediction[(int) predicted] > predictionConfidence) {
+				System.out.println("above " + predictionConfidence);
+				String predictedClass = trainingData.classAttribute().value((int) predicted);
+				if (querylastContent == predictedClass) {
+					queryId = tokens[0];
+					rank = Integer.parseInt(tokens[3]);
+				} else {
+					continue;
 				}
+			} else {
+				queryId = tokens[0];
+				rank = Integer.parseInt(tokens[3]);
+			}
+			writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
+			System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
+			i++;
 
-				writer.flush();
-				writer.close();
+		}
 
-				System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName() );
+		writer.flush();
+		writer.close();
+
+		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
 
 	}
 

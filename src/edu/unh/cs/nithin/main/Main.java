@@ -86,9 +86,6 @@ public class Main {
 			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
-//			System.out.println(" Building Naive Bayes Classifier Model");
-//			NaiveBayesClassifier nbc = new NaiveBayesClassifier(arffFile, modelPath, arffFileName);
-//			System.out.println("NaiveBayes Classifier model built at " + modelPath + " ");
 
 		}
 		

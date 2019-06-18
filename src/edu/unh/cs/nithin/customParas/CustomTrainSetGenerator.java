@@ -194,13 +194,6 @@ public class CustomTrainSetGenerator implements Serializable {
 	 */
 	public Map<String, String> matchingPage(String trainSetFilePath, CharSequence[] cs) throws FileNotFoundException {
 		
-		String[] pagesToCheck = new String[5];
-		for(int i=0; i< cs.length; i++)
-		{
-			pagesToCheck[i] = cs[i].toString();
-		}
-		
-		boolean pageNamePresent = false;
 		List<Data.Page> pageList = new ArrayList<Data.Page>();
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
 		String Heading = "";
@@ -208,18 +201,13 @@ public class CustomTrainSetGenerator implements Serializable {
 		Map<String, String> paraHeading;
 
 		int pageCount = 0;
+		
 		// loop through wikipedia page in its order
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
-			
 			
 			paraHeading = new HashMap<>();
 			pageCount++;
 			String pageHeading = page.getPageId();
-			
-			if(Arrays.asList(pagesToCheck).contains(pageHeading))
-			{
-				pageNamePresent = true;
-			}
 			
 			Heading = pageHeading; // Heading will be page heading at the start of the page
 
@@ -246,11 +234,9 @@ public class CustomTrainSetGenerator implements Serializable {
 
 				String para = sectionPathParagraph.getParagraph().getTextOnly();
 
-				if (paraHeading.containsKey(Heading)) {
-					String oldPara = paraHeading.get(Heading);
-					paraHeading.put(Heading, oldPara);
-				} else {
+				if (!paraHeading.containsKey(Heading) && !Heading.equals("External%20links")) {
 					paraHeading.put(Heading, para);
+					System.out.println(Heading + " - " +para);
 				}
 
 			}
@@ -261,16 +247,16 @@ public class CustomTrainSetGenerator implements Serializable {
 
 				if (!matchingParaHeading.containsKey(heading)) {
 					for (CharSequence charSeq : cs) {
-						if (paragraph.contains(charSeq) || pageNamePresent) {
+						if (paragraph.contains(charSeq) || heading.equals(charSeq)) {
 							System.out.println("adding to map");
 							matchingParaHeading.put(heading, paragraph);
+							break;
 						}
 					}
 				}
 
 			}
 			
-
 			if (pageCount == 2000) {
 				System.out.println("breaking here");
 				break;
@@ -283,7 +269,6 @@ public class CustomTrainSetGenerator implements Serializable {
 
 	public void setupAfterHeadingAdded() {
 		attributes.add(new Attribute("@@class@@.", classValues));
-		// Create dataset with initial capacity of 100, and set index of class.
 		trainingData = new Instances("trainv2.0Set", attributes, 100);
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 	}
