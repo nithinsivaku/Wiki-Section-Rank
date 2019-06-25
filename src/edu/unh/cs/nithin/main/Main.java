@@ -69,7 +69,7 @@ public class Main {
 
 			// String[] arr = {"Carbohydrate", "Chocolate", "Cholera", "Ethics", "Flavor"};
 
-			CharSequence[] cs = { "Antibiotics", "Antimicrobial resistance", "Antioxidant", "Desertification",
+			CharSequence[] cs = { "Antibiotics", "Antimicrobial%20resistance", "Antioxidant", "Desertification",
 					"Deforestation" };
 			CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPAth, cs);
 
