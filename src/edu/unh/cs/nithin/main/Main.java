@@ -1,6 +1,15 @@
+/**
+ * @Author: Nithin
+ * @Date:   2019-03-17T17:15:55-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-08-17T18:41:17-04:00
+ */
 package edu.unh.cs.nithin.main;
 
 import java.io.File;
+
+import java.util.Arrays;
+
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.CategoryClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
@@ -86,9 +95,10 @@ public class Main {
 			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
 			System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 
+			int[] arr = {1,2,3,4,5};
 
 		}
-		
+
 		else if(mode.equals("build-category-classifier"))
 		{
 			String arrfFolderPath = args[1];
@@ -114,5 +124,4 @@ public class Main {
 		}
 
 	}
-
 }
