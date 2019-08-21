@@ -18,7 +18,7 @@ public class RandomForestClassifier {
 		DataSource trainSource = new DataSource(arrfFile);
 		Instances trainingSet = trainSource.getDataSet();
 
-		System.out.println("loaded dataSet");
+		System.out.println(" dataSet loaded");
 		if (trainingSet.classIndex() == -1)
 			trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
 
@@ -41,7 +41,7 @@ public class RandomForestClassifier {
 		// Build the meta-classifier
 		fc.buildClassifier(trainingSet);
 
-		weka.core.SerializationHelper.write(modelPath + "/" +arffFileName + "RF_Page.model", fc);
+		weka.core.SerializationHelper.write(modelPath + arffFileName + ".model", fc);
 	}
 	
 	public void buildRandomForestModel(String arrfFile, String modelPath, String arffFileName) throws Exception
