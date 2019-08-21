@@ -115,7 +115,7 @@ public class Main {
 			System.out.println(" Building Random Forest Classifier Model");
 			File[] files = new File(trainingSetPath).listFiles();
 			for(File file : files) {
-				String arffFileName = file.getName().toString().replaceFirst("[.][^.]+$", "");
+				String arffFileName = file.getName().toString().replaceFirst("[.][^.]+$", "").replaceAll("[\\s\\:]","_");
 				String arffFile = file.getAbsolutePath();
 				System.out.println(arffFile + " " + arffFileName);
 				RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,12 +25,14 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
  */
 public class PageWiseTrainSet {
 
+	private List<String> blackListedHeadings;
 	/**
 	 * @param rootPath
 	 * @param paraFilePath
 	 * @throws IOException 
 	 */
 	public PageWiseTrainSet(String trainingSetPath, String paraFilePath) throws IOException {
+		blackListedHeadings = new ArrayList<>(Arrays.asList("External links", "Further reading", "References", "See also", "Categories"));
 		processAllPages(trainingSetPath, paraFilePath);
 	}
 
@@ -42,7 +45,8 @@ public class PageWiseTrainSet {
 		FileInputStream fStream = new FileInputStream(new File(paraFilePath));
 		List<String> headingIds;
 		for(Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
-			String pageName = page.getPageName();
+			String pageName = page.getPageName().replaceAll("[\\s\\:]","_");
+			System.out.println(pageName);
 			headingIds = new ArrayList<>();
 			Map<String, String> headingPara = getHeadingParaMap(page);
 			
@@ -52,7 +56,11 @@ public class PageWiseTrainSet {
 			}
 			
 			// make the training set for this page
-			TrainSet ts = new TrainSet(pageName, headingIds, headingPara, trainingSetPath);
+			if(headingIds.size() > 1) { // as of now weka cant handle unary class labels
+				TrainSet ts = new TrainSet(pageName, headingIds, headingPara, trainingSetPath);
+			}
+			
+			
 		}
 	}
 
@@ -73,6 +81,7 @@ public class PageWiseTrainSet {
 					Heading = nextSection.getHeadingId();
 				}
 			}
+			if(blackListedHeadings.contains(Heading)) continue;
 			String para = sectionPathParagraphs.getParagraph().getTextOnly();
 			if(headingPara.get(Heading) == null) {
 				headingPara.put(Heading, para);
