@@ -1,3 +1,9 @@
+/**
+ * @Author: Nithin
+ * @Date:   2019-04-15T15:58:53-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-08-18T22:04:43-04:00
+ */
 package edu.unh.cs.nithin.arrfTools;
 
 import java.io.File;
@@ -19,7 +25,7 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 public class CategoryTrainset {
 
 	public CategoryTrainset() throws FileNotFoundException {
-		
+
 	}
 
 	/*
@@ -31,23 +37,18 @@ public class CategoryTrainset {
 	public Map<String, ArrayList<Data.Page>> getCategoryPageMap(String trainSetFilePath) throws FileNotFoundException {
 
 		FileInputStream fileInputStream = new FileInputStream(new File(trainSetFilePath));
-
 		Map<String, ArrayList<Data.Page>> categoryPagesMap = new HashMap<>();
-
 		ArrayList<Data.Page> pageList;
 
 		int pageCount = 0;
 		int categoryCount = 0;
-		
+
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream)) {
 
 			pageCount++;
 			ArrayList<String> catList = page.getPageMetadata().getCategoryNames();
 
 			for (String category : catList) {
-				
-				
-				
 				category = category.replaceAll("[\\s\\:/]","_");
 				pageList = categoryPagesMap.get(category);
 				categoryCount = categoryPagesMap.size();
@@ -59,7 +60,7 @@ public class CategoryTrainset {
 				} else {
 					pageList.add(page);
 					categoryPagesMap.put(category, pageList);
-				}		
+				}
 
 			}
 			System.out.println(pageCount);
@@ -69,9 +70,8 @@ public class CategoryTrainset {
 			}
 		}
 		return categoryPagesMap;
-
 	}
-	
+
 	/*
 	 * Loop through all pages.
 	 * For each page add the heading name and paragraph to Hashmap.
@@ -113,12 +113,12 @@ public class CategoryTrainset {
 					para = mapParaHeading.get(Heading) + " " + para;
 					mapParaHeading.put(Heading, para);
 				}
-				
+
 
 			}
 		}
 		return mapParaHeading;
-		
+
 	}
 
 }

@@ -10,6 +10,7 @@ import java.io.File;
 
 import java.util.Arrays;
 
+import edu.unh.cs.nithin.arrfTools.PageWiseTrainSet;
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.CategoryClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
@@ -104,7 +105,23 @@ public class Main {
 			String arrfFolderPath = args[1];
 			String modelFolderPath = args[2];
 			CategoryClassifier cc = new CategoryClassifier(arrfFolderPath, modelFolderPath);
-		}
+		} else if(mode.equals("train-pages")) {
+			String trainingSetPath = args[1];
+			String paraFilePath = args[2];
+			String modelPath = args[3];
+			PageWiseTrainSet pwt = new PageWiseTrainSet(trainingSetPath, paraFilePath);
+			
+			// build the classifier model for all the pages headings
+			System.out.println(" Building Random Forest Classifier Model");
+			File[] files = new File(trainingSetPath).listFiles();
+			for(File file : files) {
+				String arffFileName = file.getName().toString().replaceFirst("[.][^.]+$", "");
+				String arffFile = file.getAbsolutePath();
+				System.out.println(arffFile + " " + arffFileName);
+				RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
+				System.out.println("Random Forest Classifier model built at " + modelPath + arffFileName + ".model ");
+			}
+		} 
 
 		else if (mode.equals("classify-runfile")) {
 			String runFile = args[1];

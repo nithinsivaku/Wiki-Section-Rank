@@ -79,7 +79,32 @@ public class TrainSet implements Serializable {
 
 		createCategoryTrainSet(trainSetFile, outputPath);
 	}
-
+	
+	// pagewisetrainset constructor
+	public TrainSet(String pageName, List<String> headingIds, Map<String, String> headingPara, String filePath) throws IOException {
+		initTrainSet();
+		
+		// add all the headings to the header 
+		for(String heading : headingIds) {
+			addHeading(heading);
+		}
+		System.out.println("Done adding heading");
+		
+		setupAfterHeadingAdded();
+		
+		// add para and its heading as the label
+		for(Entry<String, String> entry : headingPara.entrySet()) {
+			String heading = entry.getKey();
+			String paragraph = entry.getValue();
+			addParagrah(paragraph, heading);
+		}
+		System.out.println("Done Adding class values \n");
+		
+		createPageWiseTrainSetFile(pageName, filePath);
+		
+	}
+	
+	
 	/*
 	 * Create vector of attributes.
 	 * Add attribute for holding texts.
@@ -211,7 +236,24 @@ public class TrainSet implements Serializable {
 		bw.write(trainingData.toString());
 		bw.close();
 		System.out.println("check for arff file in " + path);
-
+	}
+	
+	/**
+	 * @param pageName
+	 * @param filePath
+	 * @throws IOException 
+	 */
+	private void createPageWiseTrainSetFile(String pageName, String filePath) throws IOException {
+		String path  = pageName + ".arff";
+		filePath = filePath+path;
+		File f = new File(filePath);
+		f.createNewFile();
+		FileWriter fw = new FileWriter(f);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(trainingData.toString());
+		bw.close();
+		System.out.println("check for arff file in " + filePath);
+		
 	}
 
 
