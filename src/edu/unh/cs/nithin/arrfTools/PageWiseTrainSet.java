@@ -46,7 +46,11 @@ public class PageWiseTrainSet {
 		List<String> headingIds;
 		for(Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
 			String pageName = page.getPageName().replaceAll("[\\s\\:]","_");
+			if(pageName.contains("/")) continue;
 			System.out.println(pageName);
+			if(pageName.equals("Dragon_32/64")) {
+				System.out.println(pageName);
+			}
 			headingIds = new ArrayList<>();
 			Map<String, String> headingPara = getHeadingParaMap(page);
 			
