@@ -83,7 +83,7 @@ public class BM25 {
 	 */
 	private void computeHeadingWeights(String outputPath, String indexPath, String pagesFile) throws IOException {
 		// TODO Auto-generated method stub
-		PageSearch(outputPath, indexPath, pagesFile);
+		//PageSearch(outputPath, indexPath, pagesFile);
 		SectionSearch(outputPath, indexPath, pagesFile);
 //		SectionSearchForLowestHeading(outputPath, indexPath, pagesFile);
 //		allPageSearch(outputPath, indexPath, pagesFile);
@@ -227,7 +227,7 @@ public class BM25 {
 					final float searchScore = score.score;
 					final int searchRank = i + 1;
 				//	mapSectionPassage.put(paragraphid, paragraph);
-					System.out.println(".");
+//					System.out.println(".");
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 					count++;
