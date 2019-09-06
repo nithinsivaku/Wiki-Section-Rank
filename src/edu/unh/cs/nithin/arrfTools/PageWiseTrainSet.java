@@ -1,5 +1,14 @@
 /**
- * 
+ * @Author: Nithin Sivakumar <Nithin>
+ * @Date:   2019-08-31T14:18:50-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-09-02T15:27:14-04:00
+ */
+
+
+
+/**
+ *
  */
 package edu.unh.cs.nithin.arrfTools;
 
@@ -29,7 +38,7 @@ public class PageWiseTrainSet {
 	/**
 	 * @param rootPath
 	 * @param paraFilePath
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public PageWiseTrainSet(String trainingSetPath, String paraFilePath) throws IOException {
 		blackListedHeadings = new ArrayList<>(Arrays.asList("External links", "Further reading", "References", "See also", "Categories"));
@@ -39,7 +48,7 @@ public class PageWiseTrainSet {
 	/**
 	 * @param rootPath
 	 * @param paraFilePath
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void processAllPages(String trainingSetPath, String paraFilePath) throws IOException {
 		FileInputStream fStream = new FileInputStream(new File(paraFilePath));
@@ -50,16 +59,16 @@ public class PageWiseTrainSet {
 			System.out.println(pageName);
 			headingIds = new ArrayList<>();
 			Map<String, String> headingPara = getHeadingParaMap(page);
-			
+
 			// add all the headingIds under single page
 			for(String headingId : headingPara.keySet()) {
 				headingIds.add(headingId);
 			}
-			
+
 			// make the training set for this page
 			if(headingIds.size() > 1) { // as of now weka cant handle unary class labels
 				TrainSet ts = new TrainSet(pageName, headingIds, headingPara, trainingSetPath);
-			}	
+			}
 		}
 	}
 
@@ -70,7 +79,7 @@ public class PageWiseTrainSet {
 	private Map<String, String> getHeadingParaMap(Page page) {
 		String Heading = page.getPageId();
 		Map<String, String> headingPara = new HashMap<String, String>();
-		for(SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) { 
+		for(SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) {
 			Iterator<Section> sectionPathIter = sectionPathParagraphs.getSectionPath().iterator();
 			while(sectionPathIter.hasNext()) {
 				Section section = sectionPathIter.next();
@@ -91,5 +100,5 @@ public class PageWiseTrainSet {
 		}
 		return headingPara;
 	}
-		
+
 }
