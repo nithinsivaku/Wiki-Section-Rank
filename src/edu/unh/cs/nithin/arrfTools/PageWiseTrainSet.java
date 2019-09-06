@@ -57,9 +57,6 @@ public class PageWiseTrainSet {
 			String pageName = page.getPageName().replaceAll("[\\s\\:]","_");
 			if(pageName.contains("/")) continue;
 			System.out.println(pageName);
-			if(pageName.equals("Dragon_32/64")) {
-				System.out.println(pageName);
-			}
 			headingIds = new ArrayList<>();
 			Map<String, String> headingPara = getHeadingParaMap(page);
 
@@ -72,8 +69,6 @@ public class PageWiseTrainSet {
 			if(headingIds.size() > 1) { // as of now weka cant handle unary class labels
 				TrainSet ts = new TrainSet(pageName, headingIds, headingPara, trainingSetPath);
 			}
-
-
 		}
 	}
 
