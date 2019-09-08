@@ -218,16 +218,16 @@ public class Main {
 	/**
 	 * @param trainingCorpus
 	 * @param outputPath
-	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
-	private static void wikikreator(String trainingCorpus, String outputPath) throws FileNotFoundException {
+	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
 		String[] categoryNames = new String[] {"Category:Radiometry", "Category:American mathematicians", "Category:Diseases and disorders", "Category:Living_people"};
-		Boolean includeSectionPath = false;
 		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
 		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
 		qg.generateQrels(categoryPages); 
-		qg.createTrainSet(categoryPages, includeSectionPath);
-		includeSectionPath = true;
-		qg.createTrainSet(categoryPages, includeSectionPath);
+//		Boolean includeSectionPath = false;
+//		qg.createTrainSet(categoryPages, includeSectionPath);
+//		includeSectionPath = true;
+//		qg.createTrainSet(categoryPages, includeSectionPath);
 	}
 }

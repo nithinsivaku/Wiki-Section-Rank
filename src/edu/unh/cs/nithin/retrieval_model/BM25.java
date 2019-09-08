@@ -226,8 +226,6 @@ public class BM25 {
 					final String paragraph = doc.getField("text").stringValue();
 					final float searchScore = score.score;
 					final int searchRank = i + 1;
-				//	mapSectionPassage.put(paragraphid, paragraph);
-//					System.out.println(".");
 					writer.write(
 							queryId + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
 					count++;
