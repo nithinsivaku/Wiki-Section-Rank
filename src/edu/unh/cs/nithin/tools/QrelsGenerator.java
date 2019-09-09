@@ -48,21 +48,17 @@ public class QrelsGenerator {
 
 	}
 
-
 	public Map<String, List<Page>> getCategoriesPages() throws FileNotFoundException {
 		String[] categoryNames = getCategoryNames();
 		Map<String, List<Page>> categoriesPages = getCategoryPages();
 		FileInputStream fStream = new FileInputStream(new File(getParaFilePath()));
-		int count = 0;
-		for(Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
-			if(count == 1) break;
+		for (Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
 			System.out.println(page.getPageName());
 			PageMetadata pageMetaData = page.getPageMetadata();
 			for (String categoryName : pageMetaData.getCategoryNames()) {
-				for(String matchingCategoryName : categoryNames) {
-					if(categoryName.equals(matchingCategoryName)) {
+				for (String matchingCategoryName : categoryNames) {
+					if (categoryName.equals(matchingCategoryName)) {
 						putObject(categoryName, page);
-						count++;
 					}
 				}
 				System.out.println(categoryName);
@@ -73,13 +69,13 @@ public class QrelsGenerator {
 
 	/**
 	 *
-	 * @param key categoryName where pages get added to
+	 * @param key   categoryName where pages get added to
 	 * @param value page which will be added to a category
 	 */
 	private void putObject(String key, Data.Page value) {
 		Map<String, List<Page>> categoryPageMap = getCategoryPages();
 		List<Page> pagesList = categoryPageMap.get(key);
-		if(pagesList != null) {
+		if (pagesList != null) {
 			pagesList.add(value);
 			categoryPageMap.put(key, pagesList);
 		} else {
@@ -91,22 +87,24 @@ public class QrelsGenerator {
 
 	/**
 	 * @param catPages
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void generateQrels(Map<String, List<Page>> catPages) throws IOException {
-		for(Entry<String, List<Page>> entrySet : catPages.entrySet()) {
+		for (Entry<String, List<Page>> entrySet : catPages.entrySet()) {
 			String catName = entrySet.getKey();
 			List<Page> pages = entrySet.getValue();
 			createQrelFile(catName, pages);
 		}
 
 	}
-	
+
 	/**
 	 * Creates qrel file for given categories and list of pages
+	 * 
 	 * @param catName
 	 * @param pages
-	 * @throws IOException 
+	 * @param includeHeadingPath
+	 * @throws IOException
 	 */
 	private void createQrelFile(String catName, List<Page> pages) throws IOException {
 		String outputPath = getOutputFilePath();
@@ -114,14 +112,14 @@ public class QrelsGenerator {
 		File qrelfile = new File(outputPath + "/" + qrelFileName);
 		qrelfile.createNewFile();
 		FileWriter writer = new FileWriter(qrelfile);
-		for(Page page : pages) {
+		for (Page page : pages) {
 			String Heading = page.getPageId();
-			for(SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) {
+			for (SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) {
 				Iterator<Section> sectionPathIter = sectionPathParagraphs.getSectionPath().iterator();
-				while(sectionPathIter.hasNext()) {
+				while (sectionPathIter.hasNext()) {
 					Section section = sectionPathIter.next();
 					Heading = section.getHeadingId();
-					if(sectionPathIter.hasNext()) {
+					if (sectionPathIter.hasNext()) {
 						Section nextSection = sectionPathIter.next();
 						Heading = nextSection.getHeadingId();
 					}
@@ -135,14 +133,13 @@ public class QrelsGenerator {
 		System.out.println(qrelFileName + " is at " + qrelfile.getAbsolutePath());
 	}
 
-
 	/**
 	 * @param categoryPages2
 	 * @param includeSectionPath
 	 */
 	public void createTrainSet(Map<String, List<Page>> categoryPages2, Boolean includeSectionPath) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -173,14 +170,12 @@ public class QrelsGenerator {
 		this.outputFilePath = outputFilePath;
 	}
 
-
 	/**
 	 * @return the categoryPages
 	 */
 	public Map<String, List<Data.Page>> getCategoryPages() {
 		return categoryPages;
 	}
-
 
 	/**
 	 * @param categoryPages the categoryPages to set
@@ -189,14 +184,12 @@ public class QrelsGenerator {
 		this.categoryPages = categoryPages;
 	}
 
-
 	/**
 	 * @return the categoryNames
 	 */
 	public String[] getCategoryNames() {
 		return categoryNames;
 	}
-
 
 	/**
 	 * @param categoryNames the categoryNames to set
