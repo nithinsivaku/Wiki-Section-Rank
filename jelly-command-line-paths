@@ -15,6 +15,8 @@ java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependenc
 build-classifer-model 
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/custom/ARRF_SETS/AllPages.arff /home/ns1077/work/custom/model
 
+wikikreator
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar wikikreator /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/outputFiles/qrels/
 
 train run
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/paragraphIndex /home/ns1077/work/custom/ARRF_SETS

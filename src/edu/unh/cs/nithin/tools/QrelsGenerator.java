@@ -52,13 +52,16 @@ public class QrelsGenerator {
 		String[] categoryNames = getCategoryNames();
 		Map<String, List<Page>> categoriesPages = getCategoryPages();
 		FileInputStream fStream = new FileInputStream(new File(getParaFilePath()));
+		int count = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
+//			if(count == 1) break;
 			System.out.println(page.getPageName());
 			PageMetadata pageMetaData = page.getPageMetadata();
 			for (String categoryName : pageMetaData.getCategoryNames()) {
 				for (String matchingCategoryName : categoryNames) {
 					if (categoryName.equals(matchingCategoryName)) {
 						putObject(categoryName, page);
+						count ++;
 					}
 				}
 				System.out.println(categoryName);
@@ -107,7 +110,7 @@ public class QrelsGenerator {
 	 * @throws IOException
 	 */
 	private void createQrelFile(String catName, List<Page> pages) throws IOException {
-		String outputPath = getOutputFilePath();
+		String outputPath = getOutputFilePath() + "/qrels";
 		String qrelFileName = catName + ".qrels";
 		File qrelfile = new File(outputPath + "/" + qrelFileName);
 		qrelfile.createNewFile();
@@ -197,5 +200,4 @@ public class QrelsGenerator {
 	public void setCategoryNames(String[] categoryNames) {
 		this.categoryNames = categoryNames;
 	}
-
 }
