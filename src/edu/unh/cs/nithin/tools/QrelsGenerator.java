@@ -54,7 +54,7 @@ public class QrelsGenerator {
 		FileInputStream fStream = new FileInputStream(new File(getParaFilePath()));
 		int count = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fStream)) {
-//			if(count == 1) break;
+			if(count == 1) break;
 			System.out.println(page.getPageName());
 			PageMetadata pageMetaData = page.getPageMetadata();
 			for (String categoryName : pageMetaData.getCategoryNames()) {

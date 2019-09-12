@@ -7,20 +7,12 @@
 package edu.unh.cs.nithin.main;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.netlib.util.booleanW;
-
 import edu.unh.cs.nithin.arrfTools.TrainSet;
-import edu.unh.cs.nithin.classifier.CategoryClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
-import edu.unh.cs.nithin.customParas.CustomParaGenerator;
-import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 import edu.unh.cs.nithin.tools.Indexer;
@@ -39,17 +31,8 @@ public class Main {
 			case "wikikreator":
 				wikikreator(args[1], args[2]);
 				break;
-			case "custom-retrieval":
-				customRetrieval(args[1], args[2], args[3]);
-				break;
-			case "custom-train":
-				customTrain(args[1], args[2], args[3]);
-				break;
 			case "build-classifer-model":
 				buildClassifierModel(args[1], args[2]);
-				break;
-			case "build-category-classifier":
-				buildCategoryClassifier(args[1], args[2]);
 				break;
 			case "classify-runfile":
 				classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
@@ -84,46 +67,6 @@ public class Main {
 	}
 
 	/**
-	 * [customRetrieval execute BM25 retrieval model for particular set of queries
-	 *  and generate a run file for given query corpus and paragraph index corpus.
-	 *  All the String paramters are file paths]
-	 * @param pagesFile  [queries]
-	 * @param indexPath  [paragraph index]
-	 * @param outputPath [run file]
-	 * @throws IOException
-	 * @throws NumberFormatException
-	 */
-	private static void customRetrieval(String pagesFile, String indexPath, String outputPath) throws NumberFormatException, IOException {
-		System.out.println(" Starting custom retrieval");
-		String directoryName = outputPath;
-		File directory = new File(directoryName);
-		if (!directory.exists())
-			directory.mkdirs();
-		outputPath = directory.getPath();
-		String totalNumberOfParas = "5";
-		CustomParaGenerator cpg = new CustomParaGenerator(pagesFile, indexPath, outputPath,
-				Integer.parseInt(totalNumberOfParas));
-		System.out.println(" Custom - Retrieval over");
-	}
-
-	/**
-	 * [customTrain create weka format trainset for selected number of data
-	 * 	in a given training dataset]
-	 * @param paraFile       [unprocessedAllButBenchmark file]
-	 * @param indexPath      [indexpath to look up paraid for para]
-	 * @param arrfOutputPath [ouptut .arrf file]
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	private static void customTrain(String paraFile, String indexPath, String arrfOutputPath) throws IOException, ParseException {
-		System.out.println(" Starting custom training Set Creation ");
-		CharSequence[] cs = { "Antibiotics", "Antimicrobial%20resistance", "Antioxidant", "Desertification",
-				"Deforestation" };
-		CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPath, cs);
-		System.out.println(" Training Set Created ");
-	}
-
-	/**
 	 * [buildClassifierModel Train a weka format classifier model
 	 * given training set and model output path]
 	 * @param arffFile  [weka format training set]
@@ -138,15 +81,6 @@ public class Main {
 		System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 	}
 
-	/**
-	 * [buildCategoryClassifier Train a weka format classifier model for all the categories]
-	 * @param arrfFolderPath  [empty folder path to store all training files]
-	 * @param modelFolderPath [empty folder path to store all model files]
-	 * @throws Exception
-	 */
-	private static void buildCategoryClassifier(String arrfFolderPath, String modelFolderPath) throws Exception {
-		CategoryClassifier cc = new CategoryClassifier(arrfFolderPath, modelFolderPath);
-	}
 
 	/**
 	 * [classifyRunFile Main prediction funtion.
