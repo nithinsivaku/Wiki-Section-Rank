@@ -1,6 +1,7 @@
 package edu.unh.cs.nithin.classifier;
 import java.io.File;
 
+
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
@@ -13,7 +14,7 @@ public class RandomForestClassifier {
 	private String outputFilePath;
 	private String arrfFilePath;
 	
-	public RandomForestClassifier(String outputPath, String arrfPath) {
+	public RandomForestClassifier(String arrfPath, String outputPath) {
 		setArrfFilePath(arrfPath);
 		setOutputFilePath(outputPath);
 	}
@@ -21,7 +22,7 @@ public class RandomForestClassifier {
 	public void buildRandomForestModel() throws Exception {
 		File arrfDir = new File(getArrfFilePath());
 		for(File arrfFile : arrfDir.listFiles()) {
-			String arrfFileName = arrfFile.getName();
+			String arrfFileName = arrfFile.getName().toString().replaceFirst("[.][^.]+$", "");
 			System.out.println("Training RF classifier with the trainset");
 			DataSource trainSource = new DataSource(arrfFile.getAbsolutePath()); //may be wrong
 			Instances trainingSet = trainSource.getDataSet();

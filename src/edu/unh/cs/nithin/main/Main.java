@@ -73,11 +73,10 @@ public class Main {
 	 * @param modelPath [output path .modelfile]
 	 * @throws Exception
 	 */
-	private static void buildClassifierModel(String arffFile, String modelPath) throws Exception {
-		File f = new File(arffFile);
-		String arffFileName = f.getName().toString().replaceFirst("[.][^.]+$", "");
+	private static void buildClassifierModel(String arffFiles, String modelPath) throws Exception {
 		System.out.println(" Building Random Forest Classifier Model");
-		RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
+		RandomForestClassifier rfc = new RandomForestClassifier(arffFiles, modelPath);
+		rfc.buildRandomForestModel();
 		System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 	}
 
