@@ -11,10 +11,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.bounce.event.CardEvent;
+
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
+import edu.unh.cs.nithin.tools.CarHelper;
 import edu.unh.cs.nithin.tools.Indexer;
 import edu.unh.cs.nithin.tools.QrelsGenerator;
 import edu.unh.cs.treccar_v2.Data.Page;
@@ -62,7 +65,12 @@ public class Main {
 		if (!directory.exists())
 			directory.mkdirs();
 		outputPath = directory.getPath();
+		String[] categoryNames = new String[] {"Category:Diseases and disorders"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
+		for(String catName : categoryNames) {
+			bm25.PageSearch(catName);
+			bm25.SectionSearch(catName);
+		}
 		System.out.println(" Retrieval over");
 	}
 
@@ -113,11 +121,16 @@ public class Main {
 	 * @throws IOException 
 	 */
 	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
-		String[] categoryNames = new String[] {"Category:Radiometry", "Category:American mathematicians", "Category:Diseases and disorders", "Category:Living_people"};
-		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
-		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
-		qg.generateQrels(categoryPages); 
-		TrainSet ts = new TrainSet(categoryPages, outputPath);
-		ts.createCategoryTrainSet();
+		String pagesFile = "/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor";
+		CarHelper ch = new CarHelper();
+		Map<String, Integer> categoryCount = ch.findCategoryCount(pagesFile);
+		ch.writeToCsv(categoryCount, outputPath);
+		
+//		String[] categoryNames = new String[] {"Category:Radiometry", "Category:American mathematicians", "Category:Diseases and disorders", "Category:Living_people"};
+//		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
+//		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
+//		qg.generateQrels(categoryPages); 
+//		TrainSet ts = new TrainSet(categoryPages, outputPath);
+//		ts.createCategoryTrainSet();
 	}
 }
