@@ -35,7 +35,7 @@ public class Main {
 				wikikreator(args[1], args[2]);
 				break;
 			case "build-classifer-model":
-				buildClassifierModel(args[1], args[2]);
+				buildClassifierModel(args[1]);
 				break;
 			case "classify-runfile":
 				//classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
@@ -81,11 +81,10 @@ public class Main {
 	 * @param modelPath [output path .modelfile]
 	 * @throws Exception
 	 */
-	private static void buildClassifierModel(String arffFiles, String modelPath) throws Exception {
+	private static void buildClassifierModel(String outputPath) throws Exception {
 		System.out.println(" Building Random Forest Classifier Model");
-		RandomForestClassifier rfc = new RandomForestClassifier(arffFiles, modelPath);
+		RandomForestClassifier rfc = new RandomForestClassifier(outputPath);
 		rfc.buildRandomForestModel();
-		System.out.println("Random Forest Classifier model built at " + modelPath + " ");
 	}
 
 
@@ -108,7 +107,7 @@ public class Main {
 	}
 
 	/**
-	 * [index index all the paragraphs in paracorpus]
+	 * [index index all the paragraphs in para-corpus]
 	 * @throws IOException
 	 */
 	private static void index() throws IOException {

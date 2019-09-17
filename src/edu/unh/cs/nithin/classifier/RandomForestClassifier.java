@@ -14,8 +14,8 @@ public class RandomForestClassifier {
 	private String outputFilePath;
 	private String arrfFilePath;
 	
-	public RandomForestClassifier(String arrfPath, String outputPath) {
-		setArrfFilePath(arrfPath);
+	public RandomForestClassifier(String outputPath) {
+		setArrfFilePath(outputPath);
 		setOutputFilePath(outputPath);
 	}
 
@@ -49,8 +49,9 @@ public class RandomForestClassifier {
 			fc.setClassifier(rf);
 			// Build the meta-classifier
 			fc.buildClassifier(trainingSet);
-
-			weka.core.SerializationHelper.write(getOutputFilePath() + "/" +arrfFileName + ".model", fc);
+			String arffFilePath = getOutputFilePath() + "/" +arrfFileName + ".model";
+			weka.core.SerializationHelper.write(arffFilePath, fc);
+			System.out.println("Random Forest Classifier model built at " + arffFilePath + " ");
 		}
 	}
 
@@ -65,7 +66,7 @@ public class RandomForestClassifier {
 	 * @param outputFilePath the outputFilePath to set
 	 */
 	public void setOutputFilePath(String outputFilePath) {
-		this.outputFilePath = outputFilePath;
+		this.outputFilePath = outputFilePath+"/models";
 	}
 
 	/**
@@ -78,8 +79,8 @@ public class RandomForestClassifier {
 	/**
 	 * @param arrfFilePath the arrfFilePath to set
 	 */
-	public void setArrfFilePath(String arrfFilePath) {
-		this.arrfFilePath = arrfFilePath;
+	public void setArrfFilePath(String outputPath) {
+		this.arrfFilePath = outputPath+"/trainset";
 	}
 
 
