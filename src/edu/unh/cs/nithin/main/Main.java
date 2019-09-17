@@ -38,7 +38,7 @@ public class Main {
 				buildClassifierModel(args[1], args[2]);
 				break;
 			case "classify-runfile":
-				classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+				//classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 				break;
 			case "Index":
 				index();
@@ -102,9 +102,9 @@ public class Main {
 	 * @throws Exception
 	 * @throws NumberFormatException
 	 */
-	private static void classifyRunFile(String runFile, String randomforestClassifierModel, String naiveBayesModel, String trainDataArff, String indexPath, String outputPath, String predConfidence) throws NumberFormatException, Exception {
-		ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel,
-				trainDataArff, indexPath, outputPath, Float.parseFloat(predConfidence));
+	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
+		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
+		crr.classifyRunFile(runFile, "Category/Diseases and disorders");
 	}
 
 	/**
@@ -121,16 +121,11 @@ public class Main {
 	 * @throws IOException 
 	 */
 	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
-		String pagesFile = "/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor";
-		CarHelper ch = new CarHelper();
-		Map<String, Integer> categoryCount = ch.findCategoryCount(pagesFile);
-		ch.writeToCsv(categoryCount, outputPath);
-		
-//		String[] categoryNames = new String[] {"Category:Radiometry", "Category:American mathematicians", "Category:Diseases and disorders", "Category:Living_people"};
-//		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
-//		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
-//		qg.generateQrels(categoryPages); 
-//		TrainSet ts = new TrainSet(categoryPages, outputPath);
-//		ts.createCategoryTrainSet();
+		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:RTT", "Category:Deserts", "Category:Environmental terminology"};
+		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
+		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
+		qg.generateQrels(categoryPages); 
+		TrainSet ts = new TrainSet(categoryPages, outputPath);
+		ts.createCategoryTrainSet();
 	}
 }
