@@ -23,7 +23,7 @@ public class RandomForestClassifier {
 		File arrfDir = new File(getArrfFilePath());
 		for(File arrfFile : arrfDir.listFiles()) {
 			String arrfFileName = arrfFile.getName().toString().replaceFirst("[.][^.]+$", "");
-			System.out.println("Training RF classifier with the trainset");
+			System.out.println("Training RF classifier for -" + arrfFileName);
 			DataSource trainSource = new DataSource(arrfFile.getAbsolutePath()); //may be wrong
 			Instances trainingSet = trainSource.getDataSet();
 
