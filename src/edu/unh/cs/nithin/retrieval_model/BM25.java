@@ -102,7 +102,12 @@ public class BM25 {
 		System.out.println("Write " + count + " results\nQuery Done!");
 
 	}
-
+	
+	/**
+	 * 
+	 * @param catName
+	 * @throws IOException
+	 */
 	public void SectionSearch(String catName) throws IOException {
 		File runfile = new File(getOutputPath() + "/" + catName);
 		runfile.createNewFile();

@@ -102,7 +102,7 @@ public class Main {
 	 */
 	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
 		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
-		crr.classifyRunFile(runFile, "Category_Environmental terminology");
+		crr.classifyRunFile(runFile, "Category_Environmental_terminology");
 	}
 
 	/**
