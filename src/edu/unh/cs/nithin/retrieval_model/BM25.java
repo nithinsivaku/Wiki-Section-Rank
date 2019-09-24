@@ -104,7 +104,7 @@ public class BM25 {
 	}
 
 	public void SectionSearch(String catName) throws IOException {
-		File runfile = new File(getOutputPath() + "/runfile_section");
+		File runfile = new File(getOutputPath() + "/" + catName);
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
 

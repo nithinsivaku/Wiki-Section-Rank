@@ -38,7 +38,7 @@ public class Main {
 				buildClassifierModel(args[1]);
 				break;
 			case "classify-runfile":
-				//classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+				classifyRunFile(args[1], args[2], args[3]);
 				break;
 			case "Index":
 				index();
@@ -65,10 +65,9 @@ public class Main {
 		if (!directory.exists())
 			directory.mkdirs();
 		outputPath = directory.getPath();
-		String[] categoryNames = new String[] {"Category:Diseases and disorders"};
+		String[] categoryNames = new String[] {"Category:Environmental terminology"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
 		for(String catName : categoryNames) {
-			bm25.PageSearch(catName);
 			bm25.SectionSearch(catName);
 		}
 		System.out.println(" Retrieval over");
@@ -103,7 +102,7 @@ public class Main {
 	 */
 	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
 		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
-		crr.classifyRunFile(runFile, "Category/Diseases and disorders");
+		crr.classifyRunFile(runFile, "Category_Environmental terminology");
 	}
 
 	/**
@@ -120,7 +119,8 @@ public class Main {
 	 * @throws IOException 
 	 */
 	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
-		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:RTT", "Category:Deserts", "Category:Environmental terminology"};
+//		"Category:Articles containing video clips", "Category:RTT", "Category:Deserts", "Category:Environmental terminology"
+		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology"};
 		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
 		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
 		qg.generateQrels(categoryPages); 

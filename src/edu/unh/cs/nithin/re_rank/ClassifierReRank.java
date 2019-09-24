@@ -2,6 +2,7 @@ package edu.unh.cs.nithin.re_rank;
 
 import java.io.BufferedReader;
 
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,9 +33,6 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import edu.unh.cs.treccar_v2.Data;
-import edu.unh.cs.treccar_v2.Data.PageSkeleton;
-import edu.unh.cs.treccar_v2.Data.Section;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -46,9 +44,8 @@ public class ClassifierReRank {
 	
 	private String outputPath;
 	private String indexPath;
-	private float predictionConfidence = (float) 0.5;
+	private float predictionConfidence = (float) 0.2;
 	
-
 	public ClassifierReRank(String runFile, String indexPath, String outputPath) throws Exception {
 		setIndexPath(indexPath);
 		setOutputPath(outputPath);
@@ -60,8 +57,8 @@ public class ClassifierReRank {
 	public void classifyRunFile(String runFile, String modelName) throws Exception {
 		String outPath = getOutputPath();
 		String indexPath = getIndexPath();
-		String modelPath = getFilePath("model", outPath, modelName);
-		String trainsetPath = getFilePath("Trainset", outPath, modelName);
+		String modelPath = getFilePath("models", outPath, modelName);
+		String trainsetPath = getFilePath("trainset", outPath, modelName);
 		
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
@@ -69,7 +66,7 @@ public class ClassifierReRank {
 		System.out.println("Random Forest Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
 
-		// Load the trainid data format
+		// Load the trainset data format
 		DataSource source = new DataSource(trainsetPath);
 		Instances trainingData = source.getDataSet();
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
@@ -77,60 +74,27 @@ public class ClassifierReRank {
 		File outRunfile = new File(outputPath + "RFClassified");
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
-
 		File file = new File(runFile);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String st;
-		int i = 0;
 		while (((st = br.readLine()) != null)) {
-
 			String[] tokens = st.split(" ");
 			String paraId = tokens[2];
 			String paragraph = getParagraphForId(indexPath, paraId);
 
 			Instances testset = trainingData.stringFreeStructure();
 			Instance insta = makeInstance(paragraph, testset);
-
-			double[] sample = cls_RF.distributionForInstance(insta);
 			double predicted = cls_RF.classifyInstance(insta);
-
 			double[] prediction = cls_RF.distributionForInstance(insta);
-			// double res = classifier.classifyInstance(insta);
-
-			double relevance;
-
-			int lastIndex = tokens[0].lastIndexOf('/');
-			String querylastContent = tokens[0].substring(lastIndex + 1);
-			String queryfirstContent = tokens[0].substring(0, lastIndex + 1);
-
-			System.out.println(tokens[0]);
-			System.out.println(paragraph);
-			System.out.println(
-					trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
-			String queryId = tokens[0];
-			int rank = 0;
-			if (prediction[(int) predicted] > predictionConfidence) {
-				System.out.println("above " + predictionConfidence);
+			
+			if(prediction[(int) predicted] >= predictionConfidence) {
 				String predictedClass = trainingData.classAttribute().value((int) predicted);
-				if (querylastContent == predictedClass) {
-					queryId = tokens[0];
-					rank = Integer.parseInt(tokens[3]);
-				} else {
-					continue;
-				}
-			} else {
-				queryId = tokens[0];
-				rank = Integer.parseInt(tokens[3]);
+				writer.write(predictedClass + " Q0 " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				System.out.println(predictedClass + " Q0 " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			}
-			writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-			System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-			i++;
-
 		}
-
 		writer.flush();
 		writer.close();
-
 		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
 
 	}
@@ -143,11 +107,11 @@ public class ClassifierReRank {
 		String filePath = "";
 		String outputPath = getOutputPath();
 		switch(choice) {
-		case "Trainset" : 
-			filePath = outputPath+"/"+modelName+".arff";
+		case "trainset" : 
+			filePath = outputPath + choice + "/" + modelName + ".arff";
 			break;
-		case "model" :
-			filePath = outputPath+"/"+modelName+".model";
+		case "models" :
+			filePath = outputPath + choice + "/" + modelName + ".model";
 			break;
 		}
 		return filePath;
