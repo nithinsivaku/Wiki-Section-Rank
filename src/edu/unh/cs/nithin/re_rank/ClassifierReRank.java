@@ -46,13 +46,23 @@ public class ClassifierReRank {
 	private String indexPath;
 	private float predictionConfidence = (float) 0.2;
 	
+	/**
+	 * set output file paths
+	 * @param runFile
+	 * @param indexPath
+	 * @param outputPath
+	 * @throws Exception
+	 */
 	public ClassifierReRank(String runFile, String indexPath, String outputPath) throws Exception {
 		setIndexPath(indexPath);
 		setOutputPath(outputPath);
 	}
-
-	/*
-	 * 
+	
+	/**
+	 * Reads the runfile line by line and predicts the paraheading for the pargraph in each line 
+	 * @param runFile filePath
+	 * @param modelName modelName to load 
+	 * @throws Exception
 	 */
 	public void classifyRunFile(String runFile, String modelName) throws Exception {
 		String outPath = getOutputPath();
@@ -71,7 +81,7 @@ public class ClassifierReRank {
 		Instances trainingData = source.getDataSet();
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 
-		File outRunfile = new File(outputPath + "RFClassified");
+		File outRunfile = new File(outputPath + "/rerank/" +  modelName);
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
 		File file = new File(runFile);
@@ -86,11 +96,11 @@ public class ClassifierReRank {
 			Instance insta = makeInstance(paragraph, testset);
 			double predicted = cls_RF.classifyInstance(insta);
 			double[] prediction = cls_RF.distributionForInstance(insta);
-			
-			if(prediction[(int) predicted] >= predictionConfidence) {
+			double predictionRate = prediction[(int) predicted];
+			if(predictionRate >= predictionConfidence) {
 				String predictedClass = trainingData.classAttribute().value((int) predicted);
-				writer.write(predictedClass + " Q0 " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
-				System.out.println(predictedClass + " Q0 " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				System.out.println(predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			}
 		}
 		writer.flush();
@@ -100,6 +110,7 @@ public class ClassifierReRank {
 	}
 
 	/**
+	 * return the file path based on method name
 	 * @param outPath
 	 * @return
 	 */
@@ -139,7 +150,7 @@ public class ClassifierReRank {
 		QueryParser qp = new QueryParser("paraid", analyzer);
 		TopDocs tops = searcher.search(queryBuilder.toQuery(paraId), 1);
 		ScoreDoc[] scoreDoc = tops.scoreDocs;
-		for (int i = 0; i < 0; i++) {
+		for (int i = 0; i < scoreDoc.length; i++) {
 			ScoreDoc score = scoreDoc[i];
 			final Document doc = searcher.doc(score.doc);
 			paragraph = doc.getField("text").stringValue();
@@ -216,6 +227,56 @@ public class ClassifierReRank {
 	 */
 	public void setIndexPath(String indexPath) {
 		this.indexPath = indexPath;
+	}
+
+	/**
+	 * @param runFile
+	 * @throws Exception 
+	 */
+	public void classifyRunFile(String runFile) throws Exception {
+		String outPath = getOutputPath();
+		String indexPath = getIndexPath();
+		String modelPath = "/Users/Nithin/Desktop/outputFilesIR/models/Category_Environmental_terminology.model";
+		String trainsetPath = "/Users/Nithin/Desktop/outputFilesIR/trainset/Category_Environmental_terminology.arff";
+		
+		System.out.println(" loading Random Forest Classifier");
+		System.out.println("Model Loading.......................");
+		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(modelPath);
+		System.out.println("Random Forest Classifier loaded successfully");
+		System.out.println("*****************************************************************************\n");
+
+		// Load the trainset data format
+		DataSource source = new DataSource(trainsetPath);
+		Instances trainingData = source.getDataSet();
+		trainingData.setClassIndex(trainingData.numAttributes() - 1);
+
+		File outRunfile = new File(outputPath + "/rerank/" +  "ecology");
+		outRunfile.createNewFile();
+		FileWriter writer = new FileWriter(outRunfile);
+		File file = new File(runFile);
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String st;
+		while (((st = br.readLine()) != null)) {
+			String[] tokens = st.split(" ");
+			String paraId = tokens[2];
+			String paragraph = getParagraphForId(indexPath, paraId);
+
+			Instances testset = trainingData.stringFreeStructure();
+			Instance insta = makeInstance(paragraph, testset);
+			double predicted = cls_RF.classifyInstance(insta);
+			double[] prediction = cls_RF.distributionForInstance(insta);
+			double predictionRate = prediction[(int) predicted];
+			String classLabel = trainingData.classAttribute().value((int) predicted);
+			if(predictionRate >= predictionConfidence) {
+				String predictedClass = trainingData.classAttribute().value((int) predicted);
+				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				System.out.println(predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+			}
+		}
+		writer.flush();
+		writer.close();
+		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
+		
 	}
 
 }

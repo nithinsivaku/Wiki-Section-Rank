@@ -6,18 +6,14 @@
  */
 package edu.unh.cs.nithin.main;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import org.bounce.event.CardEvent;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
-import edu.unh.cs.nithin.tools.CarHelper;
 import edu.unh.cs.nithin.tools.Indexer;
 import edu.unh.cs.nithin.tools.QrelsGenerator;
 import edu.unh.cs.treccar_v2.Data.Page;
@@ -50,27 +46,31 @@ public class Main {
 	}
 
 	/**
-	 * [retrieval execute BM25 retrieval model and generate a run file
+	 * [retrieval- execute BM25 retrieval model and generate a run file
 	 *  for given query corpus and paragraph index corpus.
 	 *  All the String paramters are file paths]
 	 * @param pagesFile  [queries]
 	 * @param indexPath  [paragraph index]
 	 * @param outputPath [run file]
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws IOException {
+	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws Exception {
 		System.out.println(" Starting retrieval");
-		String directoryName = outputPath;
-		File directory = new File(directoryName);
-		if (!directory.exists())
-			directory.mkdirs();
-		outputPath = directory.getPath();
 		String[] categoryNames = new String[] {"Category:Environmental terminology"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
-		for(String catName : categoryNames) {
-			bm25.SectionSearch(catName);
-		}
-		System.out.println(" Retrieval over");
+		
+		String[] queryStrings = new String[] { "Ecological thinning", "Ecophysiological repercussions of thinning ", "Ecological thinning research" };
+		String outFile = outputPath + "/runFiles/" + "ecology";
+		bm25.querySearch(queryStrings, outFile);
+		classifyRunFile(outFile, indexPath, outputPath);
+	
+		
+//		for(String catName : categoryNames) {
+//			bm25.SectionSearch(catName);
+//			System.out.println(" Retrieval over");
+//			String runFile = outputPath + "/runFiles/" + catName.replaceAll("[^A-Za-z0-9]", "_");
+//			classifyRunFile(runFile, indexPath, outputPath);
+//		}
 	}
 
 	/**
@@ -85,24 +85,20 @@ public class Main {
 		RandomForestClassifier rfc = new RandomForestClassifier(outputPath);
 		rfc.buildRandomForestModel();
 	}
-
-
-	/**
-	 * [classifyRunFile Main prediction funtion.
-	 * predict headings for each paragraph in the runfile from bm25]
-	 * @param runFile                     [runfile from bm25]
-	 * @param randomforestClassifierModel [rfmodel path]
-	 * @param naiveBayesModel             [nbmodel path]
-	 * @param trainDataArff               [trainingdata path]
-	 * @param indexPath                   [indexpath to lookup para-id]
-	 * @param outputPath                  [final output path]
-	 * @param predConfidence			  [prediction Confidence]
+	
+	/***
+	 * predicts the paraheading for each line in given runfile
+	 * @param runFile filepath
+	 * @param indexPath filepath
+	 * @param outputPath filepath
 	 * @throws Exception
-	 * @throws NumberFormatException
 	 */
 	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
+		runFile = "/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt";
 		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
+		crr.classifyRunFile(runFile);
 		crr.classifyRunFile(runFile, "Category_Environmental_terminology");
+		
 	}
 
 	/**

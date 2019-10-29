@@ -1,13 +1,17 @@
 package edu.unh.cs.nithin.classifier;
 import java.io.File;
+import java.util.Random;
 
-
+import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.stemmers.LovinsStemmer;
+import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
+import weka.filters.unsupervised.instance.Resample;
 
 public class RandomForestClassifier {
 	
@@ -31,7 +35,7 @@ public class RandomForestClassifier {
 			if (trainingSet.classIndex() == -1)
 				trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
 
-			RandomForest rf = new RandomForest();
+			NaiveBayes nb = new NaiveBayes();
 			System.out.println("build Started");
 			// the filter
 			StringToWordVector filter = new StringToWordVector();
@@ -46,11 +50,12 @@ public class RandomForestClassifier {
 			FilteredClassifier fc = new FilteredClassifier();
 			// specify filter
 			fc.setFilter(filter);
-			fc.setClassifier(rf);
+			fc.setClassifier(nb);
 			// Build the meta-classifier
 			fc.buildClassifier(trainingSet);
 			String arffFilePath = getOutputFilePath() + "/" +arrfFileName + ".model";
-			weka.core.SerializationHelper.write(arffFilePath, fc);
+			weka.core.SerializationHelper.write(arffFilePath, nb);
+			
 			System.out.println("Random Forest Classifier model built at " + arffFilePath + " ");
 		}
 	}
@@ -80,7 +85,7 @@ public class RandomForestClassifier {
 	 * @param arrfFilePath the arrfFilePath to set
 	 */
 	public void setArrfFilePath(String outputPath) {
-		this.arrfFilePath = outputPath+"/trainset";
+		this.arrfFilePath = outputPath+"/enviromentTrainset";
 	}
 
 
