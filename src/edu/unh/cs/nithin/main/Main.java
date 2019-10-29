@@ -6,22 +6,12 @@
  */
 package edu.unh.cs.nithin.main;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.netlib.util.booleanW;
-
-import edu.unh.cs.nithin.arrfTools.PageWiseTrainSet;
 import edu.unh.cs.nithin.arrfTools.TrainSet;
-import edu.unh.cs.nithin.classifier.CategoryClassifier;
 import edu.unh.cs.nithin.classifier.RandomForestClassifier;
-import edu.unh.cs.nithin.customParas.CustomParaGenerator;
-import edu.unh.cs.nithin.customParas.CustomTrainSetGenerator;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 import edu.unh.cs.nithin.tools.Indexer;
@@ -40,26 +30,11 @@ public class Main {
 			case "wikikreator":
 				wikikreator(args[1], args[2]);
 				break;
-			case "train":
-				train(args[1], args[2]);
-				break;
-			case "custom-retrieval":
-				customRetrieval(args[1], args[2], args[3]);
-				break;
-			case "custom-train":
-				customTrain(args[1], args[2], args[3]);
-				break;
 			case "build-classifer-model":
-				buildClassifierModel(args[1], args[2]);
-				break;
-			case "build-category-classifier":
-				buildCategoryClassifier(args[1], args[2]);
-				break;
-			case "train-pages":
-				trainPages(args[1], args[2], args[3]);
+				buildClassifierModel(args[1]);
 				break;
 			case "classify-runfile":
-				classifyRunFile(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+				classifyRunFile(args[1], args[2], args[3]);
 				break;
 			case "Index":
 				index();
@@ -71,75 +46,31 @@ public class Main {
 	}
 
 	/**
-	 * [retrieval execute BM25 retrieval model and generate a run file
+	 * [retrieval- execute BM25 retrieval model and generate a run file
 	 *  for given query corpus and paragraph index corpus.
 	 *  All the String paramters are file paths]
 	 * @param pagesFile  [queries]
 	 * @param indexPath  [paragraph index]
 	 * @param outputPath [run file]
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws IOException {
+	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws Exception {
 		System.out.println(" Starting retrieval");
-		String directoryName = outputPath;
-		File directory = new File(directoryName);
-		if (!directory.exists())
-			directory.mkdirs();
-		outputPath = directory.getPath();
+		String[] categoryNames = new String[] {"Category:Environmental terminology"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
-		System.out.println(" Retrieval over");
-	}
-
-	/**
-	 * [train create weka format trainset for given training dataset]
-	 * @param paraFile       [unprocessedAllButBenchmark file]
-	 * @param arrfOutputPath [outputh .arrf file]
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	private static void train(String paraFile, String arrfOutputPath) throws IOException, ParseException {
-		TrainSet ts = new TrainSet(paraFile, arrfOutputPath);
-		System.out.println(" Training Set Created ");
-	}
-
-	/**
-	 * [customRetrieval execute BM25 retrieval model for particular set of queries
-	 *  and generate a run file for given query corpus and paragraph index corpus.
-	 *  All the String paramters are file paths]
-	 * @param pagesFile  [queries]
-	 * @param indexPath  [paragraph index]
-	 * @param outputPath [run file]
-	 * @throws IOException
-	 * @throws NumberFormatException
-	 */
-	private static void customRetrieval(String pagesFile, String indexPath, String outputPath) throws NumberFormatException, IOException {
-		System.out.println(" Starting custom retrieval");
-		String directoryName = outputPath;
-		File directory = new File(directoryName);
-		if (!directory.exists())
-			directory.mkdirs();
-		outputPath = directory.getPath();
-		String totalNumberOfParas = "5";
-		CustomParaGenerator cpg = new CustomParaGenerator(pagesFile, indexPath, outputPath,
-				Integer.parseInt(totalNumberOfParas));
-		System.out.println(" Custom - Retrieval over");
-	}
-
-	/**
-	 * [customTrain create weka format trainset for selected number of data
-	 * 	in a given training dataset]
-	 * @param paraFile       [unprocessedAllButBenchmark file]
-	 * @param indexPath      [indexpath to look up paraid for para]
-	 * @param arrfOutputPath [ouptut .arrf file]
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	private static void customTrain(String paraFile, String indexPath, String arrfOutputPath) throws IOException, ParseException {
-		System.out.println(" Starting custom training Set Creation ");
-		CharSequence[] cs = { "Antibiotics", "Antimicrobial%20resistance", "Antioxidant", "Desertification",
-				"Deforestation" };
-		CustomTrainSetGenerator ctsg = new CustomTrainSetGenerator(paraFile, arrfOutputPath, indexPath, cs);
-		System.out.println(" Training Set Created ");
+		
+		String[] queryStrings = new String[] { "Ecological thinning", "Ecophysiological repercussions of thinning ", "Ecological thinning research" };
+		String outFile = outputPath + "/runFiles/" + "ecology";
+		bm25.querySearch(queryStrings, outFile);
+		classifyRunFile(outFile, indexPath, outputPath);
+	
+		
+//		for(String catName : categoryNames) {
+//			bm25.SectionSearch(catName);
+//			System.out.println(" Retrieval over");
+//			String runFile = outputPath + "/runFiles/" + catName.replaceAll("[^A-Za-z0-9]", "_");
+//			classifyRunFile(runFile, indexPath, outputPath);
+//		}
 	}
 
 	/**
@@ -149,66 +80,29 @@ public class Main {
 	 * @param modelPath [output path .modelfile]
 	 * @throws Exception
 	 */
-	private static void buildClassifierModel(String arffFile, String modelPath) throws Exception {
-		File f = new File(arffFile);
-		String arffFileName = f.getName().toString().replaceFirst("[.][^.]+$", "");
+	private static void buildClassifierModel(String outputPath) throws Exception {
 		System.out.println(" Building Random Forest Classifier Model");
-		RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
-		System.out.println("Random Forest Classifier model built at " + modelPath + " ");
+		RandomForestClassifier rfc = new RandomForestClassifier(outputPath);
+		rfc.buildRandomForestModel();
 	}
-
-	/**
-	 * [buildCategoryClassifier Train a weka format classifier model for all the categories]
-	 * @param arrfFolderPath  [empty folder path to store all training files]
-	 * @param modelFolderPath [empty folder path to store all model files]
+	
+	/***
+	 * predicts the paraheading for each line in given runfile
+	 * @param runFile filepath
+	 * @param indexPath filepath
+	 * @param outputPath filepath
 	 * @throws Exception
 	 */
-	private static void buildCategoryClassifier(String arrfFolderPath, String modelFolderPath) throws Exception {
-		CategoryClassifier cc = new CategoryClassifier(arrfFolderPath, modelFolderPath);
+	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
+		runFile = "/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt";
+		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
+		crr.classifyRunFile(runFile);
+		crr.classifyRunFile(runFile, "Category_Environmental_terminology");
+		
 	}
 
 	/**
-	 * [trainPages Train a weka format classifier for all the pages in trainig corpus]
-	 * @param trainingSetPath [empty folder path to store all training files]
-	 * @param paraFilePath    [unprocessedAllButBenchmark file]
-	 * @param modelPath       [empty folder path to store all model files]
-	 * @throws Exception
-	 */
-	private static void trainPages(String trainingSetPath, String paraFilePath, String modelPath) throws Exception {
-		PageWiseTrainSet pwt = new PageWiseTrainSet(trainingSetPath, paraFilePath);
-
-		// build the classifier model for all the pages headings
-		System.out.println(" Building Random Forest Classifier Model");
-		File[] files = new File(trainingSetPath).listFiles();
-		for(File file : files) {
-			String arffFileName = file.getName().toString().replaceFirst("[.][^.]+$", "").replaceAll("[\\s\\:]","_");
-			String arffFile = file.getAbsolutePath();
-			System.out.println(arffFile + " " + arffFileName);
-			RandomForestClassifier rfc = new RandomForestClassifier(arffFile, modelPath, arffFileName);
-			System.out.println("Random Forest Classifier model built at " + modelPath + arffFileName + ".model ");
-		}
-	}
-
-	/**
-	 * [classifyRunFile Main prediction funtion.
-	 * predict headings for each paragraph in the runfile from bm25]
-	 * @param runFile                     [runfile from bm25]
-	 * @param randomforestClassifierModel [rfmodel path]
-	 * @param naiveBayesModel             [nbmodel path]
-	 * @param trainDataArff               [trainingdata path]
-	 * @param indexPath                   [indexpath to lookup para-id]
-	 * @param outputPath                  [final output path]
-	 * @param predConfidence			  [prediction Confidence]
-	 * @throws Exception
-	 * @throws NumberFormatException
-	 */
-	private static void classifyRunFile(String runFile, String randomforestClassifierModel, String naiveBayesModel, String trainDataArff, String indexPath, String outputPath, String predConfidence) throws NumberFormatException, Exception {
-		ClassifierReRank cRR = new ClassifierReRank(runFile, randomforestClassifierModel, naiveBayesModel,
-				trainDataArff, indexPath, outputPath, Float.parseFloat(predConfidence));
-	}
-
-	/**
-	 * [index index all the paragraphs in paracorpus]
+	 * [index index all the paragraphs in para-corpus]
 	 * @throws IOException
 	 */
 	private static void index() throws IOException {
@@ -218,16 +112,15 @@ public class Main {
 	/**
 	 * @param trainingCorpus
 	 * @param outputPath
-	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
-	private static void wikikreator(String trainingCorpus, String outputPath) throws FileNotFoundException {
-		String[] categoryNames = new String[] {"Category:Radiometry", "Category:American mathematicians", "Category:Diseases and disorders", "Category:Living_people"};
-		Boolean includeSectionPath = false;
+	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
+//		"Category:Articles containing video clips", "Category:RTT", "Category:Deserts", "Category:Environmental terminology"
+		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology"};
 		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
 		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
 		qg.generateQrels(categoryPages); 
-		qg.createTrainSet(categoryPages, includeSectionPath);
-		includeSectionPath = true;
-		qg.createTrainSet(categoryPages, includeSectionPath);
+		TrainSet ts = new TrainSet(categoryPages, outputPath);
+		ts.createCategoryTrainSet();
 	}
 }

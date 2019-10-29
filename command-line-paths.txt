@@ -28,8 +28,8 @@ retrieval
 /Users/Nithin/Desktop/custom/ARRF_SETS
 
 5. build-classifer-model 
-/Users/Nithin/Desktop/custom/ARRF_SETS/2000Pages.arff 
-/Users/Nithin/Desktop/custom/model
+/home/ns1077/work/outputFiles/trainset 
+/home/ns1077/work/outputFiles/models
 
 
 6. classify-runfile 

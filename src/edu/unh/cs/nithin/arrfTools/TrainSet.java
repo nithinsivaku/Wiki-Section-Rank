@@ -45,7 +45,7 @@ import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import cc.mallet.pipe.iterator.ArrayIterator;
 import cc.mallet.pipe.iterator.StringArrayIterator;
 import cc.mallet.types.InstanceList;
-
+import edu.unh.cs.nithin.tools.CarHelper;
 import edu.unh.cs.nithin.tools.QueryIndex;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.Data.Page;
@@ -70,41 +70,23 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
  */
 public class TrainSet implements Serializable {
 
+	// Weka constants
 	private Instances trainingData;
 	private ArrayList<String> classValues;
 	private ArrayList<Attribute> attributes;
+		
+	// custom constants
+	private Map<String, List<Page>> entries;
+	private String outputFilePath;
 
-	// Make Training Data for the classifier
-	public TrainSet(String trainSetFile, String outputPath) throws IOException, ParseException {
+	/**
+	 * @param categoryPages
+	 */
+	public TrainSet(Map<String, List<Page>> categoryPages, String outputPath) {
+		setOutputFilePath(outputPath);
+		setEntries(categoryPages);
+	}
 
-		createCategoryTrainSet(trainSetFile, outputPath);
-	}
-	
-	// pagewisetrainset constructor
-	public TrainSet(String pageName, List<String> headingIds, Map<String, String> headingPara, String filePath) throws IOException {
-		initTrainSet();
-		
-		// add all the headings to the header 
-		for(String heading : headingIds) {
-			addHeading(heading);
-		}
-		System.out.println("Done adding heading");
-		
-		setupAfterHeadingAdded();
-		
-		// add para and its heading as the label
-		for(Entry<String, String> entry : headingPara.entrySet()) {
-			String heading = entry.getKey();
-			String paragraph = entry.getValue();
-			addParagrah(paragraph, heading);
-		}
-		System.out.println("Done Adding class values \n");
-		
-		createPageWiseTrainSetFile(pageName, filePath);
-		
-	}
-	
-	
 	/*
 	 * Create vector of attributes.
 	 * Add attribute for holding texts.
@@ -117,50 +99,40 @@ public class TrainSet implements Serializable {
 
 	}
 
-	public void createCategoryTrainSet(String trainSetFile, String outputPath) throws IOException {
-
-		int categoryCount= 0;
-
-		CategoryTrainset ct = new CategoryTrainset();
-		Map<String, ArrayList<Page>> categoryPageMap = ct.getCategoryPageMap(trainSetFile);
-
-		int categoryTotal = categoryPageMap.size();
-
-
-		for (Entry<String, ArrayList<Page>> entry : categoryPageMap.entrySet()) {
-
-			initTrainSet(); // create attributes for every new category
-
-			String category = entry.getKey();
-			System.out.println("Adding pages names under category " + category + " ");
-			ArrayList<Page> pageNames = entry.getValue();
-			Map<String, String> headingParaMap = ct.getHeadingParaMap(pageNames);
-			for(String heading :headingParaMap.keySet())
-			{
+	/**
+	 * createCategoryTrainSet - given a map of category and list of pages
+	 * creates a weka accepted trainset file.
+	 * @throws IOException
+	 */
+	public void createCategoryTrainSet() throws IOException {
+		Map<String, List<Page>> categoriesPages = getEntries();
+		for(Entry<String, List<Page>> categoryPages : categoriesPages.entrySet()) {
+			initTrainSet(); // initialise attributes for every new category
+			String categoryName = categoryPages.getKey();
+			System.out.println("Adding pages names under category " + categoryName + " ");
+			List<Page> pages = categoryPages.getValue();
+			CarHelper helper = new CarHelper(pages);
+			Map<String, String> headingPara = helper.getHeadingPara();
+			Set<String> uniqueHeadings = helper.getUniqueHeadings();
+			
+			// add class labels before paragraph
+			for(String heading : uniqueHeadings) {
 				System.out.println(heading);
 				addHeading(heading);
 			}
 			System.out.println("Done adding heading");
-
 			setupAfterHeadingAdded();
-
-			System.out.println("Adding class values to the trainset......\n");
-			for(String heading :headingParaMap.keySet())
-			{
-				System.out.println( heading + headingParaMap.get(heading));
-				addParagrah(headingParaMap.get(heading), heading);
+			
+			// add paragraph and class label
+			for(String heading : headingPara.keySet()) {
+				System.out.println( heading + headingPara.get(heading));
+				addParagrah(headingPara.get(heading), heading);
 			}
 			System.out.println("Done Adding class values \n");
-
-			System.out.println("category total: " + categoryTotal + " categoryCount: " + categoryCount );
-
-			createDatasetFile(outputPath + category);
-
-			categoryCount++;
-
+			createDatasetFile(getOutputFilePath() + "/trainset/" + categoryName);
 		}
 	}
-
+	
 	/**
 	 * [addHeading add the class label to the fle header before assigning the label to the document]
 	 * @param heading [class label]
@@ -239,22 +211,30 @@ public class TrainSet implements Serializable {
 	}
 	
 	/**
-	 * @param pageName
-	 * @param filePath
-	 * @throws IOException 
+	 * @return the entries
 	 */
-	private void createPageWiseTrainSetFile(String pageName, String filePath) throws IOException {
-		String path  = pageName + ".arff";
-		filePath = filePath+path;
-		File f = new File(filePath);
-		f.createNewFile();
-		FileWriter fw = new FileWriter(f);
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(trainingData.toString());
-		bw.close();
-		System.out.println("check for arff file in " + filePath);
-		
+	public Map<String, List<Page>> getEntries() {
+		return entries;
 	}
 
+	/**
+	 * @param entries the entries to set
+	 */
+	public void setEntries(Map<String, List<Page>> entries) {
+		this.entries = entries;
+	}
 
+	/**
+	 * @return the outputFilePath
+	 */
+	public String getOutputFilePath() {
+		return outputFilePath;
+	}
+
+	/**
+	 * @param outputFilePath the outputFilePath to set
+	 */
+	public void setOutputFilePath(String outputFilePath) {
+		this.outputFilePath = outputFilePath;
+	}
 }

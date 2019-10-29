@@ -2,6 +2,7 @@ package edu.unh.cs.nithin.re_rank;
 
 import java.io.BufferedReader;
 
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,9 +33,6 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import edu.unh.cs.treccar_v2.Data;
-import edu.unh.cs.treccar_v2.Data.PageSkeleton;
-import edu.unh.cs.treccar_v2.Data.Section;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -43,174 +41,91 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class ClassifierReRank {
-
-	public ClassifierReRank(String runFile, String rfModel, String nbModel, String trainDataArff, String indexPath,
-			String outputPath, float predictionConfidence) throws Exception {
-		classifyRunFileUsingRandomForestClassifier(runFile, rfModel, trainDataArff, indexPath, outputPath,
-				predictionConfidence);
-		// classifyRunFileUsingNaiveBayesClassifier(runFile, nbModel, trainDataArff,
-		// indexPath, outputPath);
-	}
-
-	/*
-	 * 
+	
+	private String outputPath;
+	private String indexPath;
+	private float predictionConfidence = (float) 0.2;
+	
+	/**
+	 * set output file paths
+	 * @param runFile
+	 * @param indexPath
+	 * @param outputPath
+	 * @throws Exception
 	 */
-	private void classifyRunFileUsingNaiveBayesClassifier(String runFile, String nbModel, String trainDataArff,
-			String indexPath, String outputPath) throws Exception {
-
-		System.out.println(" loading NaiveBayes Classifier");
-		System.out.println("Model Loading.......................");
-		Classifier cls_NB = (Classifier) weka.core.SerializationHelper.read(nbModel);
-		System.out.println("NaiveBayes Classifier loaded successfully");
-		System.out.println("*****************************************************************************\n");
-
-		// Load the trainid data format
-		DataSource source = new DataSource(trainDataArff);
-		Instances trainingData = source.getDataSet();
-		trainingData.setClassIndex(trainingData.numAttributes() - 1);
-
-		File outRunfile = new File(outputPath + "NBClassified");
-		outRunfile.createNewFile();
-		FileWriter writer = new FileWriter(outRunfile);
-
-		File file = new File(runFile);
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String st;
-		int i = 0;
-		while (((st = br.readLine()) != null)) {
-
-			String[] tokens = st.split(" ");
-			// System.out.println(tokens[0] + " " + tokens[2]);
-			String temp = tokens[0];
-			String paraId = tokens[2];
-			String temp1;
-
-			String paragraph = getParagraphForId(indexPath, paraId);
-			// System.out.println(paragraph);
-
-			Instances testset = trainingData.stringFreeStructure();
-			Instance insta = makeInstance(paragraph, testset);
-
-			double predicted = cls_NB.classifyInstance(insta);
-
-			double[] prediction = cls_NB.distributionForInstance(insta);
-			// double res = classifier.classifyInstance(insta);
-
-			double relevance;
-
-			System.out.print(".");
-
-			System.out.println(tokens[0]);
-			System.out.println(paragraph);
-			System.out.println(trainingData.classAttribute().value((int) predicted));
-
-			System.out.println((int) predicted);
-			System.out.println(prediction[(int) predicted]);
-			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-			String queryId = tokens[0];
-			int rank;
-			Boolean brk = false;
-			if (prediction[(int) predicted] > 0.5) {
-				System.out.println("above 0.5");
-				if (tokens[0] == trainingData.classAttribute().value((int) predicted)) {
-					queryId = tokens[0];
-					rank = Integer.parseInt(tokens[3]);
-					brk = true;
-				} else {
-					queryId = trainingData.classAttribute().value((int) predicted);
-					rank = 1;
-				}
-			} else {
-				queryId = tokens[0];
-				rank = Integer.parseInt(tokens[3]);
-			}
-			writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-			i++;
-		}
-
-		writer.flush();
-		writer.close();
-
-		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
-
+	public ClassifierReRank(String runFile, String indexPath, String outputPath) throws Exception {
+		setIndexPath(indexPath);
+		setOutputPath(outputPath);
 	}
-
-	/*
-	 * 
+	
+	/**
+	 * Reads the runfile line by line and predicts the paraheading for the pargraph in each line 
+	 * @param runFile filePath
+	 * @param modelName modelName to load 
+	 * @throws Exception
 	 */
-	private void classifyRunFileUsingRandomForestClassifier(String runFile, String rfModel, String trainDataArff,
-			String indexPath, String outputPath, float predictionConfidence) throws Exception {
-
+	public void classifyRunFile(String runFile, String modelName) throws Exception {
+		String outPath = getOutputPath();
+		String indexPath = getIndexPath();
+		String modelPath = getFilePath("models", outPath, modelName);
+		String trainsetPath = getFilePath("trainset", outPath, modelName);
+		
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
-		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(rfModel);
+		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(modelPath);
 		System.out.println("Random Forest Classifier loaded successfully");
 		System.out.println("*****************************************************************************\n");
 
-		// Load the trainid data format
-		DataSource source = new DataSource(trainDataArff);
+		// Load the trainset data format
+		DataSource source = new DataSource(trainsetPath);
 		Instances trainingData = source.getDataSet();
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 
-		File outRunfile = new File(outputPath + "RFClassified");
+		File outRunfile = new File(outputPath + "/rerank/" +  modelName);
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
-
 		File file = new File(runFile);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String st;
-		int i = 0;
 		while (((st = br.readLine()) != null)) {
-
 			String[] tokens = st.split(" ");
 			String paraId = tokens[2];
 			String paragraph = getParagraphForId(indexPath, paraId);
 
 			Instances testset = trainingData.stringFreeStructure();
 			Instance insta = makeInstance(paragraph, testset);
-
-			double[] sample = cls_RF.distributionForInstance(insta);
 			double predicted = cls_RF.classifyInstance(insta);
-
 			double[] prediction = cls_RF.distributionForInstance(insta);
-			// double res = classifier.classifyInstance(insta);
-
-			double relevance;
-
-			int lastIndex = tokens[0].lastIndexOf('/');
-			String querylastContent = tokens[0].substring(lastIndex + 1);
-			String queryfirstContent = tokens[0].substring(0, lastIndex + 1);
-
-			System.out.println(tokens[0]);
-			System.out.println(paragraph);
-			System.out.println(
-					trainingData.classAttribute().value((int) predicted) + " - " + prediction[(int) predicted]);
-			String queryId = tokens[0];
-			int rank = 0;
-			if (prediction[(int) predicted] > predictionConfidence) {
-				System.out.println("above " + predictionConfidence);
+			double predictionRate = prediction[(int) predicted];
+			if(predictionRate >= predictionConfidence) {
 				String predictedClass = trainingData.classAttribute().value((int) predicted);
-				if (querylastContent == predictedClass) {
-					queryId = tokens[0];
-					rank = Integer.parseInt(tokens[3]);
-				} else {
-					continue;
-				}
-			} else {
-				queryId = tokens[0];
-				rank = Integer.parseInt(tokens[3]);
+				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				System.out.println(predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			}
-			writer.write(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-			System.out.println(queryId + " Q0 " + paraId + " " + rank + " " + tokens[4] + " Classifier-Laura\n");
-			i++;
-
 		}
-
 		writer.flush();
 		writer.close();
-
 		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
 
+	}
+
+	/**
+	 * return the file path based on method name
+	 * @param outPath
+	 * @return
+	 */
+	private String getFilePath(String choice, String outPath, String modelName) {
+		String filePath = "";
+		String outputPath = getOutputPath();
+		switch(choice) {
+		case "trainset" : 
+			filePath = outputPath + choice + "/" + modelName + ".arff";
+			break;
+		case "models" :
+			filePath = outputPath + choice + "/" + modelName + ".model";
+			break;
+		}
+		return filePath;
 	}
 
 	private Instance makeInstance(String text, Instances data) {
@@ -235,7 +150,7 @@ public class ClassifierReRank {
 		QueryParser qp = new QueryParser("paraid", analyzer);
 		TopDocs tops = searcher.search(queryBuilder.toQuery(paraId), 1);
 		ScoreDoc[] scoreDoc = tops.scoreDocs;
-		for (int i = 0; i < 0; i++) {
+		for (int i = 0; i < scoreDoc.length; i++) {
 			ScoreDoc score = scoreDoc[i];
 			final Document doc = searcher.doc(score.doc);
 			paragraph = doc.getField("text").stringValue();
@@ -286,37 +201,82 @@ public class ClassifierReRank {
 		return new IndexSearcher(reader);
 	}
 
-	// Author: Laura dietz
-	private static String buildSectionQueryStr(Data.Page page, List<Data.Section> sectionPath) {
-		StringBuilder queryStr = new StringBuilder();
-		queryStr.append(page.getPageName());
-		for (Data.Section section : sectionPath) {
-			queryStr.append(" ").append(section.getHeading());
-		}
-
-		// System.out.println("queryStr = " + queryStr);
-		return queryStr.toString();
+	/**
+	 * @return the outputPath
+	 */
+	public String getOutputPath() {
+		return outputPath;
 	}
 
-	// Author: Laura dietz, modified by Nithin for lowest heading in each
-	// section
-	private static String buildSectionQueryStr(List<Data.Section> sectionPath) {
-		String queryStr = " ";
-		List<PageSkeleton> child;
+	/**
+	 * @param outputPath the outputPath to set
+	 */
+	public void setOutputPath(String outputPath) {
+		this.outputPath = outputPath;
+	}
 
-		for (Data.Section section : sectionPath) {
+	/**
+	 * @return the indexPath
+	 */
+	public String getIndexPath() {
+		return indexPath;
+	}
 
-			child = section.getChildren();
-			if (!(child.isEmpty())) {
-				Section s = (Section) child.get(child.size() - 1);
-				queryStr = s.getHeading();
+	/**
+	 * @param indexPath the indexPath to set
+	 */
+	public void setIndexPath(String indexPath) {
+		this.indexPath = indexPath;
+	}
 
-			} else {
-				queryStr = section.getHeading();
+	/**
+	 * @param runFile
+	 * @throws Exception 
+	 */
+	public void classifyRunFile(String runFile) throws Exception {
+		String outPath = getOutputPath();
+		String indexPath = getIndexPath();
+		String modelPath = "/Users/Nithin/Desktop/outputFilesIR/models/Category_Environmental_terminology.model";
+		String trainsetPath = "/Users/Nithin/Desktop/outputFilesIR/trainset/Category_Environmental_terminology.arff";
+		
+		System.out.println(" loading Random Forest Classifier");
+		System.out.println("Model Loading.......................");
+		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(modelPath);
+		System.out.println("Random Forest Classifier loaded successfully");
+		System.out.println("*****************************************************************************\n");
+
+		// Load the trainset data format
+		DataSource source = new DataSource(trainsetPath);
+		Instances trainingData = source.getDataSet();
+		trainingData.setClassIndex(trainingData.numAttributes() - 1);
+
+		File outRunfile = new File(outputPath + "/rerank/" +  "ecology");
+		outRunfile.createNewFile();
+		FileWriter writer = new FileWriter(outRunfile);
+		File file = new File(runFile);
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String st;
+		while (((st = br.readLine()) != null)) {
+			String[] tokens = st.split(" ");
+			String paraId = tokens[2];
+			String paragraph = getParagraphForId(indexPath, paraId);
+
+			Instances testset = trainingData.stringFreeStructure();
+			Instance insta = makeInstance(paragraph, testset);
+			double predicted = cls_RF.classifyInstance(insta);
+			double[] prediction = cls_RF.distributionForInstance(insta);
+			double predictionRate = prediction[(int) predicted];
+			String classLabel = trainingData.classAttribute().value((int) predicted);
+			if(predictionRate >= predictionConfidence) {
+				String predictedClass = trainingData.classAttribute().value((int) predicted);
+				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				System.out.println(predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			}
-
 		}
-		return queryStr;
+		writer.flush();
+		writer.close();
+		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
+		
 	}
 
 }
