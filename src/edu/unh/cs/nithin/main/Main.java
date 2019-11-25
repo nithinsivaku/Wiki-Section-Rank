@@ -57,7 +57,7 @@ public class Main {
 	 */
 	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws Exception {
 		System.out.println(" Starting retrieval");
-		String[] categoryNames = new String[] {"Category:Articles containing video clips"};
+		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
 		for (String catName : categoryNames) {
 			bm25.SectionSearch(catName);
