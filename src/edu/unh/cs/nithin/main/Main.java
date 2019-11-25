@@ -108,7 +108,7 @@ public class Main {
 	 * @throws IOException
 	 */
 	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
-		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology"};
+		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
 		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
 		qg.generateQrels(categoryPages); 

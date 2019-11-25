@@ -1,44 +1,23 @@
-1. retrieval 
+1. train-
+retrieval 
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor
 /Users/Nithin/Desktop/ParagraphIndex/ 
 /Users/Nithin/Desktop/Custom-Runs/New-Runs
 
+test
 retrieval
 /Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
 /Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/Custom-Runs/New-Runs
+/Users/Nithin/Desktop/outfiles/
 
-2. train 
-/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
-/Users/Nithin/Desktop/ARRF_SETS/Categories/
-
-3. custom-retrieval 
-/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-train/train.pages.cbor-outlines.cbor 
-/Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/custom/Custom-Runs 5
+build-classifer-model 
+/Users/Nithin/Desktop/outfiles
 
 
-/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
-/Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/custom/Custom-Runs 5
-
-4. custom-train 
-/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor 
-/Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/custom/ARRF_SETS
-
-5. build-classifer-model 
-/home/ns1077/work/outputFiles/trainset 
-/home/ns1077/work/outputFiles/models
-
-
-6. classify-runfile 
-/Users/Nithin/Desktop/custom/Custom-Runs/custom_runfile_section 
-/Users/Nithin/Desktop/custom/model/50000PagesRF_Page.model 
-/Users/Nithin/Desktop/custom/model/NB_Page.model 
-/Users/Nithin/Desktop/custom/ARRF_SETS/50000Pages.arff 
-/Users/Nithin/Desktop/ParagraphIndex/ 
-/Users/Nithin/Desktop/custom/ReRank
+classify-runfile
+/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt
+/Users/Nithin/Desktop/ParagraphIndex/
+/Users/Nithin/Desktop/outfiles/
 
 
 test

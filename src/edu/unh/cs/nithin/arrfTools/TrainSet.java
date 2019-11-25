@@ -129,7 +129,7 @@ public class TrainSet implements Serializable {
 				addParagrah(headingPara.get(heading), heading);
 			}
 			System.out.println("Done Adding class values \n");
-			createDatasetFile(getOutputFilePath() + "/trainset/" + categoryName);
+			createDatasetFile(getOutputFilePath() + "/trainset/" + categoryName.replaceAll("[^A-Za-z0-9]", "_"));
 		}
 	}
 	
