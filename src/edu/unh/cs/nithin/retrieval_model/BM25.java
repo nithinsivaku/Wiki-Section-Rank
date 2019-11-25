@@ -1,3 +1,9 @@
+/**
+ * @Author: Nithin Sivakumar <Nithin>
+ * @Date:   2019-09-08T20:46:36-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-11-24T22:50:12-05:00
+ */
 package edu.unh.cs.nithin.retrieval_model;
 
 import java.io.BufferedReader;
@@ -36,15 +42,9 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
-/*
- * 
- * Author : Nithin
-
- * Date: 03/28/18
- * Time: 3:10 PM
- *
- * ranking function used by lucene search engine to rank matching documents 
- * according to their relevance to a given search query. 
+/**
+ * ranking function used by lucene search engine to rank matching
+ * documents according to their relevance to a given search query.
  */
 public class BM25 {
 
@@ -59,12 +59,15 @@ public class BM25 {
 		setPagesFile(pagesFile);
 	}
 
+	/**
+	 * [Retrieve section level paragraphs for given category in outlines.cbor]
+	 * @param catName
+	 * @throws IOException
+	 */
 	public void PageSearch(String catName) throws IOException {
 		File runfile = new File(getOutputPath() + "/runfile_page");
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
-
-		// paragraphs-run-sections
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
@@ -94,16 +97,14 @@ public class BM25 {
 				}
 			}
 		}
-
-		writer.flush();// why flush?
+		writer.flush();
 		writer.close();
-
 		System.out.println("Write " + count + " results\nQuery Done!");
 
 	}
 
 	/**
-	 * 
+	 * [Retrieve section level paragraphs for given category in outlines.cbor]
 	 * @param catName
 	 * @throws IOException
 	 */
@@ -111,8 +112,6 @@ public class BM25 {
 		File runfile = new File(getOutputPath() + "/runFiles/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
-
-		// paragraphs-run-sections
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
 		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
@@ -122,19 +121,15 @@ public class BM25 {
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			ArrayList<String> categories = page.getPageMetadata().getCategoryNames();
 			if (categories.contains(catName)) {
+				System.out.println(page.getPageId() + " ----- " + page.getPageName());
 				for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
 					final String queryId = Data.sectionPathId(page.getPageId(), sectionPath);
 					String queryStr = buildSectionQueryStr(page, sectionPath);
-					System.out.println(queryStr);
-					queryStr = "Habitat conservation plan";
-					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 10);
+					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
 					ScoreDoc[] scoreDoc = tops.scoreDocs;
-
 					for (int i = 0; i < scoreDoc.length; i++) {
 						ScoreDoc score = scoreDoc[i];
-						final Document doc = searcher.doc(score.doc); // to access stored content
-
-						// print score and internal docid
+						final Document doc = searcher.doc(score.doc);
 						final String paragraphid = doc.getField("paragraphid").stringValue();
 						final float searchScore = score.score;
 						final int searchRank = i + 1;
@@ -145,7 +140,39 @@ public class BM25 {
 				}
 			}
 		}
+		writer.flush();
+		writer.close();
+		System.out.println("Write " + count + " results\nQuery Done!");
+	}
 
+	/**
+	 * [perform BM25 retrieval for given query strings]
+	 * @param queryStrings
+	 * @param outFile
+	 * @throws IOException
+	 */
+	public void querySearch(String[] queryStrings, String outFile) throws IOException {
+		File runfile = new File(outFile);
+		runfile.createNewFile();
+		FileWriter writer = new FileWriter(runfile);
+		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
+		searcher.setSimilarity(new BM25Similarity());
+		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
+		System.out.println("starting searching for sections ...");
+		int count = 0;
+		for (String queryStr : queryStrings) {
+			System.out.println(queryStr);
+			TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 10);
+			ScoreDoc[] scoreDoc = tops.scoreDocs;
+			for (int i = 0; i < scoreDoc.length; i++) {
+				ScoreDoc score = scoreDoc[i];
+				final Document doc = searcher.doc(score.doc);
+				final String paragraphid = doc.getField("paragraphid").stringValue();
+				final float searchScore = score.score;
+				final int searchRank = i + 1;
+				writer.write(queryStr + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
+			}
+		}
 		writer.flush();
 		writer.close();
 		System.out.println("Write " + count + " results\nQuery Done!");
@@ -257,41 +284,5 @@ public class BM25 {
 	 */
 	public void setOutputPath(String outputPath) {
 		this.outputPath = outputPath;
-	}
-
-	/**
-	 * @param queryStrings
-	 * @param outFile
-	 * @throws IOException
-	 */
-	public void querySearch(String[] queryStrings, String outFile) throws IOException {
-		File runfile = new File(outFile);
-		runfile.createNewFile();
-		FileWriter writer = new FileWriter(runfile);
-		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
-		searcher.setSimilarity(new BM25Similarity());
-		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
-		System.out.println("starting searching for sections ...");
-		int count = 0;
-		for (String queryStr : queryStrings) {
-			System.out.println(queryStr);
-			TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 10);
-			ScoreDoc[] scoreDoc = tops.scoreDocs;
-			for (int i = 0; i < scoreDoc.length; i++) {
-				ScoreDoc score = scoreDoc[i];
-				final Document doc = searcher.doc(score.doc); // to access stored content
-				
-				// print score and internal docid
-				final String paragraphid = doc.getField("paragraphid").stringValue();
-				final float searchScore = score.score;
-				final int searchRank = i + 1;
-				writer.write(queryStr + " Q0 " + paragraphid + " " + searchRank + " " + searchScore + " Lucene-BM25\n");
-			}
-		}
-
-		writer.flush();
-		writer.close();
-		System.out.println("Write " + count + " results\nQuery Done!");
-
 	}
 }
