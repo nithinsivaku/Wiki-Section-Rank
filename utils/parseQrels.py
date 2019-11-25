@@ -1,3 +1,13 @@
+# @Author: Nithin Sivakumar <Nithin>
+# @Date:   2019-06-25T00:46:42-04:00
+# @Last modified by:   Nithin
+# @Last modified time: 2019-11-24T23:33:17-05:00
+
+"""
+Helper file to query source qrels files and extract the lines which match the given pages
+Saves the extracted contents ointo new qrel files
+"""
+
 import os
 import sys
 
@@ -5,8 +15,7 @@ class ParseFile():
 	def __init__(self, inputFilePath, outputFilePath ):
 		self.input_file_location = inputFilePath
 		self.output_file_location = outputFilePath
-		self.Pages = ["enwiki:Antibiotics", "enwiki:Antimicrobial%20resistance", "enwiki:Antioxidant", "enwiki:Desertification",
-					"enwiki:Deforestation"]
+		self.Pages = ["enwiki:Drinking%20bird", "enwiki:Hot%20chocolate", "enwiki:Atmosphere%20of%20Earth", "enwiki:Water%20cycle", "enwiki:Tsunami", "enwiki:Electric%20car", "enwiki:Supernova"]
 
 	def parse(self):
 		new_content = []
@@ -23,8 +32,6 @@ class ParseFile():
 		for item in content:
 			f.write(item)
 		print("over")
-
-
 
 
 if __name__ == '__main__':
