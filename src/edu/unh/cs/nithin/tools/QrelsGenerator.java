@@ -34,7 +34,7 @@ public class QrelsGenerator {
 	private Map<String, List<Data.Page>> categoryPages;
 
 	/**
-	 *
+	 * Constructor responsible for setting file output paths and given category names
 	 * @param paraFile
 	 * @param outputFile
 	 * @param categoryNames
@@ -45,9 +45,13 @@ public class QrelsGenerator {
 		setOutputFilePath(outputFile);
 		setCategoryNames(categoryNames);
 		setCategoryPages(new HashMap<String, List<Data.Page>>());
-
 	}
-
+	
+	/**
+	 * Return a map of list of pages associated for provided category names
+	 * @return categoriesPages
+	 * @throws FileNotFoundException
+	 */
 	public Map<String, List<Page>> getCategoriesPages() throws FileNotFoundException {
 		String[] categoryNames = getCategoryNames();
 		Map<String, List<Page>> categoriesPages = getCategoryPages();
@@ -61,7 +65,7 @@ public class QrelsGenerator {
 				for (String matchingCategoryName : categoryNames) {
 					if (categoryName.equals(matchingCategoryName)) {
 						putObject(categoryName, page);
-//						count ++;
+//						count++;
 					}
 				}
 				System.out.println(categoryName);
@@ -71,7 +75,7 @@ public class QrelsGenerator {
 	}
 
 	/**
-	 *
+	 * Helper function to store list of pages that falls under same category
 	 * @param key   categoryName where pages get added to
 	 * @param value page which will be added to a category
 	 */
@@ -110,8 +114,8 @@ public class QrelsGenerator {
 	 * @throws IOException
 	 */
 	private void createQrelFile(String catName, List<Page> pages) throws IOException {
-		String outputPath = getOutputFilePath() + "/qrels";
-		String qrelFileName = catName + ".qrels";
+		String outputPath = getOutputFilePath() + "/cat_qrels";
+		String qrelFileName = catName.replaceAll("[^A-Za-z0-9]", "_") + ".qrels";
 		File qrelfile = new File(outputPath + "/" + qrelFileName);
 		qrelfile.createNewFile();
 		FileWriter writer = new FileWriter(qrelfile);
@@ -120,11 +124,11 @@ public class QrelsGenerator {
 			for (SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) {
 				Iterator<Section> sectionPathIter = sectionPathParagraphs.getSectionPath().iterator();
 				while (sectionPathIter.hasNext()) {
-					Section section = sectionPathIter.next();
-					Heading = section.getHeadingId();
+					sectionPathIter.next();
+					Heading = Data.sectionPathId(page.getPageId(), sectionPathParagraphs.getSectionPath());
+					System.out.println(Heading);
 					if (sectionPathIter.hasNext()) {
-						Section nextSection = sectionPathIter.next();
-						Heading = nextSection.getHeadingId();
+						sectionPathIter.next();
 					}
 				}
 				String paraId = sectionPathParagraphs.getParagraph().getParaId();

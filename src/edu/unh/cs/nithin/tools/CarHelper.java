@@ -50,11 +50,7 @@ public class CarHelper {
 	}
 	
 	
-	/**
-	 * 
-	 */
 	public CarHelper() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Map<String, Integer> findCategoryCount(String pagesFile) throws FileNotFoundException {
@@ -113,21 +109,19 @@ public class CarHelper {
 		List<Page> pageNames = getPages();
 		String Heading = "";
 		for (Page page : pageNames) {
-			String pageHeading = page.getPageId();
-			Heading = pageHeading; // Heading will be page heading at the start of the page
+			Heading = page.getPageId(); // Heading will be page heading at the start of the page
 			for (SectionPathParagraphs sectionPathParagraphs : page.flatSectionPathsParagraphs()) {
 				Iterator<Section> sectionPathIter = sectionPathParagraphs.getSectionPath().iterator();
-
-				// check for subheading
 				while (sectionPathIter.hasNext()) {
-					Section section = sectionPathIter.next();
-					Heading = section.getHeadingId();
+					sectionPathIter.next();
+					Heading = Data.sectionPathId(page.getPageId(), sectionPathParagraphs.getSectionPath());
 					if (sectionPathIter.hasNext()) {
-						Section nextSection = sectionPathIter.next();
-						Heading = nextSection.getHeadingId();
+						sectionPathIter.next();
 					}
 				}
 				String para = sectionPathParagraphs.getParagraph().getTextOnly();
+				System.out.println(Heading);
+				System.out.println(para);
 				headingsSet.add(Heading);
 				if (headingPara.get(Heading) == null) {
 					headingPara.put(Heading, para);

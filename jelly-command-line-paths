@@ -1,33 +1,16 @@
 retrieval
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor /home/ns1077/work/paragraphIndex /home/ns1077/work/outputFiles/runFiles
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor /home/ns1077/work/paragraphIndex /home/ns1077/work/outfiles
 
-test
-/home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
-train
-java -Xms2048M -Xmx600g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/hundred_thousand_pages/ARRF_SETS/
-
-custom-retrieval
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-retrieval /home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor  /home/ns1077/work/paragraphIndex /home/ns1077/work/custom/runs 5
-
-custom-train
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/paragraphIndex /home/ns1077/work/custom/ARRF_SETS
 
 build-classifer-model 
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/outputFiles
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/outfiles
 
 wikikreator
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar wikikreator /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/outputFiles
-
-train run
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar custom-train /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/paragraphIndex /home/ns1077/work/custom/ARRF_SETS
-
-
-classifier - run
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar build-classifer-model /home/ns1077/work/custom/ARRF_SETS/10000Pages.arff /home/ns1077/work/custom/model
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar wikikreator /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/outfiles
 
 
 Classify Runfile
-java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar classify-runfile /home/ns1077/work/outputFiles/runFiles/Category_Environmental_Terminology /home/ns1077/work/paragraphIndex /home/ns1077/work/outputFiles/rerank/
+java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar classify-runfile /home/ns1077/work/outputFiles/runFiles/Category_Environmental_Terminology /home/ns1077/work/paragraphIndex /home/ns1077/work/outfiles/rerank/
 
 train-pages 
 java -Xms2048M -Xmx300g -jar Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar train-pages /home/ns1077/work/pageWiseRoot/TrainingSet/ /home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor /home/ns1077/work/pageWiseRoot/Model/
@@ -44,9 +27,6 @@ test-queries
 
 test-qrels
 /home/ns1077/work/Y1-tree-qrels/benchmarkY1-test/test.pages.cbor.tree.qrels
-
-custom-runs
-/home/ns1077/work/custom/runs/custom_runfile_section
 
 ./trec-eval
 ./trec_eval -c /home/ns1077/work/Y1-tree-qrels/benchmarkY1-test/test.pages.cbor.tree.qrels /home/ns1077/work/custom/runs/custom_runfile_section
