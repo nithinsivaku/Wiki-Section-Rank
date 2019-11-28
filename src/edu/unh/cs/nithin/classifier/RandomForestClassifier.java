@@ -30,11 +30,9 @@ public class RandomForestClassifier {
 			System.out.println("Training RF classifier for -" + arrfFileName);
 			DataSource trainSource = new DataSource(arrfFile.getAbsolutePath());
 			Instances trainingSet = trainSource.getDataSet();
-
 			System.out.println("loaded dataSet");
 			if (trainingSet.classIndex() == -1)
 				trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
-
 			NaiveBayes nb = new NaiveBayes();
 			System.out.println("build Started");
 			// the filter
