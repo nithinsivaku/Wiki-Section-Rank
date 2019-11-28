@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.unh.cs.nithin.arrfTools.TrainSet;
-import edu.unh.cs.nithin.classifier.RandomForestClassifier;
+import edu.unh.cs.nithin.classifier.ClassifierTrainer;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 import edu.unh.cs.nithin.tools.Indexer;
@@ -65,16 +65,16 @@ public class Main {
 	}
 
 	/**
-	 * [Train a weka format classifier model given 
-	 * training set and model output path]
+	 * [Train a weka format classifier model for the trainsets created in wikikreator method]
 	 * @param arffFile  [weka format training set]
 	 * @param modelPath [output path .modelfile]
 	 * @throws Exception
 	 */
 	private static void buildClassifierModel(String outputPath) throws Exception {
-		System.out.println(" Building Random Forest Classifier Model");
-		RandomForestClassifier rfc = new RandomForestClassifier(outputPath);
-		rfc.buildRandomForestModel();
+		System.out.println(" Building Classifier Model");
+		ClassifierTrainer ct = new ClassifierTrainer(outputPath);
+		ct.buildNaiveBayesModel();
+		ct.buildRandomForestModel();
 	}
 	
 	/***
