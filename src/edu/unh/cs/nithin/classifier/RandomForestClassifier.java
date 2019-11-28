@@ -28,7 +28,7 @@ public class RandomForestClassifier {
 		for(File arrfFile : arrfDir.listFiles()) {
 			String arrfFileName = arrfFile.getName().toString().replaceFirst("[.][^.]+$", "");
 			System.out.println("Training RF classifier for -" + arrfFileName);
-			DataSource trainSource = new DataSource(arrfFile.getAbsolutePath()); //may be wrong
+			DataSource trainSource = new DataSource(arrfFile.getAbsolutePath());
 			Instances trainingSet = trainSource.getDataSet();
 
 			System.out.println("loaded dataSet");
@@ -46,16 +46,18 @@ public class RandomForestClassifier {
 			filter.setStemmer(stemmer);
 			filter.setLowerCaseTokens(true);
 			System.out.println("Stemmer done");
+			
 			// Create the FilteredClassifier object
 			FilteredClassifier fc = new FilteredClassifier();
+			
 			// specify filter
 			fc.setFilter(filter);
 			fc.setClassifier(nb);
+			
 			// Build the meta-classifier
 			fc.buildClassifier(trainingSet);
 			String arffFilePath = getOutputFilePath() + "/" +arrfFileName + ".model";
 			weka.core.SerializationHelper.write(arffFilePath, nb);
-			
 			System.out.println("Random Forest Classifier model built at " + arffFilePath + " ");
 		}
 	}

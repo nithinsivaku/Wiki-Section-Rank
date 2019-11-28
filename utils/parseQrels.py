@@ -1,11 +1,12 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-06-25T00:46:42-04:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-24T23:33:17-05:00
+# @Last modified time: 2019-11-27T21:14:05-05:00
 
 """
-Helper file to query source qrels files and extract the lines which match the given pages
-Saves the extracted contents ointo new qrel files
+Helper script to query source qrels files and extract
+the lines which match the given pages. Writes the
+extracted contents onto new qrel files
 """
 
 import os

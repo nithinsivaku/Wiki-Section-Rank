@@ -2,65 +2,30 @@
  * @Author: Nithin
  * @Date:   2019-03-17T17:15:55-04:00
  * @Last modified by:   Nithin
- * @Last modified time: 2019-08-17T18:37:53-04:00
+ * @Last modified time: 2019-11-27T21:11:53-05:00
  */
 package edu.unh.cs.nithin.arrfTools;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.netlib.util.booleanW;
-
-import cc.mallet.pipe.CharSequence2TokenSequence;
-import cc.mallet.pipe.CharSequenceLowercase;
-import cc.mallet.pipe.FeatureSequence2FeatureVector;
-import cc.mallet.pipe.Input2CharSequence;
-import cc.mallet.pipe.Pipe;
-import cc.mallet.pipe.PrintInputAndTarget;
-import cc.mallet.pipe.SerialPipes;
-import cc.mallet.pipe.Target2Label;
-import cc.mallet.pipe.TokenSequence2FeatureSequence;
-import cc.mallet.pipe.TokenSequenceLowercase;
-import cc.mallet.pipe.TokenSequenceRemoveStopwords;
-import cc.mallet.pipe.iterator.ArrayIterator;
-import cc.mallet.pipe.iterator.StringArrayIterator;
-import cc.mallet.types.InstanceList;
 import edu.unh.cs.nithin.tools.CarHelper;
-import edu.unh.cs.nithin.tools.QueryIndex;
-import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.Data.Page;
-import edu.unh.cs.treccar_v2.Data.Page.SectionPathParagraphs;
-import edu.unh.cs.treccar_v2.Data.PageSkeleton;
-import edu.unh.cs.treccar_v2.Data.Paragraph;
-import edu.unh.cs.treccar_v2.Data.Section;
-import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
-import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.filters.unsupervised.attribute.StringToWordVector;
 
 
 /**
@@ -74,7 +39,7 @@ public class TrainSet implements Serializable {
 	private Instances trainingData;
 	private ArrayList<String> classValues;
 	private ArrayList<Attribute> attributes;
-		
+
 	// custom constants
 	private Map<String, List<Page>> entries;
 	private String outputFilePath;
@@ -114,7 +79,7 @@ public class TrainSet implements Serializable {
 			CarHelper helper = new CarHelper(pages);
 			Map<String, String> headingPara = helper.getHeadingPara();
 			Set<String> uniqueHeadings = helper.getUniqueHeadings();
-			
+
 			// add class labels before paragraph
 			for(String heading : uniqueHeadings) {
 				System.out.println(heading);
@@ -122,7 +87,7 @@ public class TrainSet implements Serializable {
 			}
 			System.out.println("Done adding heading");
 			setupAfterHeadingAdded();
-			
+
 			// add paragraph and class label
 			for(String heading : headingPara.keySet()) {
 				System.out.println( heading + headingPara.get(heading));
@@ -132,7 +97,7 @@ public class TrainSet implements Serializable {
 			createDatasetFile(getOutputFilePath() + "/trainset/" + categoryName.replaceAll("[^A-Za-z0-9]", "_"));
 		}
 	}
-	
+
 	/**
 	 * [addHeading add the class label to the fle header before assigning the label to the document]
 	 * @param heading [class label]
@@ -209,7 +174,7 @@ public class TrainSet implements Serializable {
 		bw.close();
 		System.out.println("check for arff file in " + path);
 	}
-	
+
 	/**
 	 * @return the entries
 	 */

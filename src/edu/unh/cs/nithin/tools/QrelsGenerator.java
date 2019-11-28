@@ -2,9 +2,8 @@
  * @Author: Nithin
  * @Date:   2019-09-01T12:16:54-04:00
  * @Last modified by:   Nithin
- * @Last modified time: 2019-09-05T19:18:40-04:00
+ * @Last modified time: 2019-11-27T21:13:07-05:00
  */
-
 package edu.unh.cs.nithin.tools;
 
 import java.io.File;
@@ -46,7 +45,7 @@ public class QrelsGenerator {
 		setCategoryNames(categoryNames);
 		setCategoryPages(new HashMap<String, List<Data.Page>>());
 	}
-	
+
 	/**
 	 * Return a map of list of pages associated for provided category names
 	 * @return categoriesPages
@@ -107,7 +106,7 @@ public class QrelsGenerator {
 
 	/**
 	 * Creates qrel file for given category and list of pages
-	 * 
+	 *
 	 * @param catName
 	 * @param pages
 	 * @param includeHeadingPath
@@ -138,15 +137,6 @@ public class QrelsGenerator {
 		writer.flush();
 		writer.close();
 		System.out.println(qrelFileName + " is at " + qrelfile.getAbsolutePath());
-	}
-
-	/**
-	 * @param categoryPages2
-	 * @param includeSectionPath
-	 */
-	public void createTrainSet(Map<String, List<Page>> categoryPages2, Boolean includeSectionPath) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
