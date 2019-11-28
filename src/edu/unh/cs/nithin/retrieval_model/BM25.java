@@ -7,6 +7,7 @@
 package edu.unh.cs.nithin.retrieval_model;
 
 import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;

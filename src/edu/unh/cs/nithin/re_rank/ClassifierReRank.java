@@ -1,8 +1,12 @@
+/**
+ * @Author: Nithin Sivakumar <Nithin>
+ * @Date:   2019-03-17T17:15:55-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-11-27T21:12:26-05:00
+ */
 package edu.unh.cs.nithin.re_rank;
 
 import java.io.BufferedReader;
-
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -41,11 +45,11 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class ClassifierReRank {
-	
+
 	private String outputPath;
 	private String indexPath;
 	private float predictionConfidence = (float) 0.2;
-	
+
 	/**
 	 * set output file paths
 	 * @param runFile
@@ -57,11 +61,11 @@ public class ClassifierReRank {
 		setIndexPath(indexPath);
 		setOutputPath(outputPath);
 	}
-	
+
 	/**
-	 * Reads the runfile line by line and predicts the paraheading for the pargraph in each line 
+	 * Reads the runfile line by line and predicts the paraheading for the pargraph in each line
 	 * @param runFile filePath
-	 * @param modelName modelName to load 
+	 * @param modelName modelName to load
 	 * @throws Exception
 	 */
 	public void classifyRunFile(String runFile, String modelName) throws Exception {
@@ -69,7 +73,7 @@ public class ClassifierReRank {
 		String indexPath = getIndexPath();
 		String modelPath = getFilePath("models", outPath, modelName);
 		String trainsetPath = getFilePath("trainset", outPath, modelName);
-		
+
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
 		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(modelPath);
@@ -118,7 +122,7 @@ public class ClassifierReRank {
 		String filePath = "";
 		String outputPath = getOutputPath();
 		switch(choice) {
-		case "trainset" : 
+		case "trainset" :
 			filePath = outputPath + choice + "/" + modelName + ".arff";
 			break;
 		case "models" :
@@ -231,14 +235,14 @@ public class ClassifierReRank {
 
 	/**
 	 * @param runFile
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void classifyRunFile(String runFile) throws Exception {
 		String outPath = getOutputPath();
 		String indexPath = getIndexPath();
 		String modelPath = "/Users/Nithin/Desktop/outputFilesIR/models/Category_Environmental_terminology.model";
 		String trainsetPath = "/Users/Nithin/Desktop/outputFilesIR/trainset/Category_Environmental_terminology.arff";
-		
+
 		System.out.println(" loading Random Forest Classifier");
 		System.out.println("Model Loading.......................");
 		Classifier cls_RF = (Classifier) weka.core.SerializationHelper.read(modelPath);
@@ -276,7 +280,7 @@ public class ClassifierReRank {
 		writer.flush();
 		writer.close();
 		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
-		
+
 	}
 
 }

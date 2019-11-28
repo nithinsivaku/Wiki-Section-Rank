@@ -1,15 +1,18 @@
 /**
- * 
+ * @Author: Nithin Sivakumar <Nithin>
+ * @Date:   2019-09-09T21:57:03-04:00
+ * @Last modified by:   Nithin
+ * @Last modified time: 2019-11-27T21:12:48-05:00
  */
 package edu.unh.cs.nithin.tools;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.lucene.document.Document;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 
 import com.opencsv.CSVWriter;
 
@@ -31,16 +30,12 @@ import edu.unh.cs.treccar_v2.Data.Page.SectionPathParagraphs;
 import edu.unh.cs.treccar_v2.Data.PageMetadata;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
-/**
- * @author Nithin Sivakumar Modified Date : Sep 9, 2019 9:57:03 PM
- */
-
 public class CarHelper {
-	
+
 	// class constants
 	private Set<String> uniqueHeadings;
 	private List<Page> pages;
-	
+
 	/**
 	 * set input pages to be processed
 	 * @param pageNames
@@ -48,11 +43,16 @@ public class CarHelper {
 	public CarHelper(List<Page> pageNames) {
 		setPages(pageNames);
 	}
-	
-	
+
 	public CarHelper() {
 	}
 
+	/**
+	 * Helper to count categories those exists in the outlines file
+	 * @param pagesFile
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public Map<String, Integer> findCategoryCount(String pagesFile) throws FileNotFoundException {
 		Map<String, Integer> categoryCount = new HashMap<>();
 		final FileInputStream fileInputStream = new FileInputStream(new File(pagesFile));
@@ -71,11 +71,12 @@ public class CarHelper {
 		}
 		return categoryCount;
 	}
-	
+
 	/**
+	 * Save category count information to a csv for later visualization
 	 * @param categoryCount
 	 * @param outputPath
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void writeToCsv(Map<String, Integer> categoryCount, String outputPath) throws IOException {
 		outputPath = outputPath+"/CategoryCount.csv";
@@ -95,11 +96,11 @@ public class CarHelper {
 		}
 		writer.close();
 		System.out.println("check for file at " + outputPath);
-		
+
 	}
-		
+
 	/**
-	 * Loop through all pages set in the constructor. 
+	 * Loop through all pages set in the constructor.
 	 * For each page add the heading name and paragraph to a Hashmap.
 	 * @return the headingParaMap
 	 */
@@ -134,7 +135,7 @@ public class CarHelper {
 		setUniqueHeadings(headingsSet);
 		return headingPara;
 	}
-	
+
 	/**
 	 * @return the uniqueHeadings
 	 */
