@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-11-26T18:19:54-05:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-29T21:55:01-05:00
+# @Last modified time: 2019-11-30T15:35:21-05:00
 
 #!/bin/sh
 
@@ -27,9 +27,9 @@ class=edu.unh.cs.nithin.main.Main
 #### Constants
 type=
 
-##### Functions
+##### install maven dependencies
 install_dependencies() {
-    echo "Running mvn package"
+    echo "Installing maven dependencies"
     mvn package
     echo " Maven dependencies installed. Now generating run files"
 }
@@ -59,32 +59,38 @@ exec_train() {
 }
 
 usage() {
-    echo " reached help "
+    echo "usage: ./run.sh [One of the below options]"
+    echo "  -r || --retrieval      execute bm25 for certain categories from outlines.cbor"
+    echo "  -c || --classify       execute bm25 and rerank the passages using pre-trained classifier"
+    echo "  -t || --train          Genrate qrels and create trainsets for given categories"
+    echo "  -b || --build          Train multiple classifiers for categories present in trainset folder"
+    echo "  -h || --help           Print usage"
+    echo "  no arguments           will execute retrieval and classify"
 }
 
-##### install maven dependencies
-install_dependencies
-
 ##### execute wiki-section-rank
-while [ "$1" != "" ]; do
+if [ "$1" != "" ]
+then
     case $1 in
-        -r | --retrieval )      exec_retrieval
+        -r | --retrieval )      install_dependencies
+                                exec_retrieval
                                 exit 0 ;;
-        -c | --clasify )        exec_classify
+        -c | --clasify )        install_dependencies
+                                exec_classify
                                 exit 0 ;;
-        -b | --build )          exec_build
+        -b | --build )          install_dependencies
+                                exec_build
                                 exit 0 ;;
-        -t | --train )          exec_train
+        -t | --train )          install_dependencies
+                                exec_train
                                 exit 0 ;;
         -h | --help )           usage
-                                exit 0
-                                ;;
+                                exit 0 ;;
         * )                     usage
                                 exit 1
     esac
-done
-
-# if no paramaters are passed
-exec_retrieval
-exec_classify
-echo "retrieval done"
+else                                                                            # if no parameters passed
+    exec_retrieval
+    exec_classify
+    echo "retrieval done"
+fi
