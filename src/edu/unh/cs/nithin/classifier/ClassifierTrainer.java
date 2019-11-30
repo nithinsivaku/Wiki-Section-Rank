@@ -2,7 +2,7 @@
  * @Author: Nithin Sivakumar <Nithin>
  * @Date:   2019-11-27T19:37:33-05:00
  * @Last modified by:   Nithin
- * @Last modified time: 2019-11-27T21:12:06-05:00
+ * @Last modified time: 2019-11-29T17:32:14-05:00
  */
 package edu.unh.cs.nithin.classifier;
 
@@ -22,7 +22,7 @@ public class ClassifierTrainer {
 	private String arrfFilePath;
 
 	/**
-	 *
+	 * Set the arrffiles path and output path
 	 * @param outputPath
 	 */
 	public ClassifierTrainer(String outputPath) {
@@ -32,7 +32,7 @@ public class ClassifierTrainer {
 
 	/**
 	 * Train a Naive bayes classifier for all the files present in trainset folder
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void buildNaiveBayesModel() throws Exception {
 		File arrfDir = new File(getArrfFilePath());
@@ -55,14 +55,14 @@ public class ClassifierTrainer {
 			filter.setStemmer(stemmer);
 			filter.setLowerCaseTokens(true);
 			System.out.println("Stemmer done");
-			
+
 			// Create the FilteredClassifier object
 			FilteredClassifier fc = new FilteredClassifier();
-			
+
 			// specify filter
 			fc.setFilter(filter);
 			fc.setClassifier(nb);
-			
+
 			// Build the meta-classifier
 			fc.buildClassifier(trainingSet);
 			String nbDirectory = getOutputFilePath() + "/NaiveBayes/";
@@ -78,8 +78,8 @@ public class ClassifierTrainer {
 
 	/**
 	 * Train a Random Forest classifier for all the files present in trainset folder
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	public void buildRandomForestModel() throws Exception {
 		File arrfDir = new File(getArrfFilePath());
@@ -102,14 +102,14 @@ public class ClassifierTrainer {
 			filter.setStemmer(stemmer);
 			filter.setLowerCaseTokens(true);
 			System.out.println("Stemmer done");
-			
+
 			// Create the FilteredClassifier object
 			FilteredClassifier fc = new FilteredClassifier();
-			
+
 			// specify filter
 			fc.setFilter(filter);
 			fc.setClassifier(rf);
-			
+
 			// Build the meta-classifier
 			fc.buildClassifier(trainingSet);
 			String nbDirectory = getOutputFilePath() + "/RandomForest/";
@@ -121,7 +121,6 @@ public class ClassifierTrainer {
 			weka.core.SerializationHelper.write(arffFilePath, rf);
 			System.out.println("Random Forest Classifier model built at " + arffFilePath + " ");
 		}
-
 	}
 
 	/**
