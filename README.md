@@ -11,7 +11,7 @@ Maven 3.3.8 or higher
 2. ``` ./run.sh ``` 
     1. This will execute retrieval and classify.
     2. creates a folder named outfiles in project dir and stores all the generated runfiles files for evaluation.
-3. ``` ./run.sh -h ``` will print the usage.
+3. ``` ./run.sh -h ``` will print the below usage.
   
    ```
    usage: ./run.sh [One of the below options]
