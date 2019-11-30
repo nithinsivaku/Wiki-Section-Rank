@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
@@ -71,7 +72,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
-		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
+		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new EnglishAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(getPagesFile()));
 		System.out.println("starting searching for pages ...");
 		int count = 0;
@@ -110,22 +111,23 @@ public class BM25 {
 	 * @throws IOException
 	 */
 	public void SectionSearch(String catName) throws IOException {
-		File runfile = new File(getOutputPath() + "/runFiles/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
+		File runfile = new File(getOutputPath() + "/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
-		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
+		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new EnglishAnalyzer());
 		final FileInputStream fileInputStream3 = new FileInputStream(new File(getPagesFile()));
 		System.out.println("starting searching for sections ...");
 		int count = 0;
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			ArrayList<String> categories = page.getPageMetadata().getCategoryNames();
 			if (categories.contains(catName)) {
-				System.out.println(page.getPageId() + " ----- " + page.getPageName());
+				System.out.println(page.getPageId() + " ----- " );
 				for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
 					final String queryId = Data.sectionPathId(page.getPageId(), sectionPath);
 					String queryStr = buildSectionQueryStr(page, sectionPath);
+					System.out.println(queryStr);
 					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
 					ScoreDoc[] scoreDoc = tops.scoreDocs;
 					for (int i = 0; i < scoreDoc.length; i++) {
@@ -158,7 +160,7 @@ public class BM25 {
 		FileWriter writer = new FileWriter(runfile);
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
 		searcher.setSimilarity(new BM25Similarity());
-		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
+		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new EnglishAnalyzer());
 		System.out.println("starting searching for sections ...");
 		int count = 0;
 		for (String queryStr : queryStrings) {
@@ -200,10 +202,10 @@ public class BM25 {
 	// Author: Laura dietz
 	public static class MyQueryBuilder {
 
-		private final StandardAnalyzer analyzer;
+		private final EnglishAnalyzer analyzer;
 		private List<String> tokens;
 
-		public MyQueryBuilder(StandardAnalyzer standardAnalyzer) {
+		public MyQueryBuilder(EnglishAnalyzer standardAnalyzer) {
 			analyzer = standardAnalyzer;
 			tokens = new ArrayList<>(128);
 		}

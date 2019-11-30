@@ -6,8 +6,9 @@
  */
 package edu.unh.cs.nithin.main;
 
+import java.io.File;
 import java.io.IOException;
-
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +21,16 @@ import edu.unh.cs.nithin.tools.QrelsGenerator;
 import edu.unh.cs.treccar_v2.Data.Page;
 
 public class Main {
+	
+	private static String pwd; 
 
 	public static void main(String[] args) throws Exception {
 		System.setProperty("file.encoding", "UTF-8");
+		setPwd(Paths.get("").toAbsolutePath().toString());
 		String choice = args[0];
 		switch(choice) {
 			case "retrieval":
-				retrieval(args[1], args[2], args[3]);
+				retrieval(args[1], args[2]);
 				break;
 			case "wikikreator":
 				wikikreator(args[1], args[2]);
@@ -55,7 +59,14 @@ public class Main {
 	 * @param outputPath [run file]
 	 * @throws Exception 
 	 */
-	private static void retrieval(String pagesFile, String indexPath, String outputPath) throws Exception {
+	private static void retrieval(String pagesFile, String indexPath) throws Exception {
+		String outfiles = "/outFiles/runFiles/bm25";									// create outputfiles directory
+		String pwd = getPwd();
+		String outputPath = pwd+outfiles;
+		File outfile = new File(outputPath);
+		if(!outfile.exists()) {
+			outfile.mkdirs();
+		}
 		System.out.println(" Starting retrieval");
 		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
@@ -114,5 +125,19 @@ public class Main {
 		qg.generateQrels(categoryPages); 
 		TrainSet ts = new TrainSet(categoryPages, outputPath);
 		ts.createCategoryTrainSet();
+	}
+
+	/**
+	 * @return the pwd
+	 */
+	public static String getPwd() {
+		return pwd;
+	}
+
+	/**
+	 * @param pwd the pwd to set
+	 */
+	public static void setPwd(String pwd) {
+		Main.pwd = pwd;
 	}
 }
