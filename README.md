@@ -10,7 +10,7 @@ Maven 3.3.8 or higher
 ``` git clone https://github.com/nithinsivakumar/Wiki-Section-Rank ```\
 2. ``` ./run.sh ``` 
     1. This will execute retrieval and classify.
-    2. create a folder named outfiles in project dir and stores all the runfiles files for evaluation.
+    2. creates a folder named outfiles in project dir and stores all the generated runfiles files for evaluation.
 3. ``` ./run.sh -h ``` will print the usage.
   
    ```
