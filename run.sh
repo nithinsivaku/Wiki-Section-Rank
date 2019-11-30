@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-11-26T18:19:54-05:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-29T20:18:29-05:00
+# @Last modified time: 2019-11-29T21:55:01-05:00
 
 #!/bin/sh
 
@@ -10,6 +10,7 @@
 folderPath=/home/ns1077/work/outfiles
 indexPath=/home/ns1077/work/paragraphIndex
 outlinesPath=/home/ns1077/work/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+trainFile=/home/ns1077/work/unprocessedAllButBenchmark.v2.1/unprocessedAllButBenchmark.Y2.cbor
 targetDir=../Wiki-Section-Rank/target
 jarName=Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 class=edu.unh.cs.nithin.main.Main
@@ -18,6 +19,7 @@ class=edu.unh.cs.nithin.main.Main
 # folderPath=/Users/Nithin/Desktop/outfiles
 # indexPath=/Users/Nithin/Desktop/ParagraphIndex/
 # outlinesPath=/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+# trainFile=/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
 # targetDir=../Wiki-Section-Rank/target
 # jarName=Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 # class=edu.unh.cs.nithin.main.Main
@@ -53,7 +55,7 @@ exec_index() {
 
 exec_train() {
     type=wikikreator
-    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $outlinesPath $indexPath $folderPath
+    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $trainFile $folderPath
 }
 
 usage() {
