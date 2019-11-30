@@ -12,4 +12,4 @@ Maven 3.3.8 or higher
 3. ``` ./run.sh -r ``` will execute the bm25 retrieval model for certain categories\
 4. ``` ./run.sh -c ``` will execute retrieval and classification \
 5. ``` ./run.sh -t ``` will run the project in installation mode. ie. will create necessary training files for classifier\
-6. ``` ./run.sh -b ``` will build classifier models using trian files created using -t option.
+6. ``` ./run.sh -b ``` will build classifier models using train files created using -t option.
