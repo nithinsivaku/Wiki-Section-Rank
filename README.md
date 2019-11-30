@@ -8,8 +8,17 @@ Maven 3.3.8 or higher
 ## Installation Instructions
 1. git clone this repository\
 ``` git clone https://github.com/nithinsivakumar/Wiki-Section-Rank ```\
-2. ``` ./run.sh ``` will create a folder named outfiles in project dir and stores all the runfiles files for evaluation\
-3. ``` ./run.sh -r ``` will execute the bm25 retrieval model for certain categories\
-4. ``` ./run.sh -c ``` will execute retrieval and classification \
-5. ``` ./run.sh -t ``` will run the project in installation mode. ie. will create necessary training files for classifier\
-6. ``` ./run.sh -b ``` will build classifier models using train files created using -t option.
+2. ``` ./run.sh ``` 
+    1. This will execute retrieval and classify.
+    2. create a folder named outfiles in project dir and stores all the runfiles files for evaluation.
+3. ``` ./run.sh -h ``` will print the usage.
+  
+   ```
+   usage: ./run.sh [One of the below options]
+   -r || --retrieval      execute bm25 for certain categories from outlines.cbor
+   -c || --classify       execute bm25 and rerank the passages using pre-trained classifier
+   -t || --train          Genrate qrels and create trainsets for given categories
+   -b || --build          Train multiple classifiers for categories present in trainset folder
+   -h || --help           Print usage
+   no arguments           will execute retrieval and classify
+   ```
