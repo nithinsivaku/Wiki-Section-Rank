@@ -97,7 +97,7 @@ public class Main {
 	 * @throws Exception
 	 */
 	private static void classifyRunFile(String folderPath, String indexPath, String pagesFile) throws Exception {
-		String[] categoryNames = new String[] {"Category:Diseases and disorders"};
+		String[] categoryNames = new String[] {"Category:Habitat", "Category:Christmas food", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		String outfiles = "/outFiles/runFiles/classify";									// create outputfiles directory
 		String pwd = getPwd();
 		String outputPath = pwd+outfiles;
@@ -137,7 +137,7 @@ public class Main {
 	 * @throws IOException
 	 */
 	private static void wikikreator(String trainingCorpus, String outputPath) throws IOException {
-		String[] categoryNames = new String[] {"Category:Choclate", "Category:Habitat", "Category:Christmas food", "Category:Environmental terminology", "Category:Diseases and disorders"};
+		String[] categoryNames = new String[] {"Category:Habitat", "Category:Christmas food", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		QrelsGenerator qg = new QrelsGenerator(trainingCorpus, outputPath, categoryNames);
 		Map<String, List<Page>> categoryPages = qg.getCategoriesPages();
 		qg.generateQrels(categoryPages); 

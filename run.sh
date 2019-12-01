@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-11-26T18:19:54-05:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-30T17:18:57-05:00
+# @Last modified time: 2019-11-30T23:47:20-05:00
 
 #!/bin/sh
 
@@ -41,7 +41,7 @@ exec_retrieval() {
 
 exec_classify() {
     type=classify-runfile
-    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $outlinesPath $indexPath $folderPath
+    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $folderPath $indexPath $outlinesPath
 }
 
 exec_build() {
@@ -50,7 +50,7 @@ exec_build() {
 }
 
 exec_index() {
-    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $outlinesPath $indexPath $folderPath
+    java -Xms2048M -Xmx300g -cp $targetDir/$jarName $class $type $folderPath $indexPath $outlinesPath
 }
 
 exec_train() {

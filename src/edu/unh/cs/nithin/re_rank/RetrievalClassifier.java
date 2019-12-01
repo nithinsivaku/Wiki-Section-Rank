@@ -118,26 +118,26 @@ public class RetrievalClassifier {
 	}
 	
 	/**
+	 * create respective directories in project-dir and load classifier models
+	 * Call classifyRunFile and classifiy each line one by one
 	 * @param catName
 	 * @throws Exception 
 	 */
 	public void classifyRunfiles(String catName) throws Exception {
-		
 		String reRankNBPath = getOutputPath()+ "/rerank/NaiveBayes";
-		String reRankRFPath = getOutputPath()+ "/rerank/RandomForest";
 		File f1 = new File(reRankNBPath);
-		File f2 = new File(reRankRFPath);
 		if(!f1.exists()) f1.mkdirs();
-		if(!f2.exists()) f2.mkdirs();
-		
-		// Load classifier and rerank runfiles
 		Classifier naiveBayesModel = loadModel(catName, "NaiveBayes");
-		Classifier randomForestModel = loadModel(catName, "RandomForest");
 		classifyRunfile(catName, naiveBayesModel, reRankNBPath);
-		classifyRunfile(catName, randomForestModel, reRankRFPath);
+		
+//		String reRankRFPath = getOutputPath()+ "/rerank/RandomForest";
+//		File f2 = new File(reRankRFPath);
+//		if(!f2.exists()) f2.mkdirs();
+//		classifyRunfile(catName, loadModel(catName, "RandomForest"), reRankRFPath);
 	}
 	
 	/**
+	 * 
 	 * @param catName
 	 * @param outPath 
 	 * @param naiveBayesModel
@@ -165,7 +165,7 @@ public class RetrievalClassifier {
 			String[] tokens = st.split(" ");
 			String paraId = tokens[2];
 			String paragraph = getParagraphForId(indexPath, paraId);
-			
+			System.out.println(tokens[0]);
 			Instances testset = trainingData.stringFreeStructure();
 			Instance insta = makeInstance(paragraph, testset);
 			double predicted = model.classifyInstance(insta);
@@ -187,6 +187,7 @@ public class RetrievalClassifier {
 
 	
 	/**
+	 * Retrive paragraph for paragraph id from lucene idex
 	 * @param indexPath2
 	 * @param paraId
 	 * @return
@@ -201,6 +202,12 @@ public class RetrievalClassifier {
 		return paraText;
 	}
 	
+	/**
+	 * Helper function to make weka format instance to prodict label later
+	 * @param text
+	 * @param data
+	 * @return
+	 */
 	private Instance makeInstance(String text, Instances data) {
 		// Create instance of length two.
 		Instance instance = new DenseInstance(2);
@@ -212,6 +219,13 @@ public class RetrievalClassifier {
 		return instance;
 	}
 
+	/**
+	 * Helper to load classifier model
+	 * @param catName
+	 * @param classifierName
+	 * @return loadedModel
+	 * @throws Exception
+	 */
 	private Classifier loadModel(String catName, String classifierName) throws Exception {
 		String modelPath = getFolderPath()+"/models/" + classifierName + "/";
 		modelPath = modelPath + catName + ".model";
