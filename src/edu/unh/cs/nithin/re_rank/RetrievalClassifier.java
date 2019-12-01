@@ -26,6 +26,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -37,6 +38,7 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import edu.unh.cs.nithin.re_rank.ClassifierReRank.MyQueryBuilder;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
@@ -75,7 +77,10 @@ public class RetrievalClassifier {
 	 * @throws IOException
 	 */
 	public void runBm25(String catName) throws IOException {
-		File runfile = new File(getOutputPath() + "/bm25/" + catName);
+		String outputDir = getOutputPath() + "/bm25";
+		File file = new File(outputDir);
+		if(!file.exists()) file.mkdirs();
+		File runfile = new File(outputDir+ "/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
@@ -119,7 +124,7 @@ public class RetrievalClassifier {
 	public void classifyRunfiles(String catName) throws Exception {
 		
 		String reRankNBPath = getOutputPath()+ "/rerank/NaiveBayes";
-		String reRankRFPath = getOutputPath()+ "rerank/RandomForest";
+		String reRankRFPath = getOutputPath()+ "/rerank/RandomForest";
 		File f1 = new File(reRankNBPath);
 		File f2 = new File(reRankRFPath);
 		if(!f1.exists()) f1.mkdirs();
@@ -147,7 +152,7 @@ public class RetrievalClassifier {
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
 		
 		// create outfile object and setup writer
-		File outRunfile = new File(outputPath + "/" +catName);
+		File outRunfile = new File(outPath + "/" +catName);
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
 		
@@ -160,7 +165,7 @@ public class RetrievalClassifier {
 			String[] tokens = st.split(" ");
 			String paraId = tokens[2];
 			String paragraph = getParagraphForId(indexPath, paraId);
-
+			
 			Instances testset = trainingData.stringFreeStructure();
 			Instance insta = makeInstance(paragraph, testset);
 			double predicted = model.classifyInstance(insta);
@@ -186,26 +191,13 @@ public class RetrievalClassifier {
 	 * @param paraId
 	 * @return
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	private String getParagraphForId(String indexPath2, String paraId) throws IOException {
-		String paragraph = null;
+	private String getParagraphForId(String indexPath, String paraId) throws IOException, ParseException {
 		Analyzer analyzer = new StandardAnalyzer();
 		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene");
-		searcher.setSimilarity(new BM25Similarity());
-		final MyQueryBuilder queryBuilder = new MyQueryBuilder(new StandardAnalyzer());
-		QueryParser qp = new QueryParser("paraid", analyzer);
-		TopDocs tops = searcher.search(queryBuilder.toQuery(paraId), 1);
-		ScoreDoc[] scoreDoc = tops.scoreDocs;
-		for (int i = 0; i < scoreDoc.length; i++) {
-			ScoreDoc score = scoreDoc[i];
-			final Document doc = searcher.doc(score.doc);
-			paragraph = doc.getField("text").stringValue();
-
-		}
-
-		String paraText = searcher.doc(searcher.search(queryBuilder.toQuery(paraId), 1).scoreDocs[0].doc)
-				.getField("text").stringValue();
-
+		QueryParser qp = new QueryParser("paragraphid", analyzer);
+		String paraText = searcher.doc(searcher.search(qp.parse(paraId), 1).scoreDocs[0].doc).getField("text").stringValue();
 		return paraText;
 	}
 	

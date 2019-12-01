@@ -109,8 +109,8 @@ public class Main {
 		float predConf = (float) 0.2;
 		RetrievalClassifier rc = new RetrievalClassifier(indexPath, outputPath, predConf, pagesFile, folderPath);
 		for(String catName : categoryNames) {
-			catName = catName.replaceAll("[^A-Za-z0-9]", "_");
 			rc.runBm25(catName);
+			catName = catName.replaceAll("[^A-Za-z0-9]", "_");
 			rc.classifyRunfiles(catName);
 		}
 		
