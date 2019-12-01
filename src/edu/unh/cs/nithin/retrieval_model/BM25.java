@@ -199,7 +199,11 @@ public class BM25 {
 		writer.close();
 	}
 
-	// Author: Laura dietz
+	/**
+	 * @author Laura Dietz
+	 * Modified by : Nithin
+	 * Modified Date : Nov 30, 2019 5:38:40 PM
+	 */
 	public static class MyQueryBuilder {
 
 		private final EnglishAnalyzer analyzer;
@@ -229,15 +233,26 @@ public class BM25 {
 		}
 	}
 
-	// Author: Laura dietz
+	/**
+	 * Initialize the index searcher
+	 * @param indexPath
+	 * @param typeIndex
+	 * @return indexsearcher object
+	 * @throws IOException
+	 */
 	private static IndexSearcher setupIndexSearcher(String indexPath, String typeIndex) throws IOException {
 		Path path = FileSystems.getDefault().getPath(indexPath, typeIndex);
 		Directory indexDir = FSDirectory.open(path);
 		IndexReader reader = DirectoryReader.open(indexDir);
 		return new IndexSearcher(reader);
 	}
-
-	// Author: Laura dietz
+	
+	/**
+	 * Build english query from unstructured text
+	 * @param page
+	 * @param sectionPath
+	 * @return query string
+	 */
 	private static String buildSectionQueryStr(Data.Page page, List<Data.Section> sectionPath) {
 		StringBuilder queryStr = new StringBuilder();
 		queryStr.append(page.getPageName());

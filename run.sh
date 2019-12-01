@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-11-26T18:19:54-05:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-30T15:35:21-05:00
+# @Last modified time: 2019-11-30T17:18:57-05:00
 
 #!/bin/sh
 
@@ -89,7 +89,9 @@ then
         * )                     usage
                                 exit 1
     esac
-else                                                                            # if no parameters passed
+else
+    echo " No parameters passed: Running retrieval and classify"
+    install_dependencies
     exec_retrieval
     exec_classify
     echo "retrieval done"

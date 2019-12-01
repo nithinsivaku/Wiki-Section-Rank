@@ -15,6 +15,7 @@ import java.util.Map;
 import edu.unh.cs.nithin.arrfTools.TrainSet;
 import edu.unh.cs.nithin.classifier.ClassifierTrainer;
 import edu.unh.cs.nithin.re_rank.ClassifierReRank;
+import edu.unh.cs.nithin.re_rank.RetrievalClassifier;
 import edu.unh.cs.nithin.retrieval_model.BM25;
 import edu.unh.cs.nithin.tools.Indexer;
 import edu.unh.cs.nithin.tools.QrelsGenerator;
@@ -68,7 +69,7 @@ public class Main {
 			outfile.mkdirs();
 		}
 		System.out.println(" Starting retrieval");
-		String[] categoryNames = new String[] {"Category:Articles containing video clips", "Category:Environmental terminology", "Category:Diseases and disorders"};
+		String[] categoryNames = new String[] {"Category:Habitat", "Category:Christmas food", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		BM25 bm25 = new BM25(pagesFile, indexPath, outputPath);
 		for (String catName : categoryNames) {
 			bm25.SectionSearch(catName);
@@ -95,11 +96,28 @@ public class Main {
 	 * @param outputPath filepath
 	 * @throws Exception
 	 */
-	private static void classifyRunFile(String runFile, String indexPath, String outputPath) throws Exception {
-		runFile = "/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt";
-		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
-		crr.classifyRunFile(runFile);
-		crr.classifyRunFile(runFile, "Category_Environmental_terminology");
+	private static void classifyRunFile(String folderPath, String indexPath, String pagesFile) throws Exception {
+		String[] categoryNames = new String[] {"Category:Diseases and disorders"};
+		String outfiles = "/outFiles/runFiles/classify";									// create outputfiles directory
+		String pwd = getPwd();
+		String outputPath = pwd+outfiles;
+		File outfile = new File(outputPath);
+		if(!outfile.exists()) {
+			outfile.mkdirs();
+		}
+		
+		float predConf = (float) 0.2;
+		RetrievalClassifier rc = new RetrievalClassifier(indexPath, outputPath, predConf, pagesFile, folderPath);
+		for(String catName : categoryNames) {
+			catName = catName.replaceAll("[^A-Za-z0-9]", "_");
+			rc.runBm25(catName);
+			rc.classifyRunfiles(catName);
+		}
+		
+//		runFile = "/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt";
+//		ClassifierReRank crr = new ClassifierReRank(runFile, indexPath, outputPath);
+//		crr.classifyRunFile(runFile);
+//		crr.classifyRunFile(runFile, "Category_Environmental_terminology");
 	}
 	
 	/**
