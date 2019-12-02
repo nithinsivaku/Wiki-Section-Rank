@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-11-26T18:19:54-05:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-30T23:47:20-05:00
+# @Last modified time: 2019-12-01T23:17:07-05:00
 
 #!/bin/sh
 
@@ -16,13 +16,13 @@ jarName=Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 class=edu.unh.cs.nithin.main.Main
 
 # local
-# folderPath=/Users/Nithin/Desktop/outfiles
-# indexPath=/Users/Nithin/Desktop/ParagraphIndex/
-# outlinesPath=/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
-# trainFile=/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
-# targetDir=../Wiki-Section-Rank/target
-# jarName=Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-# class=edu.unh.cs.nithin.main.Main
+folderPath=/Users/Nithin/Desktop/outfiles
+indexPath=/Users/Nithin/Desktop/ParagraphIndex/
+outlinesPath=/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+trainFile=/Users/Nithin/Desktop/unprocessedAllButBenchmark.cbor/unprocessedAllButBenchmark.cbor
+targetDir=../Wiki-Section-Rank/target
+jarName=Wiki-Section-Rank-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+class=edu.unh.cs.nithin.main.Main
 
 #### Constants
 type=

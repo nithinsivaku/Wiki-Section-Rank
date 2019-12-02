@@ -1,7 +1,7 @@
 # @Author: Nithin Sivakumar <Nithin>
 # @Date:   2019-06-25T00:46:42-04:00
 # @Last modified by:   Nithin
-# @Last modified time: 2019-11-27T21:14:05-05:00
+# @Last modified time: 2019-12-01T02:21:38-05:00
 
 """
 Helper script to query source qrels files and extract
@@ -16,7 +16,7 @@ class ParseFile():
 	def __init__(self, inputFilePath, outputFilePath ):
 		self.input_file_location = inputFilePath
 		self.output_file_location = outputFilePath
-		self.Pages = ["enwiki:Drinking%20bird", "enwiki:Hot%20chocolate", "enwiki:Atmosphere%20of%20Earth", "enwiki:Water%20cycle", "enwiki:Tsunami", "enwiki:Electric%20car", "enwiki:Supernova"]
+		self.Pages = ["enwiki:Christmas%20pudding", "enwiki:Hot%20chocolate", "enwiki:Fudge"]
 
 	def parse(self):
 		new_content = []

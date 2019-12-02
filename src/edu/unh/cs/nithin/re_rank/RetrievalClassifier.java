@@ -38,7 +38,6 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import edu.unh.cs.nithin.re_rank.ClassifierReRank.MyQueryBuilder;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
@@ -50,37 +49,41 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class RetrievalClassifier {
-	
+
 	private String outputPath;
 	private String indexPath;
 	private float predictionConfidence;
 	private String pagesFile;
 	private String folderPath;
-	
+
 	/**
 	 * set output file paths
+	 * 
 	 * @param indexPath
 	 * @param outputPath
 	 * @param predConf
 	 */
-	public RetrievalClassifier(String indexPath, String outputPath, float predConf, String pagesFile, String folderPath) {
+	public RetrievalClassifier(String indexPath, String outputPath, float predConf, String pagesFile,
+			String folderPath) {
 		setIndexPath(indexPath);
 		setOutputPath(outputPath);
 		setPredictionConfidence(predConf);
 		setPagesFile(pagesFile);
 		setFolderPath(folderPath);
 	}
-	
+
 	/**
 	 * Execute bm25 for section level paragraphs for given category in outlines.cbor
+	 * 
 	 * @param catName
 	 * @throws IOException
 	 */
 	public void runBm25(String catName) throws IOException {
 		String outputDir = getOutputPath() + "/bm25";
 		File file = new File(outputDir);
-		if(!file.exists()) file.mkdirs();
-		File runfile = new File(outputDir+ "/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
+		if (!file.exists())
+			file.mkdirs();
+		File runfile = new File(outputDir + "/" + catName.replaceAll("[^A-Za-z0-9]", "_"));
 		runfile.createNewFile();
 		FileWriter writer = new FileWriter(runfile);
 		IndexSearcher searcher = setupIndexSearcher(getIndexPath(), "paragraph.lucene");
@@ -92,12 +95,12 @@ public class RetrievalClassifier {
 		for (Data.Page page : DeserializeData.iterableAnnotations(fileInputStream3)) {
 			ArrayList<String> categories = page.getPageMetadata().getCategoryNames();
 			if (categories.contains(catName)) {
-				System.out.println(page.getPageId() + " ----- " );
+				System.out.println(page.getPageId() + " ----- ");
 				for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
 					final String queryId = Data.sectionPathId(page.getPageId(), sectionPath);
 					String queryStr = buildSectionQueryStr(page, sectionPath);
 					System.out.println(queryStr);
-					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
+					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 1000);
 					ScoreDoc[] scoreDoc = tops.scoreDocs;
 					for (int i = 0; i < scoreDoc.length; i++) {
 						ScoreDoc score = scoreDoc[i];
@@ -116,48 +119,51 @@ public class RetrievalClassifier {
 		writer.close();
 		System.out.println("Write " + count + " results\nQuery Done!");
 	}
-	
+
 	/**
-	 * create respective directories in project-dir and load classifier models
-	 * Call classifyRunFile and classifiy each line one by one
+	 * create respective directories in project-dir and load classifier models Call
+	 * classifyRunFile and classifiy each line one by one
+	 * 
 	 * @param catName
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void classifyRunfiles(String catName) throws Exception {
-		String reRankNBPath = getOutputPath()+ "/rerank/NaiveBayes";
+		String reRankNBPath = getOutputPath() + "/rerank/NaiveBayes";
 		File f1 = new File(reRankNBPath);
-		if(!f1.exists()) f1.mkdirs();
+		if (!f1.exists())
+			f1.mkdirs();
 		Classifier naiveBayesModel = loadModel(catName, "NaiveBayes");
 		classifyRunfile(catName, naiveBayesModel, reRankNBPath);
-		
+		deleteDir(new File(getOutputPath() + "/bm25/"));
+
 //		String reRankRFPath = getOutputPath()+ "/rerank/RandomForest";
 //		File f2 = new File(reRankRFPath);
 //		if(!f2.exists()) f2.mkdirs();
 //		classifyRunfile(catName, loadModel(catName, "RandomForest"), reRankRFPath);
 	}
-	
+
 	/**
 	 * 
 	 * @param catName
-	 * @param outPath 
+	 * @param outPath
 	 * @param naiveBayesModel
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void classifyRunfile(String catName, Classifier model, String outPath) throws Exception {
-		
+
 		// Load the trainset data format
-		String trainsetPath = getFolderPath()+"/trainset/" + catName + ".arff";
+		String trainsetPath = getFolderPath() + "/trainset/" + catName + ".arff";
 		DataSource source = new DataSource(trainsetPath);
 		Instances trainingData = source.getDataSet();
 		trainingData.setClassIndex(trainingData.numAttributes() - 1);
-		
+
 		// create outfile object and setup writer
-		File outRunfile = new File(outPath + "/" +catName);
+		File outRunfile = new File(outPath + "/" + catName);
 		outRunfile.createNewFile();
 		FileWriter writer = new FileWriter(outRunfile);
-		
+
 		// load the runfile genrated before and classify each result
-		String runFile = getOutputPath()+ "/bm25/" + catName;
+		String runFile = getOutputPath() + "/bm25/" + catName;
 		File file = new File(runFile);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String st;
@@ -171,10 +177,12 @@ public class RetrievalClassifier {
 			double predicted = model.classifyInstance(insta);
 			double[] prediction = model.distributionForInstance(insta);
 			double predictionRate = prediction[(int) predicted];
-			if(predictionRate >= predictionConfidence) {
+			if (predictionRate >= predictionConfidence) {
 				String predictedClass = trainingData.classAttribute().value((int) predicted);
-				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
-				System.out.println(predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
+				writer.write(predictedClass + " " + predictionRate + " " + paraId + " " + 1 + " " + tokens[4]
+						+ " Classifier\n");
+				System.out.println(
+						predictedClass + predictionRate + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			} else {
 				writer.write(tokens[0] + " " + tokens[1] + " " + paraId + " " + 1 + " " + tokens[4] + " Classifier\n");
 			}
@@ -184,26 +192,27 @@ public class RetrievalClassifier {
 		System.out.println("Writen  classified results\nQuery Done!" + outRunfile.getName());
 	}
 
-
-	
 	/**
 	 * Retrive paragraph for paragraph id from lucene idex
+	 * 
 	 * @param indexPath2
 	 * @param paraId
 	 * @return
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * @throws IOException
+	 * @throws ParseException
 	 */
 	private String getParagraphForId(String indexPath, String paraId) throws IOException, ParseException {
 		Analyzer analyzer = new StandardAnalyzer();
 		IndexSearcher searcher = setupIndexSearcher(indexPath, "paragraph.lucene");
 		QueryParser qp = new QueryParser("paragraphid", analyzer);
-		String paraText = searcher.doc(searcher.search(qp.parse(paraId), 1).scoreDocs[0].doc).getField("text").stringValue();
+		String paraText = searcher.doc(searcher.search(qp.parse(paraId), 1).scoreDocs[0].doc).getField("text")
+				.stringValue();
 		return paraText;
 	}
-	
+
 	/**
 	 * Helper function to make weka format instance to prodict label later
+	 * 
 	 * @param text
 	 * @param data
 	 * @return
@@ -221,13 +230,14 @@ public class RetrievalClassifier {
 
 	/**
 	 * Helper to load classifier model
+	 * 
 	 * @param catName
 	 * @param classifierName
 	 * @return loadedModel
 	 * @throws Exception
 	 */
 	private Classifier loadModel(String catName, String classifierName) throws Exception {
-		String modelPath = getFolderPath()+"/models/" + classifierName + "/";
+		String modelPath = getFolderPath() + "/models/" + classifierName + "/";
 		modelPath = modelPath + catName + ".model";
 		System.out.println("loading " + classifierName + "Classifier model");
 		System.out.println("Model Loading.......................");
@@ -237,9 +247,8 @@ public class RetrievalClassifier {
 	}
 
 	/**
-	 * @author Laura Dietz
-	 * Modified by : Nithin
-	 * Modified Date : Nov 30, 2019 5:38:40 PM
+	 * @author Laura Dietz Modified by : Nithin Modified Date : Nov 30, 2019 5:38:40
+	 *         PM
 	 */
 	public static class MyQueryBuilder {
 
@@ -269,9 +278,10 @@ public class RetrievalClassifier {
 			return booleanQuery.build();
 		}
 	}
-	
+
 	/**
 	 * Initialize the index searcher
+	 * 
 	 * @param indexPath
 	 * @param typeIndex
 	 * @return indexsearcher object
@@ -283,9 +293,10 @@ public class RetrievalClassifier {
 		IndexReader reader = DirectoryReader.open(indexDir);
 		return new IndexSearcher(reader);
 	}
-	
+
 	/**
 	 * Build english query from unstructured text
+	 * 
 	 * @param page
 	 * @param sectionPath
 	 * @return query string
@@ -299,6 +310,25 @@ public class RetrievalClassifier {
 		return queryStr.toString();
 	}
 	
+	/**
+	 * Helper to delete directory and files inside
+	 * @param dir
+	 * @return boolean
+	 */
+	public static boolean deleteDir(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		return dir.delete();
+	}
+
 	/**
 	 * @return the outputPath
 	 */

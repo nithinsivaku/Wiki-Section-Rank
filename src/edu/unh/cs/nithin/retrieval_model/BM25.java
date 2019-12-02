@@ -127,8 +127,8 @@ public class BM25 {
 				for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
 					final String queryId = Data.sectionPathId(page.getPageId(), sectionPath);
 					String queryStr = buildSectionQueryStr(page, sectionPath);
-					System.out.println(queryStr);
-					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 100);
+					//System.out.println(queryStr);
+					TopDocs tops = searcher.search(queryBuilder.toQuery(queryStr), 1000);
 					ScoreDoc[] scoreDoc = tops.scoreDocs;
 					for (int i = 0; i < scoreDoc.length; i++) {
 						ScoreDoc score = scoreDoc[i];
