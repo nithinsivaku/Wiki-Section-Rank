@@ -97,7 +97,7 @@ public class Main {
 	 * @throws Exception
 	 */
 	private static void classifyRunFile(String folderPath, String indexPath, String pagesFile) throws Exception {
-		String[] categoryNames = new String[] {"Category:Diseases and disorders"};
+		String[] categoryNames = new String[] {"Category:Habitat", "Category:Christmas food", "Category:Environmental terminology", "Category:Diseases and disorders"};
 		String outfiles = "/outFiles/runFiles/classify";									// create outputfiles directory
 		String pwd = getPwd();
 		String outputPath = pwd+outfiles;
