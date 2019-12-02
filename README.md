@@ -11,6 +11,7 @@ Maven 3.3.8 or higher
 2. ``` ./run.sh ``` 
     1. This will execute retrieval and classify.
     2. creates a folder named outfiles in project dir and stores all the generated runfiles files for evaluation.
+    3. Run trec_eval for runfiles generated and write results to files at outfile/eval_results/
 3. ``` ./run.sh -h ``` will print the below usage.
   
    ```
@@ -20,5 +21,5 @@ Maven 3.3.8 or higher
    -t || --train          Genrate qrels and create trainsets for given categories
    -b || --build          Train multiple classifiers for categories present in trainset folder
    -h || --help           Print usage
-   no arguments           will execute retrieval and classify
+   no arguments           will execute retrieval and classify, write eval results at outFiles/eval_results
    ```
