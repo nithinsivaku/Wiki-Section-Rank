@@ -15,9 +15,11 @@ build-classifer-model
 
 
 classify-runfile
-/Users/Nithin/Desktop/outputFilesIR/runFiles/ecologypercent20.txt
-/Users/Nithin/Desktop/ParagraphIndex/
 /Users/Nithin/Desktop/outfiles/
+/Users/Nithin/Desktop/ParagraphIndex/
+/Users/Nithin/Desktop/benchmarkY1/benchmarkY1-test-public/test.pages.cbor-outlines.cbor
+
+
 
 
 test
