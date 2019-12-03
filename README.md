@@ -3,7 +3,7 @@ This project attempts to build a retrieval system that takes advantage of the te
 
 ## Requirement
 Java 1.8 or higher\
-Maven 3.3.8 or higher
+Maven 3.3.8 or higher\
 OS:- Unix-like
 
 ## Installation Instructions
