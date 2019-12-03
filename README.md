@@ -7,7 +7,7 @@ Maven 3.3.8 or higher
 
 ## Installation Instructions
 1. git clone this repository\
-``` git clone https://github.com/nithinsivakumar/Wiki-Section-Rank ```\
+``` git clone https://github.com/nithinsivakumar/Wiki-Section-Rank ```
 2. ``` ./run.sh ``` 
     1. This will execute retrieval and classify.
     2. creates a folder named outfiles in project dir and stores all the generated runfiles files for evaluation.
