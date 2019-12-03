@@ -1,12 +1,14 @@
 # Wiki-Section-Rank
 This project attempts to build a retrieval system that takes advantage of the text classifier model built using appropriate topical sections from the Wikipedia articles.
 
-## Requirement
+# Installation Instructions
+
+### Requirement
 Java 1.8 or higher\
 Maven 3.3.8 or higher\
 OS:- Unix-like
 
-## Installation Instructions
+### Steps to reproduce
 1. git clone this repository\
 ``` git clone https://github.com/nithinsivakumar/Wiki-Section-Rank ```
 2. ``` ./run.sh ``` 
