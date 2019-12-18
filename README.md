@@ -6,7 +6,7 @@ This project attempts to build a retrieval system that takes advantage of the te
 ### Requirement
 Java 1.8 or higher\
 Maven 3.3.8 or higher\
-OS:- Unix-like
+OS:- Debian-Based (Debian, Ubuntu, Linux Mint, etc.)
 
 ### Steps to reproduce
 1. git clone this repository\
